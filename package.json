@@ -1,0 +1,7 @@
+{
+  "name": "dnd",
+  "packageManager": "yarn@3.4.1",
+  "dependencies": {
+    "prettier": "^2.8.4"
+  }
+}
