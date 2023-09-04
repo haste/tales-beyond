@@ -98,7 +98,7 @@ const hijackSpells = () => {
     ".ct-spells-spell, .ddbc-combat-attack"
   )) {
     const label = action.querySelector(
-      ".ct-spells-spell__label, .ddbc-spell-name, .ddbc-action-name"
+      ".ct-spells-spell__label, .ddbc-spell-name, .ddbc-action-name, .ddbc-combat-attack__name"
     ).textContent;
 
     if (label in customSpells) {
