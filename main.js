@@ -16,7 +16,7 @@ const onClick = (target) => (event) => {
 
 const hijackDiceButtons = (label, parent, overrideDice = null) => {
   for (const diceButton of parent.querySelectorAll(
-    ".integrated-dice__container"
+    ".integrated-dice__container",
   )) {
     const signedNumber = diceButton.querySelector(".ddbc-signed-number");
     const damageValue = diceButton.querySelector(".ddbc-damage__value");
@@ -25,21 +25,21 @@ const hijackDiceButtons = (label, parent, overrideDice = null) => {
       diceButton.replaceWith(talespire(diceButton, label, overrideDice));
     } else if (signedNumber) {
       const sign = signedNumber.querySelector(
-        ".ddbc-signed-number__sign"
+        ".ddbc-signed-number__sign",
       ).textContent;
       const numbers = signedNumber.querySelector(
-        ".ddbc-signed-number__number"
+        ".ddbc-signed-number__number",
       ).textContent;
       diceButton.replaceWith(
-        talespire(diceButton, label, `1d20${sign}${numbers}`)
+        talespire(diceButton, label, `1d20${sign}${numbers}`),
       );
     } else if (damageValue) {
       diceButton.replaceWith(
-        talespire(diceButton, label, damageValue.textContent)
+        talespire(diceButton, label, damageValue.textContent),
       );
     } else {
       diceButton.replaceWith(
-        talespire(diceButton, label, diceButton.textContent)
+        talespire(diceButton, label, diceButton.textContent),
       );
     }
   }
@@ -69,10 +69,10 @@ const customSpells = {
   "Magic Missile": (label, action) => {
     let numDarts = 3;
     const firtsComponent = action.querySelector(
-      ".ddbc-note-components"
+      ".ddbc-note-components",
     ).firstChild;
     if (firtsComponent.textContent.includes("Count:")) {
-      numDarts += parseInt(firtsComponent.textContent.substring(7));
+      numDarts += Number.parseInt(firtsComponent.textContent.substring(7));
     }
 
     hijackDiceButtons(label, action);
@@ -95,10 +95,10 @@ const customSpells = {
 
 const hijackSpells = () => {
   for (const action of document.querySelectorAll(
-    ".ct-spells-spell, .ddbc-combat-attack"
+    ".ct-spells-spell, .ddbc-combat-attack",
   )) {
     const label = action.querySelector(
-      ".ct-spells-spell__label, .ddbc-spell-name, .ddbc-action-name, .ddbc-combat-attack__name"
+      ".ct-spells-spell__label, .ddbc-spell-name, .ddbc-action-name, .ddbc-combat-attack__name",
     ).textContent;
 
     if (label in customSpells) {
@@ -117,7 +117,7 @@ const hijackTabs = () => {
 
   const callback = (_mutationList, _observer) => {
     const activeTab = document.querySelector(
-      ".ddbc-tab-list__nav-item--is-active"
+      ".ddbc-tab-list__nav-item--is-active",
     ).textContent;
     if (activeTab in tabHijackers) {
       tabHijackers[activeTab]();
@@ -158,10 +158,10 @@ const hijackGeneric = () => {
   }
 
   for (const action of document.querySelectorAll(
-    ".ddbc-saving-throws-summary__ability"
+    ".ddbc-saving-throws-summary__ability",
   )) {
     const elem = action.querySelector(
-      ".ddbc-saving-throws-summary__ability-name"
+      ".ddbc-saving-throws-summary__ability-name",
     );
     let label = elem.textContent;
     const abbr = elem.querySelector("abbr");
