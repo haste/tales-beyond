@@ -2,6 +2,7 @@ const talespire = (elem, label, dice) => {
   const anchor = document.createElement("a");
   anchor.style.border = "1px solid blue";
   anchor.classList.add("integrated-dice__container");
+  anchor.classList.add("hijacked");
   anchor.href = `talespire://dice/${label}:${dice}`;
   anchor.onclick = (event) => event.stopPropagation();
   anchor.innerHTML = elem.innerHTML;
@@ -33,7 +34,7 @@ const getDiceValue = (diceButton) => {
 
 const hijackDiceButtons = (fallbackLabel, parent) => {
   for (const diceButton of parent.querySelectorAll(
-    ".integrated-dice__container",
+    ".integrated-dice__container:not(.hijacked)",
   )) {
     const label = diceButton.dataset.label || fallbackLabel;
     diceButton.replaceWith(
@@ -101,7 +102,7 @@ const createOffHandButton = (label, action) => {
   damageContainer.classList.add("ddb-combat-item-attack__damage--is-versatile");
 
   const diceContainer = action.querySelector(
-    ".ddbc-combat-attack__damage .integrated-dice__container",
+    ".ddbc-combat-attack__damage .integrated-dice__container:not(.hijacked)",
   );
 
   if (!diceContainer) {
