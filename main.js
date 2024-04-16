@@ -9,39 +9,36 @@ const talespire = (elem, label, dice) => {
   return anchor;
 };
 
-const onClick = (target) => (event) => {
-  event.stopPropagation();
-  talespire(target);
+const getDiceValue = (diceButton) => {
+  const signedNumber = diceButton.querySelector(".ddbc-signed-number");
+  const damageValue = diceButton.querySelector(".ddbc-damage__value");
+
+  if (signedNumber) {
+    const sign = signedNumber.querySelector(
+      ".ddbc-signed-number__sign",
+    ).textContent;
+    const numbers = signedNumber.querySelector(
+      ".ddbc-signed-number__number",
+    ).textContent;
+
+    return `1d20${sign}${numbers}`;
+  }
+
+  if (damageValue) {
+    return damageValue.textContent;
+  }
+
+  return diceButton.textContent;
 };
 
-const hijackDiceButtons = (label, parent, overrideDice = null) => {
+const hijackDiceButtons = (fallbackLabel, parent) => {
   for (const diceButton of parent.querySelectorAll(
     ".integrated-dice__container",
   )) {
-    const signedNumber = diceButton.querySelector(".ddbc-signed-number");
-    const damageValue = diceButton.querySelector(".ddbc-damage__value");
-
-    if (overrideDice) {
-      diceButton.replaceWith(talespire(diceButton, label, overrideDice));
-    } else if (signedNumber) {
-      const sign = signedNumber.querySelector(
-        ".ddbc-signed-number__sign",
-      ).textContent;
-      const numbers = signedNumber.querySelector(
-        ".ddbc-signed-number__number",
-      ).textContent;
-      diceButton.replaceWith(
-        talespire(diceButton, label, `1d20${sign}${numbers}`),
-      );
-    } else if (damageValue) {
-      diceButton.replaceWith(
-        talespire(diceButton, label, damageValue.textContent),
-      );
-    } else {
-      diceButton.replaceWith(
-        talespire(diceButton, label, diceButton.textContent),
-      );
-    }
+    const label = diceButton.dataset.label || fallbackLabel;
+    diceButton.replaceWith(
+      talespire(diceButton, label, getDiceValue(diceButton)),
+    );
   }
 };
 
@@ -93,16 +90,53 @@ const customSpells = {
   },
 };
 
+const createOffHandButton = (label, action) => {
+  // Set dice button as versatile
+  const damageContainer = action.querySelector(
+    ".ddbc-combat-item-attack__damage",
+  );
+  // They have a typo here (ddb vs ddbc), so just hardcode it:
+  //const damageClass = damageContainer.classList[0];
+  //damageContainer.classList.add(`${damageClass}--is-versatile`);
+  damageContainer.classList.add("ddb-combat-item-attack__damage--is-versatile");
+
+  const diceContainer = action.querySelector(
+    ".ddbc-combat-attack__damage .integrated-dice__container",
+  );
+
+  if (!diceContainer) {
+    return;
+  }
+
+  const diceContainerClone = diceContainer.cloneNode(true);
+  diceContainerClone.dataset.label = label;
+  diceContainer.after(diceContainerClone);
+
+  const damageClone = diceContainerClone.querySelector(".ddbc-damage__value");
+  damageClone.innerHTML = damageClone.innerHTML.split("+")[0];
+};
+
 const hijackSpells = () => {
+  const hasTwoHandedWeaponFighting = !!Array.prototype.find.call(
+    document.querySelectorAll(".ct-basic-actions__action"),
+    (el) => el.textContent === "Two-Weapon Fighting",
+  );
   for (const action of document.querySelectorAll(
     ".ct-spells-spell, .ddbc-combat-attack",
   )) {
     const label = action.querySelector(
-      ".ct-spells-spell__label, .ddbc-spell-name, .ddbc-action-name, .ddbc-combat-attack__name",
+      ".ddbc-spell-name, .ddbc-action-name, .ddbc-combat-attack__label",
     ).textContent;
+    const isLight = !!Array.prototype.find.call(
+      action.querySelectorAll(".ddbc-note-components__component--plain"),
+      (el) => el.textContent === "Light",
+    );
 
     if (label in customSpells) {
       customSpells[label](label, action);
+    } else if (hasTwoHandedWeaponFighting && isLight) {
+      createOffHandButton(`${label} (Off-hand)`, action);
+      hijackDiceButtons(label, action);
     } else {
       hijackDiceButtons(label, action);
     }
@@ -115,11 +149,14 @@ const hijackTabs = () => {
     Spells: hijackSpells,
   };
 
-  const callback = (_mutationList, _observer) => {
+  const callback = (_mutationList, observer) => {
     const activeTab = document.querySelector(
       ".ddbc-tab-list__nav-item--is-active",
     ).textContent;
     if (activeTab in tabHijackers) {
+      observer.observe(document.querySelector(".ddbc-tab-options__body"), {
+        childList: true,
+      });
       tabHijackers[activeTab]();
     }
   };
