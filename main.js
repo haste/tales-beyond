@@ -238,6 +238,80 @@ const hijackGeneric = () => {
   }
 };
 
+const hijackSidebar = () => {
+  let abilities = {};
+  const diceRegex =
+    /(?<numDice>\d+)?d(?<dice>\d+)(?:\s*(?<sign>[+-])\s*(?:your (?<modifierType>\w+) modifier|(?<modifier>(?!\d+d\d+)\d+?)))?/g;
+
+  const diceValue = ({
+    dice,
+    modifier = "",
+    modifierType,
+    numDice = 1,
+    sign = "",
+  }) => {
+    if (modifierType) {
+      modifier = abilities[modifierType];
+    }
+    if (+modifier < 0) {
+      sign = "";
+    }
+    return `${numDice}d${dice}${sign}${modifier}`;
+  };
+
+  const diceReplacer =
+    (label) => (_match, _p1, _p2, _p3, _p4, _p5, _offset, _string, groups) => {
+      const anchor = talespire(null, label, diceValue(groups));
+      anchor.style = "padding-left: 4px; padding-right: 4px;";
+
+      return anchor.outerHTML;
+    };
+
+  const callback = (_mutationList, observer) => {
+    const paneContent = document.querySelector(".ct-sidebar__pane-content");
+    if (!paneContent) {
+      return;
+    }
+
+    // TODO: Iterate childNodes until we hit the class .ct-<type>-detail
+    const content = paneContent.firstChild.lastChild;
+    const headerNode = document.querySelector(".ct-sidebar__heading");
+    observer.disconnect();
+
+    abilities = Array.from(
+      document.querySelectorAll(".ct-quick-info__ability"),
+    ).reduce((acc, node) => {
+      const stat = node.querySelector(
+        ".ddbc-ability-summary__label",
+      ).textContent;
+
+      let modifier = node.querySelector(".ddbc-signed-number").textContent;
+      if (+modifier > 0) {
+        modifier = modifier.slice(1);
+      }
+
+      acc[stat] = modifier;
+      return acc;
+    }, {});
+
+    content.innerHTML = content.innerHTML.replace(
+      diceRegex,
+      diceReplacer(headerNode.textContent),
+    );
+
+    observer.observe(document.querySelector(".ct-sidebar__portal"), {
+      childList: true,
+      subtree: true,
+    });
+  };
+
+  const observer = new MutationObserver(callback);
+  observer.observe(document.querySelector(".ct-sidebar__portal"), {
+    childList: true,
+    subtree: true,
+  });
+};
+
 const main = () => {
   const appLoaded = document.querySelector(".ct-character-sheet-desktop");
   if (!appLoaded) {
@@ -247,6 +321,7 @@ const main = () => {
 
   hijackGeneric();
   hijackTabs();
+  hijackSidebar();
 };
 
 main();
