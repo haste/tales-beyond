@@ -57,7 +57,9 @@ const customSpells = {
 
     const span = document.createElement("span");
     span.className =
-      "ddbc-note-components__component ddbc-note-components__component--plain ddbc-note-components__component--scaled";
+      "ddbc-note-components__component \
+      ddbc-note-components__component--plain  \
+      ddbc-note-components__component--scaled";
     span.innerHTML = "Damaged target";
 
     const componentsClone = actionClone.querySelector(".ddbc-note-components");
