@@ -1,6 +1,6 @@
 {
   "description": "dnd",
-  "manifest_version": 2,
+  "manifest_version": 3,
   "name": "DND",
   "version": "1.0",
   "homepage_url": "https://github.com/haste/dnd",
