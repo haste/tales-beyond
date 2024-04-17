@@ -95,6 +95,27 @@ const customSpells = {
       hijackDiceButtons(`${label} (${darts} darts)`, actionClone);
     }
   },
+
+  "Chaos Bolt": (label, action) => {
+    const level = action.classList.contains("ddbc-combat-attack")
+      ? 1
+      : Number.parseInt(
+          // TODO: This should really just look for .ct-content-group instead
+          action.parentNode.parentNode.parentNode.parentNode
+            .querySelector(".ct-content-group__header-content")
+            .textContent.slice(0, -8),
+        );
+
+    const damageValue = action.querySelector(".ddbc-damage__value");
+    damageValue.innerHTML = `${damageValue.innerHTML}+${level}d6`;
+
+    const damageIcon = action.querySelector(".ddbc-damage__icon");
+    if (damageIcon) {
+      damageIcon.remove();
+    }
+
+    hijackDiceButtons(label, action);
+  },
 };
 
 const createOffHandButton = (label, action) => {
