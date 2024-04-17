@@ -1,11 +1,15 @@
 const talespire = (elem, label, dice) => {
   const anchor = document.createElement("a");
-  anchor.style.border = "1px solid blue";
   anchor.classList.add("integrated-dice__container");
   anchor.classList.add("hijacked");
   anchor.href = `talespire://dice/${label}:${dice}`;
   anchor.onclick = (event) => event.stopPropagation();
-  anchor.innerHTML = elem.innerHTML;
+
+  if (elem) {
+    anchor.innerHTML = elem.innerHTML;
+  } else {
+    anchor.innerHTML = dice;
+  }
 
   return anchor;
 };
