@@ -1,7 +1,16 @@
 {
-  "name": "dnd",
+  "name": "Tales Beyond",
+  "description": "Replaces D&D Beyond's digital dices with links to TaleSpire",
+  "type": "module",
+  "scripts": {
+    "build": "yarn build:firefox && yarn build:chrome",
+    "build:firefox": "node scripts/build.js firefox",
+    "build:chrome": "node scripts/build.js chrome"
+  },
   "packageManager": "yarn@4.1.1",
   "devDependencies": {
-    "@biomejs/biome": "1.7.0"
+    "@biomejs/biome": "1.7.0",
+    "chrome-webstore-upload-cli": "^3.1.0",
+    "web-ext": "7.11.0"
   }
 }
