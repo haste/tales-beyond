@@ -219,6 +219,10 @@ const hijackGeneric = () => {
       label = abbr.title;
     }
 
+    if (action.classList.contains("ddbc-saving-throws-summary__ability")) {
+      label = `${label} (Saving)`;
+    }
+
     hijackDiceButtons(label, action);
   }
 
