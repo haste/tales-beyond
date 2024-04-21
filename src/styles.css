@@ -1,18 +1,22 @@
-.integrated-dice__container.hijacked {
+a.integrated-dice__container.hijacked {
   border: 1px solid var(--purple-100);
   border-radius: 4px;
 }
 
-.integrated-dice__container.hijacked:hover {
+a.integrated-dice__container.hijacked:hover {
   border: 1px solid var(--purple-400);
   background: var(--purple-100);
 }
 
-.integrated-dice__container.hijacked:hover ~ .ddbc-saving-throw-selection-box-svg, integrated-dice__container.hijacked:hover ~ .ddbc-saving-throw-selection-small-box-svg {
+a.integrated-dice__container.hijacked:hover ~ .ddbc-saving-throw-selection-box-svg,
+a.integrated-dice__container.hijacked:hover ~ .ddbc-saving-throw-selection-small-box-svg {
   fill: var(--purple-100);
 }
 
-.ddbc-saving-throws-summary__ability-modifier > .integrated-dice__container.hijacked:hover {
-  background: transparent;
+.ddbc-saving-throws-summary__ability-modifier > a.integrated-dice__container.hijacked {
   border: 0;
+}
+
+.ddbc-saving-throws-summary__ability-modifier > a.integrated-dice__container.hijacked:hover {
+  background: transparent;
 }
