@@ -29,8 +29,20 @@ const browserManifest = await readJSON(
 
 const manifest = { version, ...sharedManifest, ...browserManifest };
 await fs.rm(buildDir, { force: true, recursive: true });
-await fs.mkdir(buildDir);
-await fs.cp(srcDir, buildDir, { recursive: true });
+await fs.mkdir(buildDir, { recursive: true });
+await fs.cp(srcDir, buildDir, {
+  recursive: true,
+  filter: (src, _dst) =>
+    ![
+      "manifest.firefox.json",
+      "manifest.chrome.json",
+      "manifest.shared.json",
+    ].includes(path.basename(src)),
+});
+await fs.cp(
+  path.join(process.cwd(), "LICENSE"),
+  path.join(buildDir, "LICENSE"),
+);
 await fs.writeFile(
   path.join(buildDir, "manifest.json"),
   JSON.stringify(manifest, null, 2),
