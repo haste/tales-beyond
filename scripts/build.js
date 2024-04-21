@@ -3,6 +3,11 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 
+const readJSON = async (filePath) =>
+  JSON.parse(await fs.readFile(filePath), {
+    encoding: "utf-8",
+  });
+
 const browser = process.argv[2];
 if (!browser || !["firefox", "chrome"].includes(browser)) {
   console.error(
@@ -14,21 +19,18 @@ if (!browser || !["firefox", "chrome"].includes(browser)) {
 const buildDir = path.join(process.cwd(), "build", browser);
 const srcDir = path.join(process.cwd(), "src");
 
-const sharedManifest = JSON.parse(
-  await fs.readFile(path.join(process.cwd(), "src/manifest.shared.json"), {
-    encoding: "utf-8",
-  }),
+const { version } = await readJSON(path.join(process.cwd(), "package.json"));
+const sharedManifest = await readJSON(
+  path.join(srcDir, "manifest.shared.json"),
 );
-const browserManifest = JSON.parse(
-  await fs.readFile(path.join(process.cwd(), `src/manifest.${browser}.json`), {
-    encoding: "utf-8",
-  }),
+const browserManifest = await readJSON(
+  path.join(srcDir, `manifest.${browser}.json`),
 );
 
-const manifest = {...sharedManifest, ...browserManifest};
-await fs.rm(buildDir, {force: true, recursive: true});
+const manifest = { version, ...sharedManifest, ...browserManifest };
+await fs.rm(buildDir, { force: true, recursive: true });
 await fs.mkdir(buildDir);
-await fs.cp(srcDir, buildDir, {recursive: true});
+await fs.cp(srcDir, buildDir, { recursive: true });
 await fs.writeFile(
   path.join(buildDir, "manifest.json"),
   JSON.stringify(manifest, null, 2),

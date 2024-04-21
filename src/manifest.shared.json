@@ -1,7 +1,6 @@
 {
   "name": "Tales Beyond",
   "description": "Replaces D&D Beyond's digital dices with links to TaleSpire",
-  "version": "0.4.1",
   "homepage_url": "https://github.com/haste/tales-beyond",
   "icons": {
     "48": "icons/icon_48.png",
