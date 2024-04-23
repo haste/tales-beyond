@@ -8,7 +8,7 @@ const talespire = (elem, label, dice) => {
   if (elem) {
     anchor.innerHTML = elem.innerHTML;
   } else {
-    anchor.innerHTML = dice;
+    anchor.innerText = dice;
   }
 
   return anchor;
@@ -53,14 +53,14 @@ const customSpells = {
     action.after(actionClone);
 
     const damageClone = actionClone.querySelector(".ddbc-damage__value");
-    damageClone.innerHTML = damageClone.innerHTML.replace("8", "12");
+    damageClone.innerText = damageClone.innerText.replace("8", "12");
 
     const span = document.createElement("span");
     span.className =
       "ddbc-note-components__component \
       ddbc-note-components__component--plain  \
       ddbc-note-components__component--scaled";
-    span.innerHTML = "Damaged target";
+    span.innerText = "Damaged target";
 
     const componentsClone = actionClone.querySelector(".ddbc-note-components");
     componentsClone.textContent = `, ${componentsClone.textContent} `;
@@ -107,7 +107,7 @@ const customSpells = {
         );
 
     const damageValue = action.querySelector(".ddbc-damage__value");
-    damageValue.innerHTML = `${damageValue.innerHTML}+${level}d6`;
+    damageValue.innerText = `${damageValue.innerText}+${level}d6`;
 
     const damageIcon = action.querySelector(".ddbc-damage__icon");
     if (damageIcon) {
@@ -141,7 +141,7 @@ const createOffHandButton = (label, action) => {
   diceContainer.after(diceContainerClone);
 
   const damageClone = diceContainerClone.querySelector(".ddbc-damage__value");
-  damageClone.innerHTML = damageClone.innerHTML.split("+")[0];
+  damageClone.innerText = damageClone.innerText.split("+")[0];
 };
 
 const hijackSpells = () => {
