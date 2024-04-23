@@ -1,7 +1,7 @@
 {
   "name": "Tales Beyond",
   "description": "Replaces D&D Beyond's digital dices with links to TaleSpire",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "type": "module",
   "scripts": {
     "build": "yarn build:firefox && yarn build:chrome",
