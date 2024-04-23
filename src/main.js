@@ -263,22 +263,12 @@ const hijackSidebar = () => {
     return `${numDice}d${dice}${sign}${modifier}`;
   };
 
-  const diceReplacer =
-    (label) => (_match, _p1, _p2, _p3, _p4, _p5, _offset, _string, groups) => {
-      const anchor = talespire(null, label, diceValue(groups));
-      anchor.style = "padding-left: 4px; padding-right: 4px;";
-
-      return anchor.outerHTML;
-    };
-
   const callback = (_mutationList, observer) => {
     const paneContent = document.querySelector(".ct-sidebar__pane-content");
     if (!paneContent) {
       return;
     }
 
-    // TODO: Iterate childNodes until we hit the class .ct-<type>-detail
-    const content = paneContent.firstChild.lastChild;
     const headerNode = document.querySelector(".ct-sidebar__heading");
     observer.disconnect();
 
@@ -298,10 +288,65 @@ const hijackSidebar = () => {
       return acc;
     }, {});
 
-    content.innerHTML = content.innerHTML.replace(
-      diceRegex,
-      diceReplacer(headerNode.textContent),
+    const treeWalker = document.createTreeWalker(
+      paneContent,
+      NodeFilter.SHOW_TEXT,
+      (node) =>
+        !node.parentNode.classList.contains("hijacked") &&
+        node.textContent.match(diceRegex)
+          ? NodeFilter.FILTER_ACCEPT
+          : NodeFilter.FILTER_SKIP,
     );
+    const textNodes = [];
+    while (treeWalker.nextNode()) {
+      textNodes.push(treeWalker.currentNode);
+    }
+
+    for (const node of textNodes) {
+      let offset = 0;
+      let fragment;
+      for (const match of node.textContent.matchAll(diceRegex)) {
+        if (offset === 0) {
+          fragment = new DocumentFragment();
+
+          if (match.index !== 0) {
+            fragment.appendChild(
+              document.createTextNode(
+                node.textContent.substring(offset, match.index),
+              ),
+            );
+          }
+        } else {
+          fragment.appendChild(
+            document.createTextNode(
+              node.textContent.substring(offset, match.index),
+            ),
+          );
+        }
+
+        const link = talespire(
+          null,
+          headerNode.textContent,
+          diceValue(match.groups),
+        );
+        link.style = "padding-left: 4px; padding-right: 4px;";
+
+        fragment.appendChild(link);
+        offset = match.index + match[0].length;
+      }
+
+      if (fragment && offset !== node.textContent.length) {
+        fragment.appendChild(
+          document.createTextNode(
+            node.textContent.substring(offset, node.textContent.length),
+          ),
+        );
+      }
+
+      if (fragment) {
+        node.replaceWith(fragment);
+      }
+    }
 
     observer.observe(document.querySelector(".ct-sidebar__portal"), {
       childList: true,
