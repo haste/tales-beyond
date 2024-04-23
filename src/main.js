@@ -36,9 +36,9 @@ const getDiceValue = (diceButton) => {
   return diceButton.textContent;
 };
 
-const hijackDiceButtons = (fallbackLabel, parent) => {
+const hijackDiceButtons = (fallbackLabel, parent, replaceHijacked = false) => {
   for (const diceButton of parent.querySelectorAll(
-    ".integrated-dice__container:not(.hijacked)",
+    `.integrated-dice__container${replaceHijacked ? "" : ":not(.hijacked)"}`,
   )) {
     const label = diceButton.dataset.label || fallbackLabel;
     diceButton.replaceWith(
@@ -90,9 +90,9 @@ const customSpells = {
       labelClone.textContent = `${label} (${darts} darts)`;
 
       const damageClone = actionClone.querySelector(".ddbc-damage__value");
-      damageClone.innerHTML = damageClone.innerHTML.replace(/1/g, darts);
+      damageClone.innerText = damageClone.innerText.replace(/1/g, darts);
 
-      hijackDiceButtons(`${label} (${darts} darts)`, actionClone);
+      hijackDiceButtons(`${label} (${darts} darts)`, actionClone, true);
     }
   },
 
