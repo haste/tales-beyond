@@ -172,27 +172,20 @@ const hijackSpells = () => {
 };
 
 const hijackTabs = () => {
-  const tabHijackers = {
-    Actions: hijackSpells,
-    Spells: hijackSpells,
-  };
-
   const callback = (_mutationList, observer) => {
-    const activeTab = document.querySelector(
-      ".ddbc-tab-list__nav-item--is-active",
-    ).textContent;
-    if (activeTab in tabHijackers) {
-      observer.observe(document.querySelector(".ddbc-tab-options__body"), {
-        childList: true,
-      });
-      tabHijackers[activeTab]();
-    }
+    observer.disconnect();
+    hijackSpells();
+    observer.observe(document.querySelector(".ct-primary-box"), {
+      childList: true,
+      subtree: true,
+    });
   };
 
   const observer = new MutationObserver(callback);
   callback([], observer);
-  observer.observe(document.querySelector(".ddbc-tab-list__content"), {
+  observer.observe(document.querySelector(".ct-primary-box"), {
     childList: true,
+    subtree: true,
   });
 };
 
