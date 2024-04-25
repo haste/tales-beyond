@@ -2,8 +2,20 @@ const talespire = (elem, label, dice) => {
   const anchor = document.createElement("a");
   anchor.classList.add("integrated-dice__container");
   anchor.classList.add("hijacked");
-  anchor.href = `talespire://dice/${label}:${dice}`;
-  anchor.onclick = (event) => event.stopPropagation();
+  anchor.onclick = (event) => {
+    event.stopPropagation();
+
+    let name = label;
+    let extraDice = "";
+    if (event.altKey || event.ctrlKey) {
+      name += " (ADV/DIS)";
+      extraDice = `/${dice}`;
+    }
+    window.open(
+      `talespire://dice/${encodeURIComponent(name)}:${dice}${extraDice}`,
+      "_self",
+    );
+  };
 
   if (elem) {
     anchor.innerHTML = elem.innerHTML;
