@@ -1,30 +1,4 @@
-const talespire = (elem, label, dice) => {
-  const anchor = document.createElement("a");
-  anchor.classList.add("integrated-dice__container");
-  anchor.classList.add("hijacked");
-  anchor.onclick = (event) => {
-    event.stopPropagation();
-
-    let name = label;
-    let extraDice = "";
-    if (event.altKey || event.ctrlKey) {
-      name += " (ADV/DIS)";
-      extraDice = `/${dice}`;
-    }
-    window.open(
-      `talespire://dice/${encodeURIComponent(name)}:${dice}${extraDice}`,
-      "_self",
-    );
-  };
-
-  if (elem) {
-    anchor.innerHTML = elem.innerHTML;
-  } else {
-    anchor.innerText = dice;
-  }
-
-  return anchor;
-};
+import { talespireLink, getTextNodes, embedInText } from "~/utils";
 
 const getDiceValue = (diceButton) => {
   const signedNumber = diceButton.querySelector(".ddbc-signed-number");
@@ -54,7 +28,7 @@ const hijackDiceButtons = (fallbackLabel, parent, replaceHijacked = false) => {
   )) {
     const label = diceButton.dataset.label || fallbackLabel;
     diceButton.replaceWith(
-      talespire(diceButton, label, getDiceValue(diceButton)),
+      talespireLink(diceButton, label, getDiceValue(diceButton)),
     );
   }
 };
@@ -248,26 +222,6 @@ const hijackGeneric = () => {
 };
 
 const hijackSidebar = () => {
-  let abilities = {};
-  const diceRegex =
-    /(?<numDice>\d+)?d(?<dice>\d+)(?:\s*(?<sign>[+-])\s*(?:your (?<modifierType>\w+) modifier|(?<modifier>(?!\d+d\d+)\d+?)))?/g;
-
-  const diceValue = ({
-    dice,
-    modifier = "",
-    modifierType,
-    numDice = 1,
-    sign = "",
-  }) => {
-    if (modifierType) {
-      modifier = abilities[modifierType];
-    }
-    if (+modifier < 0) {
-      sign = "";
-    }
-    return `${numDice}d${dice}${sign}${modifier}`;
-  };
-
   const callback = (_mutationList, observer) => {
     const paneContent = document.querySelector(".ct-sidebar__pane-content");
     if (!paneContent) {
@@ -277,80 +231,8 @@ const hijackSidebar = () => {
     const headerNode = document.querySelector(".ct-sidebar__heading");
     observer.disconnect();
 
-    abilities = Array.from(
-      document.querySelectorAll(".ct-quick-info__ability"),
-    ).reduce((acc, node) => {
-      const stat = node.querySelector(
-        ".ddbc-ability-summary__label",
-      ).textContent;
-
-      let modifier = node.querySelector(".ddbc-signed-number").textContent;
-      if (+modifier > 0) {
-        modifier = modifier.slice(1);
-      }
-
-      acc[stat] = modifier;
-      return acc;
-    }, {});
-
-    const treeWalker = document.createTreeWalker(
-      paneContent,
-      NodeFilter.SHOW_TEXT,
-      (node) =>
-        !node.parentNode.classList.contains("hijacked") &&
-        node.textContent.match(diceRegex)
-          ? NodeFilter.FILTER_ACCEPT
-          : NodeFilter.FILTER_SKIP,
-    );
-    const textNodes = [];
-    while (treeWalker.nextNode()) {
-      textNodes.push(treeWalker.currentNode);
-    }
-
-    for (const node of textNodes) {
-      let offset = 0;
-      let fragment;
-      for (const match of node.textContent.matchAll(diceRegex)) {
-        if (offset === 0) {
-          fragment = new DocumentFragment();
-
-          if (match.index !== 0) {
-            fragment.appendChild(
-              document.createTextNode(
-                node.textContent.substring(offset, match.index),
-              ),
-            );
-          }
-        } else {
-          fragment.appendChild(
-            document.createTextNode(
-              node.textContent.substring(offset, match.index),
-            ),
-          );
-        }
-
-        const link = talespire(
-          null,
-          headerNode.textContent,
-          diceValue(match.groups),
-        );
-        link.style = "padding-left: 4px; padding-right: 4px;";
-
-        fragment.appendChild(link);
-        offset = match.index + match[0].length;
-      }
-
-      if (fragment && offset !== node.textContent.length) {
-        fragment.appendChild(
-          document.createTextNode(
-            node.textContent.substring(offset, node.textContent.length),
-          ),
-        );
-      }
-
-      if (fragment) {
-        node.replaceWith(fragment);
-      }
+    for (const node of getTextNodes(paneContent)) {
+      embedInText(node, headerNode.textContent);
     }
 
     observer.observe(document.querySelector(".ct-sidebar__portal"), {
