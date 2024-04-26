@@ -8,10 +8,17 @@ import path from "node:path";
 const srcDir = path.join(process.cwd(), "src");
 const browsers = ["firefox", "chrome"];
 
+const bunBuild = async (config) => {
+  const result = await Bun.build(config);
+  if (!result.success) {
+    throw new AggregateError(result.logs, "Build failed");
+  }
+};
+
 export const build = async () => {
   const sharedDir = path.join(process.cwd(), "build/shared");
 
-  await Bun.build({
+  await bunBuild({
     entrypoints: [path.join(srcDir, "main.js")],
     outdir: sharedDir,
   });
