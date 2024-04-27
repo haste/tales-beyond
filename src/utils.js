@@ -17,7 +17,7 @@ const diceValue = ({
 };
 
 export const diceRegex =
-  /(?<numDice>\d+)?d(?<dice>\d+)(?:\s*(?<sign>[+-])\s*(?:your (?<modifierType>\w+) modifier|(?<modifier>(?!\d+d\d+)\d+?)))?/g;
+  /(?<numDice>\d+)?d(?<dice>\d+)(?:\s*(?<sign>[+-])\s*(?:your (?<modifierType>\w+) modifier|(?<modifier>(?!\d+d\d+)\d+)))?/g;
 
 export const talespireLink = (elem, label, dice) => {
   const anchor = document.createElement("a");
