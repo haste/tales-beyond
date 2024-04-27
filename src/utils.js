@@ -23,6 +23,8 @@ export const talespireLink = (elem, label, dice) => {
   const anchor = document.createElement("a");
   anchor.classList.add("integrated-dice__container");
   anchor.classList.add("hijacked");
+  anchor.dataset.tsLabel = label;
+  anchor.dataset.tsDice = dice;
   anchor.onclick = (event) => {
     event.stopPropagation();
 
