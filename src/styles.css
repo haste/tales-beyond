@@ -1,6 +1,7 @@
 a.integrated-dice__container.hijacked {
   border: 1px solid var(--purple-100);
   border-radius: 4px;
+  cursor: pointer;
 }
 
 a.integrated-dice__container.hijacked:hover {
