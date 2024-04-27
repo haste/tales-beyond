@@ -4,7 +4,12 @@ const diceValue = ({
   modifierType,
   numDice = 1,
   sign = "",
+  soloModifier,
 }) => {
+  if (soloModifier) {
+    return `${numDice}d20${soloModifier}`;
+  }
+
   if (modifierType) {
     // It's not too many cases where this will trigger, but it would be nice to
     // cache this a bit
@@ -17,9 +22,9 @@ const diceValue = ({
 };
 
 export const diceRegex =
-  /(?<numDice>\d+)?d(?<dice>\d+)(?:\s*(?<sign>[+-])\s*(?:your (?<modifierType>\w+) modifier|(?<modifier>(?!\d+d\d+)\d+)))?/g;
+  /((?<numDice>\d+)?d(?<dice>\d+)(?:\s*(?<sign>[+-])\s*(?:your (?<modifierType>\w+) modifier|(?<modifier>(?!\d+d\d+)\d+)))?|(?<soloModifier>[+-]\d+))/g;
 
-export const talespireLink = (elem, label, dice) => {
+export const talespireLink = (elem, label, dice, diceLabel) => {
   const anchor = document.createElement("a");
   anchor.classList.add("integrated-dice__container");
   anchor.classList.add("hijacked");
@@ -40,7 +45,9 @@ export const talespireLink = (elem, label, dice) => {
     );
   };
 
-  if (elem) {
+  if (diceLabel) {
+    anchor.innerText = diceLabel;
+  } else if (elem) {
     anchor.innerHTML = elem.innerHTML;
   } else {
     anchor.innerText = dice;
@@ -107,7 +114,7 @@ export const embedInText = (node, label) => {
       );
     }
 
-    const link = talespireLink(null, label, diceValue(match.groups));
+    const link = talespireLink(null, label, diceValue(match.groups), match[0]);
     link.style = "padding-left: 4px; padding-right: 4px;";
 
     fragment.appendChild(link);
