@@ -232,7 +232,16 @@ const hijackSidebar = () => {
     observer.disconnect();
 
     for (const node of getTextNodes(paneContent)) {
-      embedInText(node, headerNode.textContent);
+      let label = headerNode.textContent;
+      // Matches actions in creatures under extras.
+      if (node.parentNode.tagName === "P") {
+        const action = node.parentNode.querySelector("em > strong");
+        if (action) {
+          // Remove the punctuation mark
+          label = action.textContent.slice(0, -1);
+        }
+      }
+      embedInText(node, label);
     }
 
     observer.observe(document.querySelector(".ct-sidebar__portal"), {
