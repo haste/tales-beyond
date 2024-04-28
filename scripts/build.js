@@ -18,17 +18,21 @@ const bunBuild = async (config) => {
 export const build = async () => {
   const sharedDir = path.join(process.cwd(), "build/shared");
 
-  await bunBuild({
-    entrypoints: [path.join(srcDir, "main.js")],
-    outdir: sharedDir,
-  });
-
   const { version } = await Bun.file(
     path.join(process.cwd(), "package.json"),
   ).json();
   const sharedManifest = await Bun.file(
     path.join(srcDir, "manifest.shared.json"),
   ).json();
+
+  for (const script of sharedManifest.content_scripts) {
+    for (const js of script.js) {
+      await bunBuild({
+        entrypoints: [path.join(srcDir, js)],
+        outdir: sharedDir,
+      });
+    }
+  }
 
   await $`cp -rf ${srcDir}/{icons,styles.css} LICENSE ${sharedDir}`;
 
