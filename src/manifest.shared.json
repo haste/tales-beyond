@@ -8,9 +8,15 @@
   },
   "content_scripts": [
     {
-      "matches": ["*://*.dndbeyond.com/*"],
+      "matches": ["*://*.dndbeyond.com/characters/*"],
       "run_at": "document_end",
-      "js": ["main.js"],
+      "js": ["characters.js"],
+      "css": ["styles.css"]
+    },
+    {
+      "matches": ["*://*.dndbeyond.com/monsters*"],
+      "run_at": "document_end",
+      "js": ["monsters.js"],
       "css": ["styles.css"]
     }
   ]

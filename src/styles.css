@@ -1,17 +1,17 @@
 a.integrated-dice__container.hijacked {
-  border: 1px solid var(--purple-100);
+  border: 1px solid #e5bef4;
   border-radius: 4px;
   cursor: pointer;
 }
 
 a.integrated-dice__container.hijacked:hover {
-  border: 1px solid var(--purple-400);
-  background: var(--purple-100);
+  border: 1px solid #b53de1;
+  background: #e5bef4;
 }
 
 a.integrated-dice__container.hijacked:hover ~ .ddbc-saving-throw-selection-box-svg,
 a.integrated-dice__container.hijacked:hover ~ .ddbc-saving-throw-selection-small-box-svg {
-  fill: var(--purple-100);
+  fill: #e5bef4;
 }
 
 .ddbc-saving-throws-summary__ability-modifier > a.integrated-dice__container.hijacked {

@@ -22,7 +22,7 @@ const diceValue = ({
 };
 
 export const diceRegex =
-  /((?<numDice>\d+)?d(?<dice>\d+)(?:\s*(?<sign>[+-])\s*(?:your (?<modifierType>\w+) modifier|(?<modifier>(?!\d+d\d+)\d+)))?|(?<soloModifier>[+-]\d+))/g;
+  /((?<numDice>\d+)?d(?<dice>\d+)(?:\s*(?<sign>[+-])\s*(?:your (?<modifierType>\w+) modifier|(?<modifier>(?!\d+d\d+)\d+)))?|(?<soloModifierType>[A-Z]{3}\s*)?(?<soloModifier>[+-]\d+))/g;
 
 export const talespireLink = (elem, label, dice, diceLabel) => {
   const anchor = document.createElement("a");
@@ -92,7 +92,7 @@ export const getAbilities = () => {
   return abilities;
 };
 
-export const embedInText = (node, label) => {
+export const embedInText = (node, labelOrCallback) => {
   let offset = 0;
   let fragment;
   for (const match of node.textContent.matchAll(diceRegex)) {
@@ -112,6 +112,12 @@ export const embedInText = (node, label) => {
           node.textContent.substring(offset, match.index),
         ),
       );
+    }
+
+    const dice = diceValue(match.groups);
+    let label = labelOrCallback;
+    if (typeof label === "function") {
+      label = label(match, dice);
     }
 
     const link = talespireLink(null, label, diceValue(match.groups), match[0]);
