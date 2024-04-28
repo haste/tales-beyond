@@ -25,12 +25,12 @@ export const diceRegex =
   /((?<numDice>\d+)?d(?<dice>\d+)(?:\s*(?<sign>[+-])\s*(?:your (?<modifierType>\w+) modifier|(?<modifier>(?!\d+d\d+)\d+)))?|(?<soloModifierType>[A-Z]{3}\s*)?(?<soloModifier>[+-]\d+))/g;
 
 export const talespireLink = (elem, label, dice, diceLabel) => {
-  const anchor = document.createElement("a");
-  anchor.classList.add("integrated-dice__container");
-  anchor.classList.add("hijacked");
-  anchor.dataset.tsLabel = label;
-  anchor.dataset.tsDice = dice;
-  anchor.onclick = (event) => {
+  const link = document.createElement("button");
+  link.classList.add("integrated-dice__container");
+  link.classList.add("hijacked");
+  link.dataset.tsLabel = label;
+  link.dataset.tsDice = dice;
+  link.onclick = (event) => {
     event.stopPropagation();
 
     let name = label;
@@ -46,14 +46,14 @@ export const talespireLink = (elem, label, dice, diceLabel) => {
   };
 
   if (diceLabel) {
-    anchor.innerText = diceLabel;
+    link.innerText = diceLabel;
   } else if (elem) {
-    anchor.innerHTML = elem.innerHTML;
+    link.innerHTML = elem.innerHTML;
   } else {
-    anchor.innerText = dice;
+    link.innerText = dice;
   }
 
-  return anchor;
+  return link;
 };
 
 export const getTextNodes = (root) => {
