@@ -27,7 +27,7 @@ export const diceRegex =
 export const talespireLink = (elem, label, dice, diceLabel) => {
   const link = document.createElement("button");
   link.classList.add("integrated-dice__container");
-  link.classList.add("hijacked");
+  link.classList.add("tales-beyond-extension");
   link.dataset.tsLabel = label;
   link.dataset.tsDice = dice;
   link.onclick = (event) => {
@@ -61,7 +61,7 @@ export const getTextNodes = (root) => {
     root,
     NodeFilter.SHOW_TEXT,
     (node) =>
-      !node.parentNode.classList.contains("hijacked") &&
+      !node.parentNode.classList.contains("tales-beyond-extension") &&
       node.textContent.match(diceRegex)
         ? NodeFilter.FILTER_ACCEPT
         : NodeFilter.FILTER_SKIP,

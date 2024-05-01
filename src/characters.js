@@ -25,7 +25,9 @@ const getDiceValue = (diceButton) => {
 
 const hijackDiceButtons = (fallbackLabel, parent, replaceHijacked = false) => {
   for (const diceButton of parent.querySelectorAll(
-    `.integrated-dice__container${replaceHijacked ? "" : ":not(.hijacked)"}`,
+    `.integrated-dice__container${
+      replaceHijacked ? "" : ":not(.tales-beyond-extension)"
+    }`,
   )) {
     const label = diceButton.dataset.label || fallbackLabel;
     diceButton.replaceWith(
@@ -121,7 +123,7 @@ const createOffHandButton = (label, action) => {
   damageContainer.classList.add("ddb-combat-item-attack__damage--is-versatile");
 
   const diceContainer = action.querySelector(
-    ".ddbc-combat-attack__damage .integrated-dice__container:not(.hijacked)",
+    ".ddbc-combat-attack__damage .integrated-dice__container:not(.tales-beyond-extension)",
   );
 
   if (!diceContainer) {
