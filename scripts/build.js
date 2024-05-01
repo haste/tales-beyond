@@ -30,6 +30,7 @@ export const build = async () => {
       await bunBuild({
         entrypoints: [path.join(srcDir, js)],
         outdir: sharedDir,
+        sourcemap: "inline",
       });
     }
   }
