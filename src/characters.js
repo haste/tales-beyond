@@ -1,4 +1,5 @@
 import { talespireLink, getTextNodes, embedInText } from "~/utils";
+import { namedObserver } from "~/observer";
 
 const getDiceValue = (diceButton) => {
   const signedNumber = diceButton.querySelector(".ddbc-signed-number");
@@ -49,21 +50,26 @@ const customSpells = {
     span.innerText = "Damaged target";
 
     const componentsClone = actionClone.querySelector(".ddbc-note-components");
-    componentsClone.textContent = `, ${componentsClone.textContent} `;
-    componentsClone.prepend(span);
+    if (componentsClone) {
+      componentsClone.textContent = `, ${componentsClone.textContent} `;
+      componentsClone.prepend(span);
+    }
 
     hijackDiceButtons(label, action);
     hijackDiceButtons(`${label} (Damaged)`, actionClone);
   },
 
   "Magic Missile": (label, action) => {
-    let numDarts = 3;
-    const firtsComponent = action.querySelector(
-      ".ddbc-note-components",
-    ).firstChild;
-    if (firtsComponent.textContent.includes("Count:")) {
-      numDarts += Number.parseInt(firtsComponent.textContent.substring(7));
-    }
+    const level = action.classList.contains("ddbc-combat-attack")
+      ? 1
+      : Number.parseInt(
+          // TODO: This should really just look for .ct-content-group instead
+          action.parentNode.parentNode.parentNode.parentNode
+            .querySelector(".ct-content-group__header-content")
+            .textContent.slice(0, -8),
+        );
+
+    const numDarts = 2 + level;
 
     hijackDiceButtons(label, action);
 
@@ -167,7 +173,7 @@ const hijackTabs = () => {
     });
   };
 
-  const observer = new MutationObserver(callback);
+  const observer = namedObserver("tabs", callback);
   callback([], observer);
   observer.observe(document.querySelector(".ct-primary-box"), {
     childList: true,
@@ -178,16 +184,17 @@ const hijackTabs = () => {
 const hijackGeneric = () => {
   const groups = [
     ".ct-skills__item",
-    ".ddbc-saving-throws-summary__ability",
     ".ddbc-ability-summary",
-    ".ct-combat__summary-group--initiative",
+    ".ct-initiative-box",
+    ".ct-combat-mobile__extra--initiative",
   ];
 
   const labels = [
     ".ct-skills__col--skill",
-    ".ddbc-saving-throws-summary__ability-name",
     ".ddbc-ability-summary__label",
     ".ct-combat__summary-label",
+    ".ct-combat-tablet__initiative-label",
+    ".ct-combat-mobile__extra-label",
   ];
 
   for (const action of document.querySelectorAll(groups.join(","))) {
@@ -198,27 +205,57 @@ const hijackGeneric = () => {
       label = abbr.title;
     }
 
-    if (action.classList.contains("ddbc-saving-throws-summary__ability")) {
-      label = `${label} (Saving)`;
-    }
-
     hijackDiceButtons(label, action);
   }
+};
 
-  for (const action of document.querySelectorAll(
-    ".ddbc-saving-throws-summary__ability",
-  )) {
-    const elem = action.querySelector(
-      ".ddbc-saving-throws-summary__ability-name",
-    );
-    let label = elem.textContent;
-    const abbr = elem.querySelector("abbr");
-    if (abbr) {
-      label = abbr.title;
+const hijackSavingThrows = () => {
+  const callback = (_mutationList, observer) => {
+    observer.disconnect();
+
+    for (const action of document.querySelectorAll(
+      ".ddbc-saving-throws-summary__ability",
+    )) {
+      const elem = action.querySelector(
+        ".ddbc-saving-throws-summary__ability-name",
+      );
+      let label = elem.textContent;
+      const abbr = elem.querySelector("abbr");
+      if (abbr) {
+        label = abbr.title;
+      }
+
+      hijackDiceButtons(`${label} (Saving)`, action);
     }
 
-    hijackDiceButtons(`${label} Save`, action);
-  }
+    observer.observe(document.querySelector(".ddbc-saving-throws-summary"), {
+      childList: true,
+    });
+  };
+
+  const observer = namedObserver("saving", callback);
+  callback([], observer);
+  observer.observe(document.querySelector(".ddbc-saving-throws-summary"), {
+    childList: true,
+  });
+};
+
+const hijackAbilities = () => {
+  const callback = (_mutationList, observer) => {
+    observer.disconnect();
+
+    hijackGeneric();
+
+    observer.observe(document.querySelector(".ct-quick-info__abilities"), {
+      childList: true,
+    });
+  };
+
+  const observer = namedObserver("abilities", callback);
+  callback([], observer);
+  observer.observe(document.querySelector(".ct-quick-info__abilities"), {
+    childList: true,
+  });
 };
 
 const hijackSidebar = () => {
@@ -250,23 +287,83 @@ const hijackSidebar = () => {
     });
   };
 
-  const observer = new MutationObserver(callback);
+  const observer = namedObserver("sidebar", callback);
   observer.observe(document.querySelector(".ct-sidebar__portal"), {
     childList: true,
     subtree: true,
   });
 };
 
+const hijackCarousel = () => {
+  const callback = (_mutationList, observer) => {
+    observer.disconnect();
+
+    const header = document.querySelector(
+      ".ct-tablet-box__header-content, .ct-mobile-divider__label-text",
+    );
+    const isMain = document.querySelector(".ct-subsection-tablet--main");
+    if (
+      isMain ||
+      header?.textContent === "Skills" ||
+      header?.textContent === "Saving Throws"
+    ) {
+      hijackGeneric();
+    }
+    if (header?.textContent === "Actions" || header?.textContent === "Spells") {
+      hijackSpells();
+    }
+
+    observer.observe(document.querySelector(".ct-component-carousel__active"), {
+      childList: true,
+      subtree: true,
+    });
+  };
+
+  const observer = namedObserver("carousel", callback);
+  callback([], observer);
+  observer.observe(document.querySelector(".ct-component-carousel__active"), {
+    childList: true,
+    subtree: true,
+  });
+};
+
 const main = () => {
-  const appLoaded = document.querySelector(".ct-character-sheet-desktop");
+  const isDesktop = !!document.querySelector(".ct-character-sheet-desktop");
+  const isTablet = !!document.querySelector(".ct-character-sheet-tablet");
+  const isMobile = !!document.querySelector(".ct-character-sheet-mobile");
+
+  const appLoaded = isDesktop || isTablet || isMobile;
   if (!appLoaded) {
     window.setTimeout(main, 500);
     return;
   }
 
-  hijackGeneric();
-  hijackTabs();
-  hijackSidebar();
+  const callback = (_mutationList, _observer) => {
+    const isDesktop = !!document.querySelector(".ct-character-sheet-desktop");
+    const isTablet = !!document.querySelector(".ct-character-sheet-tablet");
+    const isMobile = !!document.querySelector(".ct-character-sheet-mobile");
+
+    hijackSidebar();
+
+    if (isMobile || isTablet) {
+      hijackCarousel();
+    }
+
+    if (isTablet || isDesktop) {
+      hijackSavingThrows();
+    }
+
+    if (isDesktop) {
+      hijackGeneric();
+      hijackAbilities();
+      hijackTabs();
+    }
+  };
+  const layoutObserver = namedObserver("layout", callback);
+  layoutObserver.observe(document.querySelector(".ct-character-sheet__inner"), {
+    childList: true,
+  });
+  callback();
 };
 
 main();

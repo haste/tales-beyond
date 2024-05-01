@@ -1,4 +1,5 @@
 import { getTextNodes, embedInText, talespireLink } from "~/utils";
+import { namedObserver } from "~/observer";
 
 const abilityNames = {
   STR: "Strength",
@@ -93,7 +94,7 @@ const main = () => {
     });
   };
 
-  const observer = new MutationObserver(callback);
+  const observer = namedObserver("monsters", callback);
   observer.observe(document.querySelector("section.primary-content"), {
     childList: true,
     subtree: true,
