@@ -1,6 +1,6 @@
 import { watch } from "node:fs";
 import { build } from "./build";
 
-watch("src", async (event, filename) => {
+watch("src", async (_event, _filename) => {
   await build();
 });

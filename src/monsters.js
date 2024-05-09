@@ -1,5 +1,5 @@
-import { getTextNodes, embedInText, talespireLink } from "~/utils";
 import { namedObserver } from "~/observer";
+import { embedInText, getTextNodes, talespireLink } from "~/utils";
 
 const abilityNames = {
   STR: "Strength",

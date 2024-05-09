@@ -1,5 +1,5 @@
-import { talespireLink, getTextNodes, embedInText } from "~/utils";
 import { namedObserver } from "~/observer";
+import { embedInText, getTextNodes, talespireLink } from "~/utils";
 
 const getDiceValue = (diceButton) => {
   const signedNumber = diceButton.querySelector(".ddbc-signed-number");
