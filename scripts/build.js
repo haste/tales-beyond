@@ -31,6 +31,11 @@ export const build = async () => {
         entrypoints: [path.join(srcDir, js)],
         outdir: sharedDir,
         sourcemap: "inline",
+        define: {
+          TB_DRY_RUN_TALESPIRE_LINKS: JSON.stringify(
+            Bun.env.TB_DRY_RUN_TALESPIRE_LINKS ?? "false",
+          ),
+        },
       });
     }
   }
