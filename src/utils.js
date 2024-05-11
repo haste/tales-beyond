@@ -39,10 +39,19 @@ export const talespireLink = (elem, label, dice, diceLabel) => {
       name += " (ADV/DIS)";
       extraDice = `/${dice}`;
     }
-    window.open(
-      `talespire://dice/${encodeURIComponent(name)}:${dice}${extraDice}`,
-      "_self",
-    );
+
+    let uri;
+    if (name) {
+      uri = `talespire://dice/${encodeURIComponent(name)}:${dice}${extraDice}`;
+    } else {
+      uri = `talespire://dice/${dice}${extraDice}`;
+    }
+
+    if (TB_DRY_RUN_TALESPIRE_LINKS === "true") {
+      console.log("TaleSpire Link", { name, dice, extraDice, uri });
+    } else {
+      window.open(uri, "_self");
+    }
   };
 
   if (diceLabel) {
@@ -61,8 +70,9 @@ export const getTextNodes = (root) => {
     root,
     NodeFilter.SHOW_TEXT,
     (node) =>
-      !node.parentNode.classList.contains("tales-beyond-extension") &&
-      node.textContent.match(diceRegex)
+      node.parentElement.tagName !== "STYLE" &&
+      node.textContent.match(diceRegex) &&
+      !isParentsProcessed(node)
         ? NodeFilter.FILTER_ACCEPT
         : NodeFilter.FILTER_SKIP,
   );
@@ -80,7 +90,9 @@ export const getAbilities = () => {
   ).reduce((acc, node) => {
     const stat = node.querySelector(".ddbc-ability-summary__label").textContent;
 
-    let modifier = node.querySelector(".ddbc-signed-number").textContent;
+    let modifier = node.querySelector(
+      '[class^="styles_numberDisplay"',
+    ).textContent;
     if (+modifier > 0) {
       modifier = modifier.slice(1);
     }
@@ -138,4 +150,37 @@ export const embedInText = (node, labelOrCallback) => {
   if (fragment) {
     node.replaceWith(fragment);
   }
+};
+
+export const getSiblingWithClass = (node, name, attempts = 5) => {
+  if (attempts === 0) {
+    return;
+  }
+
+  const sibling = node.querySelector(`[class*="${name}"]`);
+  if (sibling) {
+    return sibling;
+  }
+
+  if (node.parentElement) {
+    // biome-ignore lint/style/noParameterAssign: it's not here
+    return getSiblingWithClass(node.parentElement, name, --attempts);
+  }
+  return;
+};
+
+export const isParentsProcessed = (node, attempts = 4) => {
+  if (attempts === 0) {
+    return false;
+  }
+
+  if (
+    node.nodeType === 1 &&
+    node.classList.contains("tales-beyond-extension")
+  ) {
+    return true;
+  }
+
+  // biome-ignore lint/style/noParameterAssign: it's not here
+  return isParentsProcessed(node.parentElement, --attempts);
 };

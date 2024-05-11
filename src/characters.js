@@ -1,26 +1,31 @@
 import { namedObserver } from "~/observer";
-import { embedInText, getTextNodes, talespireLink } from "~/utils";
+import {
+  embedInText,
+  getSiblingWithClass,
+  getTextNodes,
+  isParentsProcessed,
+  talespireLink,
+} from "~/utils";
 
-const getDiceValue = (diceButton) => {
-  const signedNumber = diceButton.querySelector(".ddbc-signed-number");
-  const damageValue = diceButton.querySelector(".ddbc-damage__value");
-
-  if (signedNumber) {
-    const sign = signedNumber.querySelector(
-      ".ddbc-signed-number__sign",
-    ).textContent;
-    const numbers = signedNumber.querySelector(
-      ".ddbc-signed-number__number",
-    ).textContent;
-
-    return `1d20${sign}${numbers}`;
-  }
-
+const getDiceValue = (node) => {
+  const damageValue = node.querySelector(".ddbc-damage__value");
   if (damageValue) {
     return damageValue.textContent;
   }
 
-  return diceButton.textContent;
+  const numberDisplay = node.querySelector('[class^="styles_numberDisplay"]');
+  if (!numberDisplay) {
+    return;
+  }
+
+  const isSigned = numberDisplay.className.includes("styles_signed");
+  if (isSigned) {
+    const sign = numberDisplay.querySelector(
+      '[class^="styles_sign"]',
+    ).textContent;
+    const number = numberDisplay.lastChild.textContent;
+    return `1d20${sign}${number}`;
+  }
 };
 
 const hijackDiceButtons = (fallbackLabel, parent, replaceHijacked = false) => {
@@ -138,131 +143,10 @@ const createOffHandButton = (label, action) => {
   damageClone.innerText = damageClone.innerText.split("+")[0];
 };
 
-const hijackSpells = () => {
-  const hasTwoHandedWeaponFighting = !!Array.prototype.find.call(
-    document.querySelectorAll(".ct-basic-actions__action"),
-    (el) => el.textContent === "Two-Weapon Fighting",
-  );
-  for (const action of document.querySelectorAll(
-    ".ct-spells-spell, .ddbc-combat-attack",
-  )) {
-    const label = action.querySelector(
-      ".ddbc-spell-name, .ddbc-action-name, .ddbc-combat-attack__label",
-    ).textContent;
-    const isLight = !!Array.prototype.find.call(
-      action.querySelectorAll(".ddbc-note-components__component--plain"),
-      (el) => el.textContent === "Light",
-    );
-
-    if (label in customSpells) {
-      customSpells[label](label, action);
-    } else if (hasTwoHandedWeaponFighting && isLight) {
-      createOffHandButton(`${label} (Off-hand)`, action);
-      hijackDiceButtons(label, action);
-    } else {
-      hijackDiceButtons(label, action);
-    }
-  }
-};
-
-const hijackTabs = () => {
-  const callback = (_mutationList, observer) => {
-    observer.disconnect();
-    hijackSpells();
-    observer.observe(document.querySelector(".ct-primary-box"), {
-      childList: true,
-      subtree: true,
-    });
-  };
-
-  const observer = namedObserver("tabs", callback);
-  callback([], observer);
-  observer.observe(document.querySelector(".ct-primary-box"), {
-    childList: true,
-    subtree: true,
-  });
-};
-
-const hijackGeneric = () => {
-  const groups = [
-    ".ct-skills__item",
-    ".ddbc-ability-summary",
-    ".ct-initiative-box",
-    ".ct-combat-mobile__extra--initiative",
-  ];
-
-  const labels = [
-    ".ct-skills__col--skill",
-    ".ddbc-ability-summary__label",
-    ".ct-combat__summary-label",
-    ".ct-combat-tablet__initiative-label",
-    ".ct-combat-mobile__extra-label",
-  ];
-
-  for (const action of document.querySelectorAll(groups.join(","))) {
-    const elem = action.querySelector(labels.join(","));
-    let label = elem.textContent;
-    const abbr = elem.querySelector("abbr");
-    if (abbr) {
-      label = abbr.title;
-    }
-
-    hijackDiceButtons(label, action);
-  }
-};
-
-const hijackSavingThrows = () => {
-  const callback = (_mutationList, observer) => {
-    observer.disconnect();
-
-    for (const action of document.querySelectorAll(
-      ".ddbc-saving-throws-summary__ability",
-    )) {
-      const elem = action.querySelector(
-        ".ddbc-saving-throws-summary__ability-name",
-      );
-      let label = elem.textContent;
-      const abbr = elem.querySelector("abbr");
-      if (abbr) {
-        label = abbr.title;
-      }
-
-      hijackDiceButtons(`${label} (Saving)`, action);
-    }
-
-    observer.observe(document.querySelector(".ddbc-saving-throws-summary"), {
-      childList: true,
-    });
-  };
-
-  const observer = namedObserver("saving", callback);
-  callback([], observer);
-  observer.observe(document.querySelector(".ddbc-saving-throws-summary"), {
-    childList: true,
-  });
-};
-
-const hijackAbilities = () => {
-  const callback = (_mutationList, observer) => {
-    observer.disconnect();
-
-    hijackGeneric();
-
-    observer.observe(document.querySelector(".ct-quick-info__abilities"), {
-      childList: true,
-    });
-  };
-
-  const observer = namedObserver("abilities", callback);
-  callback([], observer);
-  observer.observe(document.querySelector(".ct-quick-info__abilities"), {
-    childList: true,
-  });
-};
-
 const hijackSidebar = () => {
+  const sidebarPaneSelector = ".ct-sidebar__portal";
   const callback = (_mutationList, observer) => {
-    const paneContent = document.querySelector(".ct-sidebar__pane-content");
+    const paneContent = document.querySelector(sidebarPaneSelector);
     if (!paneContent) {
       return;
     }
@@ -272,9 +156,10 @@ const hijackSidebar = () => {
 
     for (const node of getTextNodes(paneContent)) {
       let label = headerNode.textContent;
+      const parentElement = node.parentElement;
       // Matches actions in creatures under extras.
-      if (node.parentNode.tagName === "P") {
-        const action = node.parentNode.querySelector("em > strong");
+      if (parentElement.tagName === "P") {
+        const action = parentElement.querySelector("em > strong");
         if (action) {
           // Remove the punctuation mark
           label = action.textContent.slice(0, -1);
@@ -283,89 +168,149 @@ const hijackSidebar = () => {
       embedInText(node, label);
     }
 
-    observer.observe(document.querySelector(".ct-sidebar__portal"), {
+    observer.observe(document.querySelector(sidebarPaneSelector), {
       childList: true,
       subtree: true,
     });
   };
 
   const observer = namedObserver("sidebar", callback);
-  observer.observe(document.querySelector(".ct-sidebar__portal"), {
+  observer.observe(document.querySelector(sidebarPaneSelector), {
     childList: true,
     subtree: true,
   });
 };
 
-const hijackCarousel = () => {
-  const callback = (_mutationList, observer) => {
+const processIntegratedDice = (addedNode) => {
+  //
+  for (const diceButton of addedNode.querySelectorAll(
+    ".integrated-dice__container",
+  )) {
+    const previousSibling = diceButton.previousSibling;
+    const parentPreviousSibling = diceButton.parentElement?.previousSibling;
+    const nameSibling = getSiblingWithClass(diceButton, "__name");
+    if (
+      // Attributes
+      parentPreviousSibling?.className.includes("__heading") ||
+      // Skill list
+      parentPreviousSibling?.className.includes("--skill")
+    ) {
+      const diceValue = getDiceValue(diceButton);
+      if (!diceValue) {
+        continue;
+      }
+
+      const heading =
+        parentPreviousSibling.querySelector('[class*="__label"]') ||
+        parentPreviousSibling;
+
+      const ts = talespireLink(diceButton, heading.textContent, diceValue);
+      diceButton.replaceWith(ts);
+    } else if (
+      // Saving throws
+      parentPreviousSibling?.className.includes("ability-name")
+    ) {
+      const abbr = parentPreviousSibling.querySelector("abbr");
+
+      diceButton.replaceWith(
+        talespireLink(
+          diceButton,
+          `${abbr.title} (Saving)`,
+          getDiceValue(diceButton),
+        ),
+      );
+    } else if (
+      // Initiative
+      previousSibling?.tagName === "H2"
+    ) {
+      diceButton.replaceWith(
+        talespireLink(
+          diceButton,
+          previousSibling.textContent,
+          getDiceValue(diceButton),
+        ),
+      );
+    } else if (
+      // Actions and Spells
+      nameSibling
+    ) {
+      const diceValue = getDiceValue(diceButton);
+      if (!diceValue) {
+        continue;
+      }
+
+      const heading =
+        nameSibling.querySelector('[class*="__label"]') || nameSibling;
+
+      const ts = talespireLink(diceButton, heading.textContent, diceValue);
+      diceButton.replaceWith(ts);
+    }
+  }
+};
+
+const characterAppWatcher = () => {
+  const callback = (mutationList, observer) => {
     observer.disconnect();
 
-    const header = document.querySelector(
-      ".ct-tablet-box__header-content, .ct-mobile-divider__label-text",
-    );
-    const isMain = document.querySelector(".ct-subsection-tablet--main");
-    if (
-      isMain ||
-      header?.textContent === "Skills" ||
-      header?.textContent === "Saving Throws"
-    ) {
-      hijackGeneric();
-    }
-    if (header?.textContent === "Actions" || header?.textContent === "Spells") {
-      hijackSpells();
+    for (const mutation of mutationList) {
+      if (mutation.addedNodes.length === 0) {
+        continue;
+      }
+
+      for (const addedNode of mutation.addedNodes) {
+        processIntegratedDice(addedNode);
+      }
+
+      for (const addedNode of mutation.addedNodes) {
+        for (const node of getTextNodes(addedNode)) {
+          const parentNode = node.parentElement;
+          if (isParentsProcessed(parentNode)) {
+            continue;
+          }
+
+          embedInText(node);
+        }
+      }
     }
 
-    observer.observe(document.querySelector(".ct-component-carousel__active"), {
+    observer.observe(document.querySelector('[name="character-app"]'), {
       childList: true,
       subtree: true,
     });
   };
 
-  const observer = namedObserver("carousel", callback);
-  callback([], observer);
-  observer.observe(document.querySelector(".ct-component-carousel__active"), {
+  const characterObserver = namedObserver("character", callback);
+  characterObserver.observe(document.querySelector('[name="character-app"]'), {
     childList: true,
     subtree: true,
   });
 };
 
-const main = () => {
-  const isDesktop = !!document.querySelector(".ct-character-sheet-desktop");
-  const isTablet = !!document.querySelector(".ct-character-sheet-tablet");
-  const isMobile = !!document.querySelector(".ct-character-sheet-mobile");
+const sidebarPortalWatcher = () => {
+  const callback = (mutationList, _observer) => {
+    for (const mutation of mutationList) {
+      if (mutation.addedNodes.length === 0) {
+        continue;
+      }
 
-  const appLoaded = isDesktop || isTablet || isMobile;
-  if (!appLoaded) {
-    window.setTimeout(main, 500);
-    return;
-  }
-
-  const callback = (_mutationList, _observer) => {
-    const isDesktop = !!document.querySelector(".ct-character-sheet-desktop");
-    const isTablet = !!document.querySelector(".ct-character-sheet-tablet");
-    const isMobile = !!document.querySelector(".ct-character-sheet-mobile");
-
-    hijackSidebar();
-
-    if (isMobile || isTablet) {
-      hijackCarousel();
-    }
-
-    if (isTablet || isDesktop) {
-      hijackSavingThrows();
-    }
-
-    if (isDesktop) {
-      hijackGeneric();
-      hijackAbilities();
-      hijackTabs();
+      for (const addedNode of mutation.addedNodes) {
+        if (
+          addedNode.nodeType === 1 &&
+          addedNode.classList.contains("ct-sidebar__portal")
+        ) {
+          hijackSidebar();
+        }
+      }
     }
   };
-  const layoutObserver = namedObserver("layout", callback);
-  layoutObserver.observe(document.querySelector(".ct-character-sheet__inner"), {
-    childList: true,
-  });
-  callback();
+
+  const sidebarObserver = namedObserver("sidebar-portal", callback);
+  sidebarObserver.observe(document.querySelector("body"), { childList: true });
+};
+
+const main = () => {
+  characterAppWatcher();
+  sidebarPortalWatcher();
 };
 
 main();
