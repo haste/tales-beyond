@@ -25,19 +25,20 @@ export const build = async () => {
     path.join(srcDir, "manifest.shared.json"),
   ).json();
 
-  await bunBuild({
-    entrypoints: sharedManifest.content_scripts.flatMap(({ js }) =>
-      js.map((entrypoint) => path.join(srcDir, entrypoint)),
-    ),
-    outdir: sharedDir,
-    sourcemap: "inline",
-    splitting: true,
-    define: {
-      TB_DRY_RUN_TALESPIRE_LINKS: JSON.stringify(
-        Bun.env.TB_DRY_RUN_TALESPIRE_LINKS ?? "false",
-      ),
-    },
-  });
+  for (const script of sharedManifest.content_scripts) {
+    for (const js of script.js) {
+      await bunBuild({
+        entrypoints: [path.join(srcDir, js)],
+        outdir: sharedDir,
+        sourcemap: "inline",
+        define: {
+          TB_DRY_RUN_TALESPIRE_LINKS: JSON.stringify(
+            Bun.env.TB_DRY_RUN_TALESPIRE_LINKS ?? "false",
+          ),
+        },
+      });
+    }
+  }
 
   await $`cp -rf ${srcDir}/{icons,styles.css} LICENSE ${sharedDir}`;
 
