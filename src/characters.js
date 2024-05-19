@@ -143,6 +143,21 @@ const createOffHandButton = (label, action) => {
   damageClone.innerText = damageClone.innerText.split("+")[0];
 };
 
+const handleShortRestDice = (label, textNode, diceButton) => {
+  diceButton.style = "display: none;";
+  const ourButton = diceButton.parentElement.querySelector(
+    ".tales-beyond-extension-hit-dice",
+  );
+  const tsLink = talespireLink(diceButton, label, getDiceValue(diceButton));
+  tsLink.classList.add("tales-beyond-extension-hit-dice");
+
+  if (ourButton) {
+    ourButton.replaceWith(tsLink);
+  } else {
+    diceButton.parentElement.appendChild(tsLink);
+  }
+};
+
 const hijackSidebar = () => {
   const sidebarPaneSelector = ".ct-sidebar__portal";
   const callback = (_mutationList, observer) => {
@@ -157,6 +172,16 @@ const hijackSidebar = () => {
     for (const node of getTextNodes(paneContent)) {
       let label = headerNode.textContent;
       const parentElement = node.parentElement;
+      const isShortRestContainer =
+        parentElement.parentElement?.classList.contains(
+          "ct-reset-pane__hitdie-manager-dice",
+        );
+        // Match short rest dice
+      if (isShortRestContainer) {
+        handleShortRestDice(label, node, parentElement);
+        continue;
+      }
+
       // Matches actions in creatures under extras.
       if (parentElement.tagName === "P") {
         const action = parentElement.querySelector("em > strong");
@@ -165,12 +190,14 @@ const hijackSidebar = () => {
           label = action.textContent.slice(0, -1);
         }
       }
+
       embedInText(node, label);
     }
 
     observer.observe(document.querySelector(sidebarPaneSelector), {
       childList: true,
       subtree: true,
+      characterData: true,
     });
   };
 
@@ -178,6 +205,7 @@ const hijackSidebar = () => {
   observer.observe(document.querySelector(sidebarPaneSelector), {
     childList: true,
     subtree: true,
+    characterData: true,
   });
 };
 
