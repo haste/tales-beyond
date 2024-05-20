@@ -210,7 +210,11 @@ const hijackSidebar = () => {
 };
 
 const processIntegratedDice = (addedNode) => {
-  //
+  // Only process ELEMENT_NODE's
+  if (addedNode.nodeType !== 1) {
+    return;
+  }
+
   for (const diceButton of addedNode.querySelectorAll(
     ".integrated-dice__container",
   )) {
