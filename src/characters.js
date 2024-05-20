@@ -176,7 +176,7 @@ const hijackSidebar = () => {
         parentElement.parentElement?.classList.contains(
           "ct-reset-pane__hitdie-manager-dice",
         );
-        // Match short rest dice
+      // Match short rest dice
       if (isShortRestContainer) {
         handleShortRestDice(label, node, parentElement);
         continue;
