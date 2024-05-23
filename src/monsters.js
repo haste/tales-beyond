@@ -40,7 +40,7 @@ const updateMonsters = (node) => {
     if (label === "Saving Throws") {
       getTextNodes(dataNode).map((textNode) =>
         embedInText(textNode, (match, _dice) => {
-          const ability = abilityNames[match.groups.soloModifierType.trim()];
+          const ability = abilityNames[match.groups.soloModifierType];
           return `${monsterName}: ${ability} (Saving)`;
         }),
       );

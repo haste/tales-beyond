@@ -1,4 +1,4 @@
-import { expect, test, describe } from "bun:test";
+import { describe, expect, test } from "bun:test";
 
 import { diceRegex } from "~/utils";
 
@@ -122,15 +122,15 @@ describe("diceRegex", () => {
       expected: [
         {
           soloModifier: "+6",
-          soloModifierType: "CON ",
+          soloModifierType: "CON",
         },
         {
           soloModifier: "+8",
-          soloModifierType: "INT ",
+          soloModifierType: "INT",
         },
         {
           soloModifier: "+3",
-          soloModifierType: "WIS ",
+          soloModifierType: "WIS",
         },
       ],
     },

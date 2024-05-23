@@ -22,7 +22,7 @@ const diceValue = ({
 };
 
 export const diceRegex =
-  /((?<numDice>\d+)?d(?<dice>\d+)(?:\s*(?<sign>[+-])\s*(?:your (?<modifierType>\w+) modifier|(?<modifier>(?!\d+d\d+)\d+)))?|(?<soloModifierType>[A-Z]{3}\s*)?(?<soloModifier>[+-]\d+\b))/g;
+  /((?<numDice>\d+)?d(?<dice>\d+)(?:\s*(?<sign>[+-])\s*(?:your (?<modifierType>\w+) modifier|(?<modifier>(?!\d+d\d+)\d+)))?|(?:(?<soloModifierType>[A-Z]{3})\s*)?(?<soloModifier>[+-]\d+\b))/g;
 
 export const talespireLink = (elem, label, dice, diceLabel) => {
   const link = document.createElement("button");
