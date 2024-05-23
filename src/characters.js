@@ -143,7 +143,7 @@ const createOffHandButton = (label, action) => {
   damageClone.innerText = damageClone.innerText.split("+")[0];
 };
 
-const handleShortRestDice = (label, textNode, diceButton) => {
+const handleShortRestDice = (label, diceButton) => {
   diceButton.style = "display: none;";
   const ourButton = diceButton.parentElement.querySelector(
     ".tales-beyond-extension-hit-dice",
@@ -178,7 +178,7 @@ const hijackSidebar = () => {
         );
       // Match short rest dice
       if (isShortRestContainer) {
-        handleShortRestDice(label, node, parentElement);
+        handleShortRestDice(label, parentElement);
         continue;
       }
 
