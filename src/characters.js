@@ -326,6 +326,10 @@ const sidebarPortalWatcher = () => {
       }
 
       for (const addedNode of mutation.addedNodes) {
+        processIntegratedDice(addedNode);
+      }
+
+      for (const addedNode of mutation.addedNodes) {
         if (
           addedNode.nodeType === 1 &&
           addedNode.classList.contains("ct-sidebar__portal")
