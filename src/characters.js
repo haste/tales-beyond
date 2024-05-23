@@ -261,16 +261,35 @@ const processIntegratedDice = (addedNode) => {
 };
 
 const characterAppWatcher = () => {
+  const options = {
+    childList: true,
+    subtree: true,
+  };
+
+  let wasDiceDisabled;
   const callback = (mutationList, observer) => {
+    const isDiceEnabled = !!document.querySelector(
+      ".ct-character-sheet--dice-enabled",
+    );
+
+    if (!isDiceEnabled) {
+      wasDiceDisabled = true;
+      return;
+    }
+
     observer.disconnect();
 
     for (const mutation of mutationList) {
-      if (mutation.addedNodes.length === 0) {
-        continue;
-      }
-
-      for (const addedNode of mutation.addedNodes) {
-        processIntegratedDice(addedNode);
+      // This is a bit of a hack, but things get a bit messy when enabling dice,
+      // so it's better to just iterate through all the integrated dice
+      // containers in the character app.
+      if (!wasDiceDisabled) {
+        for (const addedNode of mutation.addedNodes) {
+          processIntegratedDice(addedNode);
+        }
+      } else {
+        wasDiceDisabled = false;
+        processIntegratedDice(document.querySelector('[name="character-app"]'));
       }
 
       for (const addedNode of mutation.addedNodes) {
@@ -285,17 +304,14 @@ const characterAppWatcher = () => {
       }
     }
 
-    observer.observe(document.querySelector('[name="character-app"]'), {
-      childList: true,
-      subtree: true,
-    });
+    observer.observe(document.querySelector('[name="character-app"]'), options);
   };
 
   const characterObserver = namedObserver("character", callback);
-  characterObserver.observe(document.querySelector('[name="character-app"]'), {
-    childList: true,
-    subtree: true,
-  });
+  characterObserver.observe(
+    document.querySelector('[name="character-app"]'),
+    options,
+  );
 };
 
 const sidebarPortalWatcher = () => {

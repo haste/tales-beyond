@@ -153,7 +153,7 @@ export const embedInText = (node, labelOrCallback) => {
 };
 
 export const getSiblingWithClass = (node, name, attempts = 5) => {
-  if (attempts === 0) {
+  if (!node || attempts === 0) {
     return;
   }
 
@@ -170,7 +170,7 @@ export const getSiblingWithClass = (node, name, attempts = 5) => {
 };
 
 export const isParentsProcessed = (node, attempts = 4) => {
-  if (attempts === 0) {
+  if (!node || attempts === 0) {
     return false;
   }
 
