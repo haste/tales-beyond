@@ -221,62 +221,42 @@ const processIntegratedDice = (addedNode) => {
     const previousSibling = diceButton.previousSibling;
     const parentPreviousSibling = diceButton.parentElement?.previousSibling;
     const nameSibling = getSiblingWithClass(diceButton, "__name");
+    const diceValue = getDiceValue(diceButton);
+
+    // Ignore cases like Booming Blade where the dice has no default value
+    if (!diceValue) {
+      continue;
+    }
+
+    let label;
     if (
       // Attributes
       parentPreviousSibling?.className.includes("__heading") ||
       // Skill list
       parentPreviousSibling?.className.includes("--skill")
     ) {
-      const diceValue = getDiceValue(diceButton);
-      if (!diceValue) {
-        continue;
-      }
-
-      const heading =
+      label =
         parentPreviousSibling.querySelector('[class*="__label"]') ||
         parentPreviousSibling;
-
-      const ts = talespireLink(diceButton, heading.textContent, diceValue);
-      diceButton.replaceWith(ts);
     } else if (
       // Saving throws
       parentPreviousSibling?.className.includes("ability-name")
     ) {
       const abbr = parentPreviousSibling.querySelector("abbr");
-
-      diceButton.replaceWith(
-        talespireLink(
-          diceButton,
-          `${abbr.title} (Saving)`,
-          getDiceValue(diceButton),
-        ),
-      );
+      label = `${abbr.title} (Saving)`;
     } else if (
       // Initiative
       previousSibling?.tagName === "H2"
     ) {
-      diceButton.replaceWith(
-        talespireLink(
-          diceButton,
-          previousSibling.textContent,
-          getDiceValue(diceButton),
-        ),
-      );
+      label = previousSibling.textContent;
     } else if (
       // Actions and Spells
       nameSibling
     ) {
-      const diceValue = getDiceValue(diceButton);
-      if (!diceValue) {
-        continue;
-      }
-
-      const heading =
-        nameSibling.querySelector('[class*="__label"]') || nameSibling;
-
-      const ts = talespireLink(diceButton, heading.textContent, diceValue);
-      diceButton.replaceWith(ts);
+      label = nameSibling.querySelector('[class*="__label"]') || nameSibling;
     }
+
+    diceButton.replaceWith(talespireLink(diceButton, label, diceValue));
   }
 };
 
