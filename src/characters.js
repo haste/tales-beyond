@@ -216,7 +216,7 @@ const processIntegratedDice = (addedNode) => {
   }
 
   for (const diceButton of addedNode.querySelectorAll(
-    ".integrated-dice__container",
+    ".integrated-dice__container:not(.tales-beyond-extension)",
   )) {
     const previousSibling = diceButton.previousSibling;
     const parentPreviousSibling = diceButton.parentElement?.previousSibling;
