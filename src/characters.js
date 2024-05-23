@@ -235,9 +235,10 @@ const processIntegratedDice = (addedNode) => {
       // Skill list
       parentPreviousSibling?.className.includes("--skill")
     ) {
-      label =
+      label = (
         parentPreviousSibling.querySelector('[class*="__label"]') ||
-        parentPreviousSibling;
+        parentPreviousSibling
+      ).textContent;
     } else if (
       // Saving throws
       parentPreviousSibling?.className.includes("ability-name")
@@ -253,7 +254,8 @@ const processIntegratedDice = (addedNode) => {
       // Actions and Spells
       nameSibling
     ) {
-      label = nameSibling.querySelector('[class*="__label"]') || nameSibling;
+      label = (nameSibling.querySelector('[class*="__label"]') || nameSibling)
+        .textContent;
     }
 
     diceButton.replaceWith(talespireLink(diceButton, label, diceValue));
