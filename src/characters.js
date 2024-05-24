@@ -349,18 +349,6 @@ const sidebarPortalWatcher = () => {
 };
 
 const main = () => {
-  const themeDefault = getOrInjectStyleSheet("theme");
-
-  /*
-  const themeCustom = getOrInjectStyleSheet("theme");
-  themeCustom.textContent = `
-:root {
-    --tales-beyond-primary: #e5bef4;
-    --tales-beyond-secondary: #b53de1;
-}
-  `;
-  */
-
   injectCharacterStyle();
   characterAppWatcher();
   sidebarPortalWatcher();
