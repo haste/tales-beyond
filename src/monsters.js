@@ -1,7 +1,7 @@
 import { namedObserver } from "~/observer";
-import { embedInText, getTextNodes } from "~/utils/web";
 import { processBlockAbilities, processBlockTidbits } from "~/utils/dndbeyond";
 import { talespireLink } from "~/utils/talespire";
+import { embedInText, getTextNodes } from "~/utils/web";
 
 const updateMonsters = (node) => {
   if (!node) {

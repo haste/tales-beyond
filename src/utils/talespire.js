@@ -22,6 +22,7 @@ export const talespireLink = (elem, label, dice, diceLabel) => {
     }
 
     if (TB_DRY_RUN_TALESPIRE_LINKS === "true") {
+      // biome-ignore lint/suspicious/noConsoleLog: Used during dev only
       console.log("TaleSpire Link", { name, dice, extraDice, uri });
     } else {
       window.open(uri, "_self");

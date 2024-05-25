@@ -5,7 +5,9 @@
   "type": "module",
   "scripts": {
     "build": "bun run --bun scripts/build.js",
-    "watch": "bun run --bun --watch scripts/watch.js"
+    "watch": "bun run --bun --watch scripts/watch.js",
+    "check": "bun biome check src/ scripts/",
+    "check:apply": "bun biome check --apply src/ scripts/"
   },
   "packageManager": "yarn@4.1.1",
   "devDependencies": {

@@ -1,13 +1,13 @@
 import { namedObserver } from "~/observer";
 import { injectCharacterStyle, injectThemeStyle } from "~/themes";
+import { processBlockAbilities, processBlockTidbits } from "~/utils/dndbeyond";
+import { talespireLink } from "~/utils/talespire";
 import {
   embedInText,
   getSiblingWithClass,
   getTextNodes,
   isParentsProcessed,
 } from "~/utils/web";
-import { processBlockAbilities, processBlockTidbits } from "~/utils/dndbeyond";
-import { talespireLink } from "~/utils/talespire";
 
 const getDiceValue = (node) => {
   const damageValue = node.querySelector(".ddbc-damage__value");
@@ -165,7 +165,7 @@ const hijackSidebar = () => {
   const callback = (_mutationList, observer) => {
     const paneContent = document.querySelector(sidebarPaneSelector);
     const headerNode = document.querySelector(".ct-sidebar__heading");
-    if (!paneContent || !headerNode) {
+    if (!(paneContent && headerNode)) {
       return;
     }
 
@@ -297,13 +297,13 @@ const characterAppWatcher = () => {
       // This is a bit of a hack, but things get a bit messy when enabling dice,
       // so it's better to just iterate through all the integrated dice
       // containers in the character app.
-      if (!wasDiceDisabled) {
+      if (wasDiceDisabled) {
+        wasDiceDisabled = false;
+        processIntegratedDice(document.querySelector('[name="character-app"]'));
+      } else {
         for (const addedNode of mutation.addedNodes) {
           processIntegratedDice(addedNode);
         }
-      } else {
-        wasDiceDisabled = false;
-        processIntegratedDice(document.querySelector('[name="character-app"]'));
       }
 
       for (const addedNode of mutation.addedNodes) {
