@@ -5,8 +5,9 @@ import {
   getSiblingWithClass,
   getTextNodes,
   isParentsProcessed,
-  talespireLink,
-} from "~/utils";
+} from "~/utils/web";
+import { processBlockAbilities, processBlockTidbits } from "~/utils/dndbeyond";
+import { talespireLink } from "~/utils/talespire";
 
 const getDiceValue = (node) => {
   const damageValue = node.querySelector(".ddbc-damage__value");
@@ -163,12 +164,15 @@ const hijackSidebar = () => {
   const sidebarPaneSelector = ".ct-sidebar__portal";
   const callback = (_mutationList, observer) => {
     const paneContent = document.querySelector(sidebarPaneSelector);
-    if (!paneContent) {
+    const headerNode = document.querySelector(".ct-sidebar__heading");
+    if (!paneContent || !headerNode) {
       return;
     }
 
-    const headerNode = document.querySelector(".ct-sidebar__heading");
     observer.disconnect();
+
+    processBlockAbilities(paneContent, headerNode.textContent);
+    processBlockTidbits(paneContent, headerNode.textContent);
 
     for (const node of getTextNodes(paneContent)) {
       let label = headerNode.textContent;
@@ -185,10 +189,16 @@ const hijackSidebar = () => {
 
       // Matches actions in creatures under extras.
       if (parentElement.tagName === "P") {
-        const action = parentElement.querySelector("em > strong");
+        let action = parentElement.querySelector("strong");
         if (action) {
+          action = action.textContent
+            // Get rid of .
+            .slice(0, -1)
+            // Get rid of text in parentheses
+            .replace(/\([^()]*\)/g, "")
+            .trim();
           // Remove the punctuation mark
-          label = action.textContent.slice(0, -1);
+          label = `${label}: ${action}`;
         }
       }
 

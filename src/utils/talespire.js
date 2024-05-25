@@ -1,0 +1,40 @@
+export const talespireLink = (elem, label, dice, diceLabel) => {
+  const link = document.createElement("button");
+  link.classList.add("integrated-dice__container");
+  link.classList.add("tales-beyond-extension");
+  link.dataset.tsLabel = label;
+  link.dataset.tsDice = dice;
+  link.onclick = (event) => {
+    event.stopPropagation();
+
+    let name = label;
+    let extraDice = "";
+    if (event.altKey || event.ctrlKey) {
+      name += " (ADV/DIS)";
+      extraDice = `/${dice}`;
+    }
+
+    let uri;
+    if (name) {
+      uri = `talespire://dice/${encodeURIComponent(name)}:${dice}${extraDice}`;
+    } else {
+      uri = `talespire://dice/${dice}${extraDice}`;
+    }
+
+    if (TB_DRY_RUN_TALESPIRE_LINKS === "true") {
+      console.log("TaleSpire Link", { name, dice, extraDice, uri });
+    } else {
+      window.open(uri, "_self");
+    }
+  };
+
+  if (diceLabel) {
+    link.innerText = diceLabel;
+  } else if (elem) {
+    link.innerHTML = elem.innerHTML;
+  } else {
+    link.innerText = dice;
+  }
+
+  return link;
+};

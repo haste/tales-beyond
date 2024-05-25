@@ -1,3 +1,6 @@
+import { getCharacterAbilities } from "~/utils/dndbeyond";
+import { talespireLink } from "~/utils/talespire";
+
 const diceValue = ({
   dice,
   modifier = "",
@@ -13,7 +16,7 @@ const diceValue = ({
   if (modifierType) {
     // It's not too many cases where this will trigger, but it would be nice to
     // cache this a bit
-    modifier = getAbilities()[modifierType];
+    modifier = getCharacterAbilities()[modifierType];
   }
   if (+modifier < 0) {
     sign = "";
@@ -22,50 +25,12 @@ const diceValue = ({
 };
 
 export const diceRegex =
-  /((?<numDice>\d+)?d(?<dice>\d+)(?:\s*(?<sign>[+-])\s*(?:your (?<modifierType>\w+) modifier|(?<modifier>(?!\d+d\d+)\d+)))?|(?:(?<soloModifierType>[A-Z]{3})\s*)?(?<soloModifier>[+-]\d+\b))/g;
-
-export const talespireLink = (elem, label, dice, diceLabel) => {
-  const link = document.createElement("button");
-  link.classList.add("integrated-dice__container");
-  link.classList.add("tales-beyond-extension");
-  link.dataset.tsLabel = label;
-  link.dataset.tsDice = dice;
-  link.onclick = (event) => {
-    event.stopPropagation();
-
-    let name = label;
-    let extraDice = "";
-    if (event.altKey || event.ctrlKey) {
-      name += " (ADV/DIS)";
-      extraDice = `/${dice}`;
-    }
-
-    let uri;
-    if (name) {
-      uri = `talespire://dice/${encodeURIComponent(name)}:${dice}${extraDice}`;
-    } else {
-      uri = `talespire://dice/${dice}${extraDice}`;
-    }
-
-    if (TB_DRY_RUN_TALESPIRE_LINKS === "true") {
-      console.log("TaleSpire Link", { name, dice, extraDice, uri });
-    } else {
-      window.open(uri, "_self");
-    }
-  };
-
-  if (diceLabel) {
-    link.innerText = diceLabel;
-  } else if (elem) {
-    link.innerHTML = elem.innerHTML;
-  } else {
-    link.innerText = dice;
-  }
-
-  return link;
-};
+  /((?<numDice>\d+)?d(?<dice>\d+)(?:\s*(?<sign>[+-])\s*(?:your (?<modifierType>\w+) modifier|(?<modifier>(?!\d+d\d+)\d+)))?|(?:(?<soloModifierType>[A-Z]{3}|\b[A-Z][a-zA-Z]*\b)\s*)?(?<soloModifier>[+-]\d+))/g;
 
 export const getTextNodes = (root) => {
+  if (!root) {
+    return [];
+  }
   const treeWalker = document.createTreeWalker(
     root,
     NodeFilter.SHOW_TEXT,
@@ -82,26 +47,6 @@ export const getTextNodes = (root) => {
   }
 
   return textNodes;
-};
-
-export const getAbilities = () => {
-  const abilities = Array.from(
-    document.querySelectorAll(".ct-quick-info__ability"),
-  ).reduce((acc, node) => {
-    const stat = node.querySelector(".ddbc-ability-summary__label").textContent;
-
-    let modifier = node.querySelector(
-      '[class^="styles_numberDisplay"',
-    ).textContent;
-    if (+modifier > 0) {
-      modifier = modifier.slice(1);
-    }
-
-    acc[stat] = modifier;
-    return acc;
-  }, {});
-
-  return abilities;
 };
 
 export const embedInText = (node, labelOrCallback) => {

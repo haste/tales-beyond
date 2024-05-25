@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test";
 
-import { diceRegex } from "~/utils";
+import { diceRegex } from "~/utils/web";
 
 describe("diceRegex", () => {
   const regexGroups = (str) =>
@@ -146,10 +146,19 @@ describe("diceRegex", () => {
       ],
     },
     {
+      input: "some +2 Attack!",
+      expected: [
+        {
+          soloModifier: "+2",
+        },
+      ],
+    },
+    {
       input: "Some +2 Attack!",
       expected: [
         {
           soloModifier: "+2",
+          soloModifierType: "Some",
         },
       ],
     },

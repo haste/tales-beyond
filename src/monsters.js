@@ -1,14 +1,7 @@
 import { namedObserver } from "~/observer";
-import { embedInText, getTextNodes, talespireLink } from "~/utils";
-
-const abilityNames = {
-  STR: "Strength",
-  DEX: "Dexterity",
-  CON: "Constitution",
-  INT: "Intelligence",
-  WIS: "Wisdom",
-  CHA: "Charisma",
-};
+import { embedInText, getTextNodes } from "~/utils/web";
+import { processBlockAbilities, processBlockTidbits } from "~/utils/dndbeyond";
+import { talespireLink } from "~/utils/talespire";
 
 const updateMonsters = (node) => {
   if (!node) {
@@ -19,38 +12,10 @@ const updateMonsters = (node) => {
     .querySelector(".mon-stat-block__name")
     .textContent.trim();
 
-  // Get proper labels on stats
-  for (const statNode of node.querySelectorAll(".ability-block__stat")) {
-    const ability =
-      abilityNames[
-        statNode.querySelector(".ability-block__heading").textContent
-      ];
-    getTextNodes(statNode.querySelector(".ability-block__modifier")).map(
-      (textNode) => embedInText(textNode, `${monsterName}: ${ability}`),
-    );
-  }
+  processBlockAbilities(node, monsterName);
+  processBlockTidbits(node, monsterName);
 
   // Get proper labels on saving throws and skills
-  for (const tidbitNode of node.querySelectorAll(".mon-stat-block__tidbit")) {
-    const label = tidbitNode.querySelector(
-      ".mon-stat-block__tidbit-label",
-    ).textContent;
-    const dataNode = tidbitNode.querySelector(".mon-stat-block__tidbit-data");
-
-    if (label === "Saving Throws") {
-      getTextNodes(dataNode).map((textNode) =>
-        embedInText(textNode, (match, _dice) => {
-          const ability = abilityNames[match.groups.soloModifierType];
-          return `${monsterName}: ${ability} (Saving)`;
-        }),
-      );
-    } else if (label === "Skills") {
-      getTextNodes(dataNode).map((textNode) => {
-        const skill = textNode.previousSibling.textContent;
-        embedInText(textNode, `${monsterName}: ${skill}`);
-      });
-    }
-  }
 
   // Replace dice notations
   for (const diceNode of node.querySelectorAll("[data-dicenotation]")) {
