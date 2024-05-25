@@ -24,3 +24,7 @@ Replaces D&D Beyond's digital dices with links to TaleSpire.
 - Adds dice rolls to extra creatures in the character sheet.
 - Adds dice rolls to monster pages.
 - Hold ctrl/alt while clicking the button to roll double dice for ADV/DIS rolls.
+
+## Release History
+
+[Changelog](https://github.com/haste/tales-beyond/blob/main/CHANGELOG.md)
