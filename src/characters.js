@@ -1,9 +1,5 @@
 import { namedObserver } from "~/observer";
-import {
-  getOrInjectStyleSheet,
-  injectCharacterStyle,
-  injectThemeStyle,
-} from "~/themes";
+import { injectCharacterStyle, injectThemeStyle } from "~/themes";
 import {
   embedInText,
   getSiblingWithClass,
