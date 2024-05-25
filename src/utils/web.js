@@ -56,16 +56,12 @@ export const embedInText = (node, labelOrCallback) => {
 
       if (match.index !== 0) {
         fragment.appendChild(
-          document.createTextNode(
-            node.textContent.substring(offset, match.index),
-          ),
+          document.createTextNode(node.textContent.slice(offset, match.index)),
         );
       }
     } else {
       fragment.appendChild(
-        document.createTextNode(
-          node.textContent.substring(offset, match.index),
-        ),
+        document.createTextNode(node.textContent.slice(offset, match.index)),
       );
     }
 
@@ -85,7 +81,7 @@ export const embedInText = (node, labelOrCallback) => {
   if (fragment && offset !== node.textContent.length) {
     fragment.appendChild(
       document.createTextNode(
-        node.textContent.substring(offset, node.textContent.length),
+        node.textContent.slice(offset, node.textContent.length),
       ),
     );
   }
