@@ -1,6 +1,10 @@
 import { namedObserver } from "~/observer";
 import { injectCharacterStyle, injectThemeStyle } from "~/themes";
-import { processBlockAbilities, processBlockTidbits } from "~/utils/dndbeyond";
+import {
+  getCharacterAbilities,
+  processBlockAbilities,
+  processBlockTidbits,
+} from "~/utils/dndbeyond";
 import { talespireLink } from "~/utils/talespire";
 import {
   embedInText,
@@ -290,7 +294,9 @@ const characterAppWatcher = () => {
       return;
     }
 
+    getCharacterAbilities();
     injectThemeStyle();
+
     observer.disconnect();
 
     for (const mutation of mutationList) {

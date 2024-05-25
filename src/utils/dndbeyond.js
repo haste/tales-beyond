@@ -57,9 +57,10 @@ export const processBlockTidbits = (node, label) => {
   }
 };
 
+let previousCharacterAbilities = {};
 export const getCharacterAbilities = () => {
   const abilities = Array.from(
-    document.querySelectorAll(".ct-quick-info__ability"),
+    document.querySelectorAll(".ddbc-ability-summary"),
   ).reduce((acc, node) => {
     const stat = node.querySelector(".ddbc-ability-summary__label").textContent;
 
@@ -72,7 +73,9 @@ export const getCharacterAbilities = () => {
 
     acc[stat] = modifier;
     return acc;
-  }, {});
+  }, previousCharacterAbilities);
+
+  previousCharacterAbilities = abilities;
 
   return abilities;
 };

@@ -14,8 +14,6 @@ const diceValue = ({
   }
 
   if (modifierType) {
-    // It's not too many cases where this will trigger, but it would be nice to
-    // cache this a bit
     modifier = getCharacterAbilities()[modifierType];
   }
   if (+modifier < 0) {
