@@ -290,6 +290,10 @@ const characterAppWatcher = () => {
     );
 
     if (!isDiceEnabled) {
+      if (!wasDiceDisabled) {
+        showEnableDiceDialog();
+      }
+
       wasDiceDisabled = true;
       return;
     }
@@ -358,6 +362,54 @@ const sidebarPortalWatcher = () => {
 
   const sidebarObserver = namedObserver("sidebar-portal", callback);
   sidebarObserver.observe(document.querySelector("body"), { childList: true });
+};
+
+const showEnableDiceDialog = () => {
+  if (document.querySelector(".tales-beyond-extension-dialog")) {
+    return;
+  }
+
+  const dialog = document.createElement("dialog");
+  dialog.classList.add("tales-beyond-extension-dialog");
+  const closeDialog = (event) => {
+    if (event.target === dialog) {
+      dialog.close();
+    }
+  };
+
+  dialog.innerHTML = `
+<h2>
+  <img>
+  Tales Beyond
+</h2>
+
+<p>
+  Digital dice needs to be enabled for this extension to function properly.
+</p>
+
+<ul>
+  <li>Click <strong>Manage</strong> next to your characters name.</li>
+  <li>Go to <strong>Character Settings.</strong></li>
+  <li>Enable <strong>Dice Rolling.</strong></li>
+</ul>
+
+<button aria-label="Close">
+  Close
+</button>
+  `;
+
+  dialog.addEventListener("click", closeDialog);
+  dialog.addEventListener("touchend", closeDialog);
+
+  const img = dialog.querySelector(".tales-beyond-extension-dialog img");
+  img.src = chrome.runtime.getURL("icons/icon.svg");
+
+  const button = dialog.querySelector(".tales-beyond-extension-dialog button");
+  button.addEventListener("click", () => dialog.close());
+  button.addEventListener("touchend", dialog.close());
+
+  document.body.appendChild(dialog);
+  dialog.showModal();
 };
 
 const main = () => {

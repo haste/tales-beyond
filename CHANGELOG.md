@@ -9,6 +9,7 @@
 ### Enhancements
 
  * Greatly improved labels sent to TaleSpire for EXTRAS.
+ * Show a dialog when digital dice aren't enabled.
 
 ## 0.12.0 (2024-05-24)
 

@@ -4,5 +4,6 @@
     "gecko": {
       "id": "tales-beyond@haste.no"
     }
-  }
+  },
+  "web_accessible_resources": ["icons/icon.svg"]
 }
