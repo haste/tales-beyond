@@ -10,7 +10,8 @@
     {
       "matches": ["*://*.dndbeyond.com/characters/*"],
       "run_at": "document_end",
-      "js": ["characters.js"]
+      "js": ["characters.js"],
+      "css": ["styles.css"]
     },
     {
       "matches": ["*://*.dndbeyond.com/monsters*"],

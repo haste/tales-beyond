@@ -12,27 +12,6 @@ export const getOrInjectStyleSheet = (name) => {
 };
 
 const themes = {
-  "DDB Red": `
-:root {
-    --tales-beyond-border: #c53131;
-    --tales-beyond-background: inherit;
-    --tales-beyond-text: inherit;
-
-    --tales-beyond-hover-border: #c53131;
-    --tales-beyond-hover-background: #fdefe7;
-    --tales-beyond-hover-text: inherit;
-}
-
-:root .ct-character-sheet--dark-mode {
-    --tales-beyond-border: #c53131;
-    --tales-beyond-background: inherit;
-    --tales-beyond-text: inherit;
-
-    --tales-beyond-hover-border: #c53131;
-    --tales-beyond-hover-background: #4a1313;
-    --tales-beyond-hover-text: inherit;
-}
-  `,
   "Barbarian Fire": `
 :root {
     --tales-beyond-border: #e5623e;
@@ -461,43 +440,10 @@ export const injectThemeStyle = () => {
     case "#99c476":
       styles = themes["I Love Flumphs"];
       break;
-
-    default:
-      styles = themes["DDB Red"];
-      break;
   }
 
   theme.dataset.mainColor = mainColor;
-  theme.textContent = styles;
-};
-
-export const injectCharacterStyle = () => {
-  const styles = getOrInjectStyleSheet("character");
-  styles.textContent = `
-button.integrated-dice__container.tales-beyond-extension {
-  border: 1px solid var(--tales-beyond-border);
-  border-radius: 4px;
-  background: var(--tales-beyond-background);
-  color: var(--tales-beyond-text);
-  cursor: pointer;
-}
-
-button.integrated-dice__container.tales-beyond-extension:hover {
-  border: 1px solid var(--tales-beyond-hover-border);
-  background: var(--tales-beyond-hover-background);
-}
-
-button.integrated-dice__container.tales-beyond-extension:hover ~ .ddbc-saving-throw-selection-box-svg,
-button.integrated-dice__container.tales-beyond-extension:hover ~ .ddbc-saving-throw-selection-small-box-svg {
-  fill: var(--tales-beyond-hover-background);
-}
-
-.ddbc-saving-throws-summary__ability-modifier > button.integrated-dice__container.tales-beyond-extension{
-  border: 0;
-}
-
-.ddbc-saving-throws-summary__ability-modifier > button.integrated-dice__container.tales-beyond-extension:hover {
-  background: transparent;
-}
-  `;
+  if (styles) {
+    theme.textContent = styles;
+  }
 };

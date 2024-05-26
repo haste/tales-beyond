@@ -1,5 +1,5 @@
 import { namedObserver } from "~/observer";
-import { injectCharacterStyle, injectThemeStyle } from "~/themes";
+import { injectThemeStyle } from "~/themes";
 import {
   getCharacterAbilities,
   processBlockAbilities,
@@ -361,7 +361,6 @@ const sidebarPortalWatcher = () => {
 };
 
 const main = () => {
-  injectCharacterStyle();
   characterAppWatcher();
   sidebarPortalWatcher();
 };
