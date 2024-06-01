@@ -243,17 +243,18 @@ const processIntegratedDice = (addedNode) => {
       continue;
     }
 
+    const attributeHeading = getSiblingWithClass(diceButton, "__heading", 3);
+    const skillHeading = getSiblingWithClass(diceButton, "--skill", 3);
     let label;
     if (
       // Attributes
-      parentPreviousSibling?.className.includes("__heading") ||
+      attributeHeading ||
       // Skill list
-      parentPreviousSibling?.className.includes("--skill")
+      skillHeading
     ) {
-      label = (
-        parentPreviousSibling.querySelector('[class*="__label"]') ||
-        parentPreviousSibling
-      ).textContent;
+      const heading = attributeHeading || skillHeading;
+      label = (heading.querySelector('[class*="__label"]') || heading)
+        .textContent;
     } else if (
       // Saving throws
       parentPreviousSibling?.className.includes("ability-name")

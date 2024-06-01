@@ -5,6 +5,7 @@
 ### Bug fixes
 
  * Handle *1d10 + your Dexterity modifier* rolls on DNDBeyond's mobile layout.
+ * Skills with ADV/DIS now send the correct label instead of Undefined.
  * Stopped sending Undefined instead of empty labels when label wasn't resolved.
 
 ### Enhancements
