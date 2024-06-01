@@ -9,7 +9,7 @@ export const talespireLink = (elem, label, dice, diceLabel) => {
 
     let name = label;
     let extraDice = "";
-    if (event.altKey || event.ctrlKey) {
+    if (event.altKey || event.ctrlKey || event.shiftKey) {
       name += " (ADV/DIS)";
       extraDice = `/${dice}`;
     }
