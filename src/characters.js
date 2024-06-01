@@ -285,6 +285,13 @@ const characterAppWatcher = () => {
 
   let wasDiceDisabled;
   const callback = (mutationList, observer) => {
+    const isCharacterSelected = /^\/characters\/\d+\/?$/.test(
+      window.location.pathname,
+    );
+    if (!isCharacterSelected) {
+      return;
+    }
+
     const isDiceEnabled = !!document.querySelector(
       ".ct-character-sheet--dice-enabled",
     );
