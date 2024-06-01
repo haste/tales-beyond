@@ -236,7 +236,18 @@ const processIntegratedDice = (addedNode) => {
     const previousSibling = diceButton.previousSibling;
     const parentPreviousSibling = diceButton.parentElement?.previousSibling;
     const nameSibling = getSiblingWithClass(diceButton, "__name");
-    const diceValue = getDiceValue(diceButton);
+    let diceValue = getDiceValue(diceButton);
+
+    // Fetch from secondary when "Scores Top" is set for Ability Score/Modifier
+    // Display
+    if (
+      !!diceButton.parentElement.className.includes("__primary") &&
+      !diceValue
+    ) {
+      diceValue = getDiceValue(
+        getSiblingWithClass(diceButton, "__secondary", 3),
+      );
+    }
 
     // Ignore cases like Booming Blade where the dice has no default value
     if (!diceValue) {

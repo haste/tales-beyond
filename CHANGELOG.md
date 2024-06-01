@@ -13,6 +13,7 @@
  * Greatly improved labels sent to TaleSpire for EXTRAS.
  * Show a dialog when digital dice aren't enabled.
  * Add ADV/DIS dice when shift is held.
+ * Ability dice now work when "Scores Top" setting is used.
 
 ## 0.12.0 (2024-05-24)
 
