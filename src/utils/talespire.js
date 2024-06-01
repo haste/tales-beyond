@@ -15,7 +15,7 @@ export const talespireLink = (elem, label, dice, diceLabel) => {
     }
 
     let uri;
-    if (name) {
+    if (typeof name === "string") {
       uri = `talespire://dice/${encodeURIComponent(name)}:${dice}${extraDice}`;
     } else {
       uri = `talespire://dice/${dice}${extraDice}`;

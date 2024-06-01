@@ -5,6 +5,7 @@
 ### Bug fixes
 
  * Handle *1d10 + your Dexterity modifier* rolls on DNDBeyond's mobile layout.
+ * Stopped sending Undefined instead of empty labels when label wasn't resolved.
 
 ### Enhancements
 
