@@ -201,7 +201,6 @@ const hijackSidebar = () => {
             // Get rid of text in parentheses
             .replace(/\([^()]*\)/g, "")
             .trim();
-          // Remove the punctuation mark
           label = `${label}: ${action}`;
         }
       }
