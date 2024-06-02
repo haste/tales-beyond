@@ -1,10 +1,10 @@
 ***
 
 <h1>
-<sub>
-<img src="src/icons/icon.svg" height="38" width="38">
-</sub>
-Tales Beyond
+    <sub>
+        <img src="src/icons/icon.svg" height="38" width="38">
+    </sub>
+    Tales Beyond
 </h1>
 
 Replaces D&D Beyond's digital dices with links to TaleSpire.
@@ -23,7 +23,7 @@ Replaces D&D Beyond's digital dices with links to TaleSpire.
 - Adds dice rolls to descriptions with support for replacing "your Dexterity modifier" with the proper value.
 - Adds dice rolls to extra creatures in the character sheet.
 - Adds dice rolls to monster pages.
-- Hold ctrl/alt while clicking the button to roll double dice for ADV/DIS rolls.
+- Hold alt/cltr/shift while clicking the button to roll double dice for ADV/DIS rolls.
 
 ## Release History
 
