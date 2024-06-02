@@ -40,7 +40,7 @@ export const build = async () => {
     }
   }
 
-  await $`cp -rf ${srcDir}/{icons,{dialog,styles}.css} LICENSE ${sharedDir}`;
+  await $`cp -rf ${srcDir}/{icons,{dialog,styles}.css} LICENSE README.md CHANGELOG.md ${sharedDir}`;
 
   for (const browser of browsers) {
     const buildDir = path.join(process.cwd(), "build", browser);
