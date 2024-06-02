@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+### Bug fixes
+
+ * Fix background color on dice when Underdark Mode is enabled.
+
 ## 0.13.0 (2024-06-02)
 
 ### Bug fixes

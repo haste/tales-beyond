@@ -12,6 +12,27 @@ export const getOrInjectStyleSheet = (name) => {
 };
 
 const themes = {
+  "DDB Red": `
+:root {
+    --tales-beyond-border: #c53131;
+    --tales-beyond-background: inherit;
+    --tales-beyond-text: inherit;
+
+    --tales-beyond-hover-border: #c53131;
+    --tales-beyond-hover-background: #fdefe7;
+    --tales-beyond-hover-text: inherit;
+}
+
+:root .ct-character-sheet--dark-mode, :root .ct-sidebar--is-dark-mode {
+    --tales-beyond-border: #c53131;
+    --tales-beyond-background: transparent;
+    --tales-beyond-text: inherit;
+
+    --tales-beyond-hover-border: #c53131;
+    --tales-beyond-hover-background: #4a1313;
+    --tales-beyond-hover-text: inherit;
+}
+  `,
   "Barbarian Fire": `
 :root {
     --tales-beyond-border: #e5623e;
@@ -23,9 +44,9 @@ const themes = {
     --tales-beyond-hover-text: inherit;
 }
 
-:root .ct-character-sheet--dark-mode {
+:root .ct-character-sheet--dark-mode, :root .ct-sidebar--is-dark-mode {
     --tales-beyond-border: #e5623e;
-    --tales-beyond-background: inherit;
+    --tales-beyond-background: transparent;
     --tales-beyond-text: inherit;
 
     --tales-beyond-hover-border: #e5623e;
@@ -45,9 +66,9 @@ const themes = {
     --tales-beyond-hover-text: inherit;
 }
 
-:root .ct-character-sheet--dark-mode {
+:root .ct-character-sheet--dark-mode, :root .ct-sidebar--is-dark-mode {
     --tales-beyond-border: #aa6dab;
-    --tales-beyond-background: inherit;
+    --tales-beyond-background: transparent;
     --tales-beyond-text: inherit;
 
     --tales-beyond-hover-border: #aa6dab;
@@ -67,9 +88,9 @@ const themes = {
     --tales-beyond-hover-text: inherit;
 }
 
-:root .ct-character-sheet--dark-mode {
+:root .ct-character-sheet--dark-mode, :root .ct-sidebar--is-dark-mode {
     --tales-beyond-border: #92a2b3;
-    --tales-beyond-background: inherit;
+    --tales-beyond-background: transparent;
     --tales-beyond-text: inherit;
 
     --tales-beyond-hover-border: #92a2b3;
@@ -89,9 +110,9 @@ const themes = {
     --tales-beyond-hover-text: inherit;
 }
 
-:root .ct-character-sheet--dark-mode {
+:root .ct-character-sheet--dark-mode, :root .ct-sidebar--is-dark-mode {
     --tales-beyond-border: #79853c;
-    --tales-beyond-background: inherit;
+    --tales-beyond-background: transparent;
     --tales-beyond-text: inherit;
 
     --tales-beyond-hover-border: #79853c;
@@ -111,9 +132,9 @@ const themes = {
     --tales-beyond-hover-text: inherit;
 }
 
-:root .ct-character-sheet--dark-mode {
+:root .ct-character-sheet--dark-mode, :root .ct-sidebar--is-dark-mode {
     --tales-beyond-border: #7e4f3d;
-    --tales-beyond-background: inherit;
+    --tales-beyond-background: transparent;
     --tales-beyond-text: inherit;
 
     --tales-beyond-hover-border: #7e4f3d;
@@ -133,9 +154,9 @@ const themes = {
     --tales-beyond-hover-text: inherit;
 }
 
-:root .ct-character-sheet--dark-mode {
+:root .ct-character-sheet--dark-mode, :root .ct-sidebar--is-dark-mode {
     --tales-beyond-border: #53a5c5;
-    --tales-beyond-background: inherit;
+    --tales-beyond-background: transparent;
     --tales-beyond-text: inherit;
 
     --tales-beyond-hover-border: #53a5c5;
@@ -155,9 +176,9 @@ const themes = {
     --tales-beyond-hover-text: inherit;
 }
 
-:root .ct-character-sheet--dark-mode {
+:root .ct-character-sheet--dark-mode, :root .ct-sidebar--is-dark-mode {
     --tales-beyond-border: #b59e54;
-    --tales-beyond-background: inherit;
+    --tales-beyond-background: transparent;
     --tales-beyond-text: inherit;
 
     --tales-beyond-hover-border: #b59e54;
@@ -177,9 +198,9 @@ const themes = {
     --tales-beyond-hover-text: inherit;
 }
 
-:root .ct-character-sheet--dark-mode {
+:root .ct-character-sheet--dark-mode, :root .ct-sidebar--is-dark-mode {
     --tales-beyond-border: #4f7e61;
-    --tales-beyond-background: inherit;
+    --tales-beyond-background: transparent;
     --tales-beyond-text: inherit;
 
     --tales-beyond-hover-border: #4f7e61;
@@ -199,9 +220,9 @@ const themes = {
     --tales-beyond-hover-text: inherit;
 }
 
-:root .ct-character-sheet--dark-mode {
+:root .ct-character-sheet--dark-mode, :root .ct-sidebar--is-dark-mode {
     --tales-beyond-border: #555752;
-    --tales-beyond-background: inherit;
+    --tales-beyond-background: transparent;
     --tales-beyond-text: inherit;
 
     --tales-beyond-hover-border: #555752;
@@ -221,9 +242,9 @@ const themes = {
     --tales-beyond-hover-text: inherit;
 }
 
-:root .ct-character-sheet--dark-mode {
+:root .ct-character-sheet--dark-mode, :root .ct-sidebar--is-dark-mode {
     --tales-beyond-border: #972e2e;
-    --tales-beyond-background: inherit;
+    --tales-beyond-background: transparent;
     --tales-beyond-text: inherit;
 
     --tales-beyond-hover-border: #972e2e;
@@ -243,9 +264,9 @@ const themes = {
     --tales-beyond-hover-text: inherit;
 }
 
-:root .ct-character-sheet--dark-mode {
+:root .ct-character-sheet--dark-mode, :root .ct-sidebar--is-dark-mode {
     --tales-beyond-border: #8137af;
-    --tales-beyond-background: inherit;
+    --tales-beyond-background: transparent;
     --tales-beyond-text: inherit;
 
     --tales-beyond-hover-border: #8137af;
@@ -265,9 +286,9 @@ const themes = {
     --tales-beyond-hover-text: inherit;
 }
 
-:root .ct-character-sheet--dark-mode {
+:root .ct-character-sheet--dark-mode, :root .ct-sidebar--is-dark-mode {
     --tales-beyond-border: #0045b7;
-    --tales-beyond-background: inherit;
+    --tales-beyond-background: transparent;
     --tales-beyond-text: inherit;
 
     --tales-beyond-hover-border: #0045b7;
@@ -287,9 +308,9 @@ const themes = {
     --tales-beyond-hover-text: inherit;
 }
 
-:root .ct-character-sheet--dark-mode {
+:root .ct-character-sheet--dark-mode, :root .ct-sidebar--is-dark-mode {
     --tales-beyond-border: #d59139;
-    --tales-beyond-background: inherit;
+    --tales-beyond-background: transparent;
     --tales-beyond-text: inherit;
 
     --tales-beyond-hover-border: #d59139;
@@ -309,9 +330,9 @@ const themes = {
     --tales-beyond-hover-text: inherit;
 }
 
-:root .ct-character-sheet--dark-mode {
+:root .ct-character-sheet--dark-mode, :root .ct-sidebar--is-dark-mode {
     --tales-beyond-border: #cf9f25;
-    --tales-beyond-background: inherit;
+    --tales-beyond-background: transparent;
     --tales-beyond-text: inherit;
 
     --tales-beyond-hover-border: #cf9f25;
@@ -331,9 +352,9 @@ const themes = {
     --tales-beyond-hover-text: inherit;
 }
 
-:root .ct-character-sheet--dark-mode {
+:root .ct-character-sheet--dark-mode, :root .ct-sidebar--is-dark-mode {
     --tales-beyond-border: #eb5118;
-    --tales-beyond-background: inherit;
+    --tales-beyond-background: transparent;
     --tales-beyond-text: inherit;
 
     --tales-beyond-hover-border: #eb5118;
@@ -353,9 +374,9 @@ const themes = {
     --tales-beyond-hover-text: inherit;
 }
 
-:root .ct-character-sheet--dark-mode {
+:root .ct-character-sheet--dark-mode, :root .ct-sidebar--is-dark-mode {
     --tales-beyond-border: #99c476;
-    --tales-beyond-background: inherit;
+    --tales-beyond-background: transparent;
     --tales-beyond-text: inherit;
 
     --tales-beyond-hover-border: #99c476;
@@ -439,6 +460,10 @@ export const injectThemeStyle = () => {
 
     case "#99c476":
       styles = themes["I Love Flumphs"];
+      break;
+
+    default:
+      styles = themes["DDB Red"];
       break;
   }
 
