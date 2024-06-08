@@ -9,7 +9,7 @@
     "check": "bun biome check src/ scripts/",
     "check:apply": "bun biome check --apply src/ scripts/"
   },
-  "packageManager": "yarn@4.1.1",
+  "packageManager": "bun@1.1.11",
   "devDependencies": {
     "@biomejs/biome": "1.8.0",
     "chrome-webstore-upload-cli": "^3.1.0",
