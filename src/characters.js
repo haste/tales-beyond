@@ -11,6 +11,8 @@ import {
   getSiblingWithClass,
   getTextNodes,
   isParentsProcessed,
+  diceRegex,
+  diceValueFromMatch,
 } from "~/utils/web";
 
 const getDiceValue = (node) => {
@@ -21,6 +23,17 @@ const getDiceValue = (node) => {
 
   const numberDisplay = node.querySelector('[class^="styles_numberDisplay"]');
   if (!numberDisplay) {
+    // See if we can find one unique dice value within the node.
+    const matches = [];
+    for (const match of node.textContent.matchAll(diceRegex)) {
+      matches.push(diceValueFromMatch(match.groups));
+    }
+
+    const uniqMatches = [...new Set(matches)];
+    if (uniqMatches.length === 1) {
+      return uniqMatches[0];
+    }
+
     return;
   }
 

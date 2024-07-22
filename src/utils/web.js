@@ -1,7 +1,7 @@
 import { getCharacterAbilities } from "~/utils/dndbeyond";
 import { talespireLink } from "~/utils/talespire";
 
-const diceValue = ({
+export const diceValueFromMatch = ({
   dice,
   modifier = "",
   modifierType,
@@ -65,13 +65,18 @@ export const embedInText = (node, labelOrCallback) => {
       );
     }
 
-    const dice = diceValue(match.groups);
+    const dice = diceValueFromMatch(match.groups);
     let label = labelOrCallback;
     if (typeof label === "function") {
       label = label(match, dice);
     }
 
-    const link = talespireLink(null, label, diceValue(match.groups), match[0]);
+    const link = talespireLink(
+      null,
+      label,
+      diceValueFromMatch(match.groups),
+      match[0],
+    );
     link.style = "padding-left: 4px; padding-right: 4px;";
 
     fragment.appendChild(link);
