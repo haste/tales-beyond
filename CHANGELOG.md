@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+### Bug fixes
+
+ * Fix Short Rest hit dice button not working.
+
 ## 0.13.1 (2024-06-02)
 
 ### Bug fixes
