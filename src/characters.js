@@ -7,12 +7,12 @@ import {
 } from "~/utils/dndbeyond";
 import { talespireLink } from "~/utils/talespire";
 import {
+  diceRegex,
+  diceValueFromMatch,
   embedInText,
   getSiblingWithClass,
   getTextNodes,
   isParentsProcessed,
-  diceRegex,
-  diceValueFromMatch,
 } from "~/utils/web";
 
 const getDiceValue = (node) => {
