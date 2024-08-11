@@ -184,6 +184,18 @@ describe("diceRegex", () => {
         },
       ],
     },
+    {
+      input: "1A +10m",
+      expected: [],
+    },
+    {
+      input: "1A +10",
+      expected: [
+        {
+          soloModifier: "+10",
+        },
+      ],
+    },
   ]) {
     test(setup.input, () => {
       expect(regexGroups(setup.input)).toEqual(
