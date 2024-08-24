@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.14.0 (Unreleased)
+
+### Bug fixes
+
+ * Correctly send d100s to TaleSpire.
+
 ## 0.13.2 (2024-07-22)
 
 ### Bug fixes

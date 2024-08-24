@@ -7,6 +7,8 @@ export const talespireLink = (elem, label, dice, diceLabel) => {
   link.onclick = (event) => {
     event.stopPropagation();
 
+    dice = dice.replace(/d100/g, "d100+d10");
+
     let name = label;
     let extraDice = "";
     if (event.altKey || event.ctrlKey || event.shiftKey) {
