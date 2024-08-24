@@ -107,7 +107,6 @@ export const getSiblingWithClass = (node, name, attempts = 5) => {
   }
 
   if (node.parentElement) {
-    // biome-ignore lint/style/noParameterAssign: it's not here
     return getSiblingWithClass(node.parentElement, name, --attempts);
   }
   return;
@@ -125,6 +124,5 @@ export const isParentsProcessed = (node, attempts = 4) => {
     return true;
   }
 
-  // biome-ignore lint/style/noParameterAssign: it's not here
   return isParentsProcessed(node.parentElement, --attempts);
 };

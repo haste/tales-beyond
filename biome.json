@@ -21,7 +21,8 @@
       "style": {
         "noNegationElse": "error",
         "useCollapsedElseIf": "error",
-        "useForOf": "error"
+        "useForOf": "error",
+        "noParameterAssign": "off"
       },
       "suspicious": {
         "noConsoleLog": "error",
