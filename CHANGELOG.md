@@ -6,6 +6,14 @@
 
  * Correctly send d100s to TaleSpire.
 
+### Enhancements
+
+ * Custom spells have been re-implemented. It does the following:
+   - **Chaos Bolt**: Changes the dice to include the missing d6.
+   - **Magic Missile**: Adds extra dice buttons for multiple darts.
+   - **Melf's Minute Meteors**: Adds an extra dice button for throwing two meteors.
+   - **Toll the Dead**: Adds an extra dice button for damaged targets.
+
 ## 0.13.2 (2024-07-22)
 
 ### Bug fixes

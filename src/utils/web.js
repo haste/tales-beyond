@@ -112,6 +112,21 @@ export const getSiblingWithClass = (node, name, attempts = 5) => {
   return;
 };
 
+export const getParentWithClass = (node, name, attempts = 5) => {
+  if (!node || attempts === 0) {
+    return;
+  }
+
+  if (node.classList.contains(name)) {
+    return node;
+  }
+
+  if (node.parentElement) {
+    return getSiblingWithClass(node.parentElement, name, --attempts);
+  }
+  return;
+};
+
 export const isParentsProcessed = (node, attempts = 4) => {
   if (!node || attempts === 0) {
     return false;

@@ -16,6 +16,10 @@ button.integrated-dice__container.tales-beyond-extension:hover ~ .ddbc-saving-th
   fill: var(--tales-beyond-hover-background, #fdefe7);
 }
 
+.tales-beyond-extension-versatile button.integrated-dice__container.tales-beyond-extension {
+  margin-bottom: 3px;
+}
+
 .ddbc-saving-throws-summary__ability-modifier > button.integrated-dice__container.tales-beyond-extension{
   border: 0;
 }

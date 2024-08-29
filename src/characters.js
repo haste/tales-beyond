@@ -10,6 +10,7 @@ import {
   diceRegex,
   diceValueFromMatch,
   embedInText,
+  getParentWithClass,
   getSiblingWithClass,
   getTextNodes,
   isParentsProcessed,
@@ -47,92 +48,95 @@ const getDiceValue = (node) => {
   }
 };
 
-const hijackDiceButtons = (fallbackLabel, parent, replaceHijacked = false) => {
-  for (const diceButton of parent.querySelectorAll(
-    `.integrated-dice__container${
-      replaceHijacked ? "" : ":not(.tales-beyond-extension)"
-    }`,
-  )) {
-    const label = diceButton.dataset.label || fallbackLabel;
-    diceButton.replaceWith(
-      talespireLink(diceButton, label, getDiceValue(diceButton)),
-    );
-  }
-};
-
 const customSpells = {
-  "Toll the Dead": (label, action) => {
-    const actionClone = action.cloneNode(true);
-    action.after(actionClone);
+  "Toll the Dead": (label, diceButton) => {
+    diceButton.classList.add("tales-beyond-extension");
+    diceButton.parentElement.parentElement.classList.add(
+      "tales-beyond-extension-versatile",
+    );
 
-    const damageClone = actionClone.querySelector(".ddbc-damage__value");
-    damageClone.innerText = damageClone.innerText.replace("8", "12");
+    const clonedButton = diceButton.cloneNode(true);
+    const damageText = clonedButton.querySelector(".ddbc-damage__value");
+    damageText.innerText = damageText.innerText.replace("8", "12");
 
-    const span = document.createElement("span");
-    span.className =
-      "ddbc-note-components__component \
-      ddbc-note-components__component--plain  \
-      ddbc-note-components__component--scaled";
-    span.innerText = "Damaged target";
-
-    const componentsClone = actionClone.querySelector(".ddbc-note-components");
-    if (componentsClone) {
-      componentsClone.textContent = `, ${componentsClone.textContent} `;
-      componentsClone.prepend(span);
-    }
-
-    hijackDiceButtons(label, action);
-    hijackDiceButtons(`${label} (Damaged)`, actionClone);
+    const diceValue = getDiceValue(clonedButton);
+    const tsLink = talespireLink(clonedButton, `${label} (Damaged)`, diceValue);
+    diceButton.parentElement.appendChild(tsLink);
   },
 
-  "Magic Missile": (label, action) => {
-    const level = action.classList.contains("ddbc-combat-attack")
-      ? 1
-      : Number.parseInt(
-          // TODO: This should really just look for .ct-content-group instead
-          action.parentNode.parentNode.parentNode.parentNode
-            .querySelector(".ct-content-group__header-content")
-            .textContent.slice(0, -8),
-        );
+  "Magic Missile": (label, diceButton) => {
+    const extraDarts = Number.parseInt(
+      getSiblingWithClass(
+        diceButton,
+        "ddbc-note-components__component--scaled",
+        5,
+      )?.textContent.slice(8) || "0",
+    );
 
-    const numDarts = 2 + level;
+    for (let i = 1; i < 3 + extraDarts + 1; i++) {
+      const diceValue = getDiceValue(diceButton).replaceAll(1, i);
 
-    hijackDiceButtons(label, action);
+      const clonedButton = diceButton.cloneNode(true);
+      const damageText = clonedButton.querySelector(".ddbc-damage__value");
+      damageText.innerText = diceValue;
 
-    for (let i = 1; i < numDarts; i++) {
-      const darts = numDarts - i + 1;
-      const actionClone = action.cloneNode(true);
-      action.after(actionClone);
-
-      const labelClone = actionClone.querySelector(".ddbc-spell-name");
-      labelClone.textContent = `${label} (${darts} darts)`;
-
-      const damageClone = actionClone.querySelector(".ddbc-damage__value");
-      damageClone.innerText = damageClone.innerText.replace(/1/g, darts);
-
-      hijackDiceButtons(`${label} (${darts} darts)`, actionClone, true);
+      const tsLink = talespireLink(
+        clonedButton,
+        i > 1 ? `${label} (${i} darts)` : label,
+        diceValue,
+      );
+      diceButton.parentElement.appendChild(tsLink);
     }
+
+    diceButton.style = "display: none;";
+    diceButton.classList.add("tales-beyond-extension");
+    diceButton.parentElement.parentElement.classList.add(
+      "tales-beyond-extension-versatile",
+    );
+
+    return true;
   },
 
-  "Chaos Bolt": (label, action) => {
-    const level = action.classList.contains("ddbc-combat-attack")
+  "Melf's Minute Meteors": (label, diceButton) => {
+    diceButton.classList.add("tales-beyond-extension");
+    diceButton.parentElement.parentElement.classList.add(
+      "tales-beyond-extension-versatile",
+    );
+
+    const clonedButton = diceButton.cloneNode(true);
+    const damageText = clonedButton.querySelector(".ddbc-damage__value");
+    damageText.innerText = damageText.innerText.replace("2", "4");
+
+    const diceValue = getDiceValue(clonedButton);
+    const tsLink = talespireLink(
+      clonedButton,
+      `${label} (2 meteors)`,
+      diceValue,
+    );
+    diceButton.parentElement.appendChild(tsLink);
+  },
+
+  "Chaos Bolt": (label, diceButton) => {
+    const level = getParentWithClass(diceButton, "ddbc-combat-attack")
       ? 1
       : Number.parseInt(
-          // TODO: This should really just look for .ct-content-group instead
-          action.parentNode.parentNode.parentNode.parentNode
-            .querySelector(".ct-content-group__header-content")
-            .textContent.slice(0, -8),
+          getSiblingWithClass(
+            diceButton,
+            "ct-content-group__header-content",
+            9,
+          )?.textContent.slice(0, -8),
         );
 
-    const damageValue = action.querySelector(".ddbc-damage__value");
-    damageValue.innerText = `${damageValue.innerText}+${level}d6`;
+    const damageValue = getSiblingWithClass(
+      diceButton,
+      "ddbc-damage__value",
+      5,
+    );
+    const diceValue = `${damageValue.innerText}+${level}d6`;
 
-    const damageIcon = action.querySelector(".ddbc-damage__icon");
-    if (damageIcon) {
-      damageIcon.remove();
-    }
+    diceButton.replaceWith(talespireLink(null, label, diceValue, diceValue));
 
-    hijackDiceButtons(label, action);
+    return true;
   },
 };
 
@@ -295,6 +299,13 @@ const processIntegratedDice = (addedNode) => {
     ) {
       label = (nameSibling.querySelector('[class*="__label"]') || nameSibling)
         .textContent;
+      if (
+        label in customSpells &&
+        !getParentWithClass(diceButton, "__tohit", 3) &&
+        customSpells[label](label, diceButton)
+      ) {
+        continue;
+      }
     }
 
     diceButton.replaceWith(talespireLink(diceButton, label, diceValue));
