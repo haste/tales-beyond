@@ -71,12 +71,21 @@ export const embedInText = (node, labelOrCallback) => {
       label = label(match, dice);
     }
 
-    const link = talespireLink(
-      null,
-      label,
-      diceValueFromMatch(match.groups),
-      match[0],
-    );
+    // If we have no label, then see if we can fetch one from the heading. This
+    // is mainly used for features.
+    if (!label) {
+      // Only fetch #text nodes directly under the parent. In most (all?) just
+      // using node.firstChild.textContent would probably be enough.
+      const heading = getSiblingWithClass(node.parentElement, "__heading", 7);
+      if (heading) {
+        label = Array.prototype.filter
+          .call(heading.childNodes, (node) => node.nodeType === 3)
+          .map((node) => node.textContent)
+          .join(" ");
+      }
+    }
+
+    const link = talespireLink(null, label, dice, match[0]);
     link.style = "padding-left: 4px; padding-right: 4px;";
 
     fragment.appendChild(link);

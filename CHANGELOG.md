@@ -14,6 +14,7 @@
    - **Magic Missile**: Adds extra dice buttons for multiple darts.
    - **Melf's Minute Meteors**: Adds an extra dice button for throwing two meteors.
    - **Toll the Dead**: Adds an extra dice button for damaged targets.
+ * The header of features will now be used as dice labels.
 
 ## 0.13.2 (2024-07-22)
 
