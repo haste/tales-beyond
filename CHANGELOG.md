@@ -15,6 +15,7 @@
    - **Melf's Minute Meteors**: Adds an extra dice button for throwing two meteors.
    - **Toll the Dead**: Adds an extra dice button for damaged targets.
  * The header of features will now be used as dice labels.
+ * Second Wind (and similar feats) will now correctly include the modifier.
 
 ## 0.13.2 (2024-07-22)
 

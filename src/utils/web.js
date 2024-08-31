@@ -47,23 +47,60 @@ export const getTextNodes = (root) => {
   return textNodes;
 };
 
+// In some cases like Second Wind the dice values are wrapped in elements,
+// so our text search fails since we are bound by #text nodes. If we are at
+// the end of a #text node and the next element has a .ddbc-snippet__tag
+// class, then we absorb that into our dice button.
+const processNextElement = (node, match) => {
+  const origDice = diceValueFromMatch(match.groups);
+  const nextSibling = node.nextElementSibling;
+  const nextOffset = match.index + match[0].length;
+
+  if (
+    nextOffset + 3 === node.textContent.length &&
+    !match.groups.sign &&
+    node.textContent.slice(nextOffset, nextOffset + 3).match(/ [-+] /) &&
+    nextSibling?.querySelector(".ddbc-snippet__tag")
+  ) {
+    match.groups.sign = node.textContent.slice(nextOffset + 1, nextOffset + 2);
+    match.groups.modifier =
+      nextSibling.querySelector(".ddbc-snippet__tag").textContent;
+
+    const linkContent = new DocumentFragment();
+    linkContent.appendChild(
+      document.createTextNode(`${origDice} ${match.groups.sign}\u00A0`),
+    );
+    linkContent.appendChild(nextSibling);
+
+    return [nextOffset + 3, match, linkContent];
+  }
+
+  return [nextOffset, match, null];
+};
+
 export const embedInText = (node, labelOrCallback) => {
   let offset = 0;
   let fragment;
-  for (const match of node.textContent.matchAll(diceRegex)) {
+  const textContent = node.textContent;
+  for (let match of textContent.matchAll(diceRegex)) {
     if (offset === 0) {
       fragment = new DocumentFragment();
 
       if (match.index !== 0) {
         fragment.appendChild(
-          document.createTextNode(node.textContent.slice(offset, match.index)),
+          document.createTextNode(textContent.slice(offset, match.index)),
         );
       }
     } else {
       fragment.appendChild(
-        document.createTextNode(node.textContent.slice(offset, match.index)),
+        document.createTextNode(textContent.slice(offset, match.index)),
       );
     }
+
+    // Check if we should merge the next element into this node.
+    let nextOffset;
+    let linkContent;
+    [nextOffset, match, linkContent] = processNextElement(node, match);
 
     const dice = diceValueFromMatch(match.groups);
     let label = labelOrCallback;
@@ -88,15 +125,16 @@ export const embedInText = (node, labelOrCallback) => {
     const link = talespireLink(null, label, dice, match[0]);
     link.style = "padding-left: 4px; padding-right: 4px;";
 
+    if (linkContent) {
+      link.replaceChildren(linkContent);
+    }
     fragment.appendChild(link);
-    offset = match.index + match[0].length;
+    offset = nextOffset;
   }
 
-  if (fragment && offset !== node.textContent.length) {
+  if (fragment && offset !== textContent.length) {
     fragment.appendChild(
-      document.createTextNode(
-        node.textContent.slice(offset, node.textContent.length),
-      ),
+      document.createTextNode(textContent.slice(offset, textContent.length)),
     );
   }
 

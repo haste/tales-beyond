@@ -1,4 +1,6 @@
 export const talespireLink = (elem, label, dice, diceLabel) => {
+  label = label?.trim();
+
   const link = document.createElement("button");
   link.classList.add("integrated-dice__container");
   link.classList.add("tales-beyond-extension");
