@@ -5,6 +5,7 @@
 ### Bug fixes
 
  * Correctly send d100s to TaleSpire.
+ * Dice buttons will no longer be added to item names.
 
 ### Enhancements
 

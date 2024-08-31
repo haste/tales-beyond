@@ -361,7 +361,11 @@ const characterAppWatcher = () => {
       for (const addedNode of mutation.addedNodes) {
         for (const node of getTextNodes(addedNode)) {
           const parentNode = node.parentElement;
-          if (isParentsProcessed(parentNode)) {
+          if (
+            // Don't embed in item names
+            parentNode.classList.contains("ddbc-item-name") ||
+            isParentsProcessed(parentNode)
+          ) {
             continue;
           }
 
