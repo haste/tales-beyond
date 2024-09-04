@@ -9,11 +9,12 @@
 
 ### Enhancements
 
- * Custom spells have been re-implemented. It does the following:
+ * Spell and action modifications have been re-implemented. It does the following:
    - **Chaos Bolt**: Changes the dice to include the missing d6.
    - **Magic Missile**: Adds extra dice buttons for multiple darts.
    - **Melf's Minute Meteors**: Adds an extra dice button for throwing two meteors.
    - **Toll the Dead**: Adds an extra dice button for damaged targets.
+   - **Two-Weapon Fighting**: Adds an extra dice button for making bonus attacks with light weapons without positive modifier.
  * The header of features will now be used as dice labels.
  * Second Wind (and similar feats) will now correctly include the modifier.
 

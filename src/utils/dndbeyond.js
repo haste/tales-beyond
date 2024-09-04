@@ -79,3 +79,18 @@ export const getCharacterAbilities = () => {
 
   return abilities;
 };
+
+let previousCharacterActionsInCombat = [];
+export const getCharacterActionsInCombat = () => {
+  const actions = Array.from(
+    document.querySelectorAll(".ct-basic-actions__action"),
+  ).map((node) => node.textContent);
+
+  if (!actions.length) {
+    return previousCharacterActionsInCombat;
+  }
+
+  previousCharacterActionsInCombat = actions;
+
+  return actions;
+};

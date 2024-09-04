@@ -2,6 +2,7 @@ import { namedObserver } from "~/observer";
 import { injectThemeStyle } from "~/themes";
 import {
   getCharacterAbilities,
+  getCharacterActionsInCombat,
   processBlockAbilities,
   processBlockTidbits,
 } from "~/utils/dndbeyond";
@@ -140,30 +141,39 @@ const customSpells = {
   },
 };
 
-const createOffHandButton = (label, action) => {
-  // Set dice button as versatile
-  const damageContainer = action.querySelector(
-    ".ddbc-combat-item-attack__damage",
-  );
-  // They have a typo here (ddb vs ddbc), so just hardcode it:
-  //const damageClass = damageContainer.classList[0];
-  //damageContainer.classList.add(`${damageClass}--is-versatile`);
-  damageContainer.classList.add("ddb-combat-item-attack__damage--is-versatile");
-
-  const diceContainer = action.querySelector(
-    ".ddbc-combat-attack__damage .integrated-dice__container:not(.tales-beyond-extension)",
-  );
-
-  if (!diceContainer) {
+const twoWeapingFighting = (label, diceButton, nameSibling) => {
+  if (
+    !(
+      nameSibling &&
+      getCharacterActionsInCombat().includes("Two-Weapon Fighting")
+    )
+  ) {
     return;
   }
 
-  const diceContainerClone = diceContainer.cloneNode(true);
-  diceContainerClone.dataset.label = label;
-  diceContainer.after(diceContainerClone);
+  const isLight = !!Array.prototype.find.call(
+    nameSibling.parentElement.querySelectorAll(
+      ".ddbc-note-components__component--plain",
+    ),
+    (el) => el.textContent === "Light",
+  );
 
-  const damageClone = diceContainerClone.querySelector(".ddbc-damage__value");
-  damageClone.innerText = damageClone.innerText.split("+")[0];
+  if (!isLight) {
+    return;
+  }
+
+  diceButton.classList.add("tales-beyond-extension");
+  diceButton.parentElement.parentElement.classList.add(
+    "tales-beyond-extension-versatile",
+  );
+
+  const clonedButton = diceButton.cloneNode(true);
+  const damageText = clonedButton.querySelector(".ddbc-damage__value");
+  damageText.innerText = damageText.innerText.split("+")[0];
+
+  const diceValue = getDiceValue(clonedButton);
+  const tsLink = talespireLink(clonedButton, `${label} (Off-hand)`, diceValue);
+  diceButton.parentElement.appendChild(tsLink);
 };
 
 const handleShortRestDice = (label, diceButton) => {
@@ -300,9 +310,11 @@ const processIntegratedDice = (addedNode) => {
       label = (nameSibling.querySelector('[class*="__label"]') || nameSibling)
         .textContent;
       if (
-        label in customSpells &&
-        !getParentWithClass(diceButton, "__tohit", 3) &&
-        customSpells[label](label, diceButton)
+        (label in customSpells &&
+          !getParentWithClass(diceButton, "__tohit", 3) &&
+          customSpells[label](label, diceButton)) ||
+        (!getParentWithClass(diceButton, "__tohit", 3) &&
+          twoWeapingFighting(label, diceButton, nameSibling))
       ) {
         continue;
       }
