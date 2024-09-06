@@ -1,0 +1,20 @@
+// Include functions first
+@import "bootstrap/scss/functions";
+
+$body-bg: #27272c;
+$input-bg: #1e1c22bf;
+$body-color: #c5c5ce;
+$component-active-bg: #ab79d6;
+
+// Required
+@import "bootstrap/scss/variables";
+@import "bootstrap/scss/variables-dark";
+@import "bootstrap/scss/maps";
+@import "bootstrap/scss/mixins";
+@import "bootstrap/scss/utilities";
+@import "bootstrap/scss/root";
+@import "bootstrap/scss/reboot";
+@import "bootstrap/scss/utilities";
+@import "bootstrap/scss/utilities/api";
+
+@import "bootstrap/scss/forms";

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html data-bs-theme="dark">
+  <head>
+    <meta charset="utf-8">
+    <title>Tales Beyond - Options</title>
+    <link rel="stylesheet" href="css/bootstrap.css">
+    <link rel="stylesheet" href="css/options.css">
+    <link rel="shortcut icon" type="image/png" href="icons/icon_48.png">
+  </head>
+
+  <body>
+    <h1>
+      <img src="icons/icon.svg">
+      Tales Beyond
+    </h1>
+
+    <div class="container">
+      <h4>Modifier key behavior</h4>
+      <div id="key-list"></div>
+
+      <h4>Action and Spell modifications</h4>
+      <div id="mod-list"></div>
+    </div>
+
+    <template id="option-key">
+      <div class="form-floating mb-3">
+        <select class="form-select">
+          <option value="adv">Advantage</option>
+          <option value="adv-dis">Advantage / Disadvantage</option>
+          <option value="dis">Disadvantage</option>
+          <option value="none">None</option>
+        </select>
+
+        <label>Alt key</label>
+      </div>
+    </template>
+
+    <template id="option-mod">
+      <label class="form-control option form-check-label mb-3">
+        <div class="description">
+          <header></header>
+        </div>
+
+        <div class="form-switch">
+          <input class="form-check-input" type="checkbox" role="switch">
+        </div>
+      </label>
+    </template>
+
+    <script src="options.js" type="module"></script>
+  </body>
+</html>

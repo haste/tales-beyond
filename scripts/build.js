@@ -40,7 +40,20 @@ export const build = async () => {
     }
   }
 
-  await $`cp -rf ${srcDir}/{icons,{dialog,styles}.css} LICENSE README.md CHANGELOG.md ${sharedDir}`;
+  for (const js of ["options.js"]) {
+    await bunBuild({
+      entrypoints: [path.join(srcDir, js)],
+      outdir: sharedDir,
+      sourcemap: "inline",
+      define: {
+        TB_DRY_RUN_TALESPIRE_LINKS: JSON.stringify(
+          Bun.env.TB_DRY_RUN_TALESPIRE_LINKS ?? "false",
+        ),
+      },
+    });
+  }
+
+  await $`cp -rf ${srcDir}/{icons,css,options.html,background.js} LICENSE README.md CHANGELOG.md ${sharedDir}`;
 
   for (const browser of browsers) {
     const buildDir = path.join(process.cwd(), "build", browser);

@@ -1,5 +1,42 @@
 import { abilityNames } from "~/consts";
-import { embedInText, getTextNodes } from "~/utils/web";
+import {
+  diceRegex,
+  diceValueFromMatch,
+  embedInText,
+  getTextNodes,
+} from "~/utils/web";
+
+export const getDiceValue = (node) => {
+  const damageValue = node.querySelector(".ddbc-damage__value");
+  if (damageValue) {
+    return damageValue.textContent;
+  }
+
+  const numberDisplay = node.querySelector('[class^="styles_numberDisplay"]');
+  if (!numberDisplay) {
+    // See if we can find one unique dice value within the node.
+    const matches = [];
+    for (const match of node.textContent.matchAll(diceRegex)) {
+      matches.push(diceValueFromMatch(match.groups));
+    }
+
+    const uniqMatches = [...new Set(matches)];
+    if (uniqMatches.length === 1) {
+      return uniqMatches[0];
+    }
+
+    return;
+  }
+
+  const isSigned = numberDisplay.className.includes("styles_signed");
+  if (isSigned) {
+    const sign = numberDisplay.querySelector(
+      '[class^="styles_sign"]',
+    ).textContent;
+    const number = numberDisplay.lastChild.textContent;
+    return `1d20${sign}${number}`;
+  }
+};
 
 // Handles abilities on creatures and vehicles in sidebar, and on monster pages
 export const processBlockAbilities = (node, label) => {

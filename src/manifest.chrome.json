@@ -1,5 +1,15 @@
 {
   "manifest_version": 3,
+  "action": {
+    "default_title": "Open options"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "options_ui": {
+    "page": "options.html",
+    "open_in_tab": true
+  },
   "web_accessible_resources": [
     {
       "resources": ["icons/icon.svg"],

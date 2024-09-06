@@ -1,180 +1,19 @@
+import { customMod } from "~/mods";
 import { namedObserver } from "~/observer";
 import { injectThemeStyle } from "~/themes";
 import {
   getCharacterAbilities,
-  getCharacterActionsInCombat,
+  getDiceValue,
   processBlockAbilities,
   processBlockTidbits,
 } from "~/utils/dndbeyond";
 import { talespireLink } from "~/utils/talespire";
 import {
-  diceRegex,
-  diceValueFromMatch,
   embedInText,
-  getParentWithClass,
   getSiblingWithClass,
   getTextNodes,
   isParentsProcessed,
 } from "~/utils/web";
-
-const getDiceValue = (node) => {
-  const damageValue = node.querySelector(".ddbc-damage__value");
-  if (damageValue) {
-    return damageValue.textContent;
-  }
-
-  const numberDisplay = node.querySelector('[class^="styles_numberDisplay"]');
-  if (!numberDisplay) {
-    // See if we can find one unique dice value within the node.
-    const matches = [];
-    for (const match of node.textContent.matchAll(diceRegex)) {
-      matches.push(diceValueFromMatch(match.groups));
-    }
-
-    const uniqMatches = [...new Set(matches)];
-    if (uniqMatches.length === 1) {
-      return uniqMatches[0];
-    }
-
-    return;
-  }
-
-  const isSigned = numberDisplay.className.includes("styles_signed");
-  if (isSigned) {
-    const sign = numberDisplay.querySelector(
-      '[class^="styles_sign"]',
-    ).textContent;
-    const number = numberDisplay.lastChild.textContent;
-    return `1d20${sign}${number}`;
-  }
-};
-
-const customSpells = {
-  "Toll the Dead": (label, diceButton) => {
-    diceButton.classList.add("tales-beyond-extension");
-    diceButton.parentElement.parentElement.classList.add(
-      "tales-beyond-extension-versatile",
-    );
-
-    const clonedButton = diceButton.cloneNode(true);
-    const damageText = clonedButton.querySelector(".ddbc-damage__value");
-    damageText.innerText = damageText.innerText.replace("8", "12");
-
-    const diceValue = getDiceValue(clonedButton);
-    const tsLink = talespireLink(clonedButton, `${label} (Damaged)`, diceValue);
-    diceButton.parentElement.appendChild(tsLink);
-  },
-
-  "Magic Missile": (label, diceButton) => {
-    const extraDarts = Number.parseInt(
-      getSiblingWithClass(
-        diceButton,
-        "ddbc-note-components__component--scaled",
-        5,
-      )?.textContent.slice(8) || "0",
-    );
-
-    for (let i = 1; i < 3 + extraDarts + 1; i++) {
-      const diceValue = getDiceValue(diceButton).replaceAll(1, i);
-
-      const clonedButton = diceButton.cloneNode(true);
-      const damageText = clonedButton.querySelector(".ddbc-damage__value");
-      damageText.innerText = diceValue;
-
-      const tsLink = talespireLink(
-        clonedButton,
-        i > 1 ? `${label} (${i} darts)` : label,
-        diceValue,
-      );
-      diceButton.parentElement.appendChild(tsLink);
-    }
-
-    diceButton.style = "display: none;";
-    diceButton.classList.add("tales-beyond-extension");
-    diceButton.parentElement.parentElement.classList.add(
-      "tales-beyond-extension-versatile",
-    );
-
-    return true;
-  },
-
-  "Melf's Minute Meteors": (label, diceButton) => {
-    diceButton.classList.add("tales-beyond-extension");
-    diceButton.parentElement.parentElement.classList.add(
-      "tales-beyond-extension-versatile",
-    );
-
-    const clonedButton = diceButton.cloneNode(true);
-    const damageText = clonedButton.querySelector(".ddbc-damage__value");
-    damageText.innerText = damageText.innerText.replace("2", "4");
-
-    const diceValue = getDiceValue(clonedButton);
-    const tsLink = talespireLink(
-      clonedButton,
-      `${label} (2 meteors)`,
-      diceValue,
-    );
-    diceButton.parentElement.appendChild(tsLink);
-  },
-
-  "Chaos Bolt": (label, diceButton) => {
-    const level = getParentWithClass(diceButton, "ddbc-combat-attack")
-      ? 1
-      : Number.parseInt(
-          getSiblingWithClass(
-            diceButton,
-            "ct-content-group__header-content",
-            9,
-          )?.textContent.slice(0, -8),
-        );
-
-    const damageValue = getSiblingWithClass(
-      diceButton,
-      "ddbc-damage__value",
-      5,
-    );
-    const diceValue = `${damageValue.innerText}+${level}d6`;
-
-    diceButton.replaceWith(talespireLink(null, label, diceValue, diceValue));
-
-    return true;
-  },
-};
-
-const twoWeapingFighting = (label, diceButton, nameSibling) => {
-  if (
-    !(
-      nameSibling &&
-      getCharacterActionsInCombat().includes("Two-Weapon Fighting")
-    )
-  ) {
-    return;
-  }
-
-  const isLight = !!Array.prototype.find.call(
-    nameSibling.parentElement.querySelectorAll(
-      ".ddbc-note-components__component--plain",
-    ),
-    (el) => el.textContent === "Light",
-  );
-
-  if (!isLight) {
-    return;
-  }
-
-  diceButton.classList.add("tales-beyond-extension");
-  diceButton.parentElement.parentElement.classList.add(
-    "tales-beyond-extension-versatile",
-  );
-
-  const clonedButton = diceButton.cloneNode(true);
-  const damageText = clonedButton.querySelector(".ddbc-damage__value");
-  damageText.innerText = damageText.innerText.split("+")[0];
-
-  const diceValue = getDiceValue(clonedButton);
-  const tsLink = talespireLink(clonedButton, `${label} (Off-hand)`, diceValue);
-  diceButton.parentElement.appendChild(tsLink);
-};
 
 const handleShortRestDice = (label, diceButton) => {
   diceButton.style = "display: none;";
@@ -309,13 +148,7 @@ const processIntegratedDice = (addedNode) => {
     ) {
       label = (nameSibling.querySelector('[class*="__label"]') || nameSibling)
         .textContent;
-      if (
-        (label in customSpells &&
-          !getParentWithClass(diceButton, "__tohit", 3) &&
-          customSpells[label](label, diceButton)) ||
-        (!getParentWithClass(diceButton, "__tohit", 3) &&
-          twoWeapingFighting(label, diceButton, nameSibling))
-      ) {
+      if (customMod(label, diceButton, nameSibling)) {
         continue;
       }
     }

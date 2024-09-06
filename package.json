@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "build": "bun run --bun scripts/build.js",
+    "build:css": "sass --style compressed --source-map --embed-sources --no-error-css --load-path=node_modules src/scss/:src/css/",
     "watch": "bun run --bun --watch scripts/watch.js",
     "check": "bun biome check src/ scripts/",
     "check:apply": "bun biome check --apply src/ scripts/"
@@ -12,7 +13,9 @@
   "packageManager": "bun@1.1.26",
   "devDependencies": {
     "@biomejs/biome": "1.8.3",
+    "bootstrap": "^5.3.3",
     "chrome-webstore-upload-cli": "^3.3.1",
+    "sass": "^1.78.0",
     "web-ext": "8.2.0"
   }
 }

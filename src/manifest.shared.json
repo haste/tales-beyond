@@ -6,18 +6,19 @@
     "48": "icons/icon_48.png",
     "128": "icons/icon_128.png"
   },
+  "permissions": ["storage"],
   "content_scripts": [
     {
       "matches": ["*://*.dndbeyond.com/characters/*"],
       "run_at": "document_end",
       "js": ["characters.js"],
-      "css": ["dialog.css", "styles.css"]
+      "css": ["css/dialog.css", "css/styles.css"]
     },
     {
       "matches": ["*://*.dndbeyond.com/monsters*"],
       "run_at": "document_end",
       "js": ["monsters.js"],
-      "css": ["styles.css"]
+      "css": ["css/styles.css"]
     }
   ]
 }

@@ -17,6 +17,7 @@
    - **Two-Weapon Fighting**: Adds an extra dice button for making bonus attacks with light weapons without positive modifier.
  * The header of features will now be used as dice labels.
  * Second Wind (and similar feats) will now correctly include the modifier.
+ * Extension options have now been added for changing modifier key behavior and disabling/enabling spell and action modifications.
 
 ## 0.13.2 (2024-07-22)
 

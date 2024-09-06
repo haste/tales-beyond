@@ -1,0 +1,66 @@
+*,
+*:before,
+*:after {
+  box-sizing: border-box;
+}
+
+body {
+  background: #27272c;
+  color: #c5c5ce;
+  font-family: system-ui,sans-serif;
+  font-size: 1.15rem;
+  line-height: 1.6;
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  margin-left: auto;
+  margin-right: auto;
+  width: min(70ch, 100% - 2rem);
+}
+
+h1 {
+  color: #ab79d6;
+  margin: 0;
+  padding: 1rem;
+  display: flex;
+  gap: .5rem;
+  align-items: center;
+  justify-content: center;
+}
+
+h1 img {
+  width: 2rem;
+}
+
+h4:first-child {
+  margin-top: 1.5rem;
+}
+
+h4:not(:first-child) {
+  margin-top: 3rem;
+}
+
+.option {
+  display: grid;
+  grid-template-columns: auto 2.5em;
+  grid-template-areas: "text checkbox";
+  gap: 0.5em;
+  align-items: center;
+}
+
+.option header {
+  font-weight: 600;
+}
+
+.option .description {
+  gird-area: description;
+}
+
+
+.option .form-switch {
+  grid-area: checkbox;
+}
