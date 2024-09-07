@@ -8,7 +8,7 @@
     "build:css": "sass --style compressed --source-map --embed-sources --no-error-css --load-path=node_modules src/scss/:src/css/",
     "watch": "bun run --bun --watch scripts/watch.js",
     "check": "bun biome check src/ scripts/",
-    "check:apply": "bun biome check --apply src/ scripts/"
+    "check:write": "bun biome check --write src/ scripts/"
   },
   "packageManager": "bun@1.1.27",
   "devDependencies": {
