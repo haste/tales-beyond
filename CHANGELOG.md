@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.15.0 (Unreleased)
+
+### Enhancements
+
+ * New action modification:
+   - **Infiltrator Armor: Lightning Launcher**: Adds an extra dice button for the once per turn action.
+
 ## 0.14.0 (2024-09-07)
 
 ### Bug fixes

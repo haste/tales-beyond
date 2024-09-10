@@ -36,6 +36,27 @@ export const mods = [
     },
   },
   {
+    id: "modInfiltratorArmorLightningLauncher",
+    header: "Infiltrator Armor: Lightning Launcher",
+    description:
+      "Add an extra dice button for the once per turn 1d6 extra damage.",
+    check: (mod, label) => label.includes(mod.header),
+    fn: (label, diceButton) => {
+      diceButton.classList.add("tales-beyond-extension");
+      diceButton.parentElement.parentElement.classList.add(
+        "tales-beyond-extension-versatile",
+      );
+
+      const clonedButton = diceButton.cloneNode(true);
+      const damageText = clonedButton.querySelector(".ddbc-damage__value");
+      damageText.innerText = damageText.innerText.replace("1d6", "2d6");
+
+      const diceValue = getDiceValue(clonedButton);
+      const tsLink = talespireLink(clonedButton, label, diceValue);
+      diceButton.parentElement.appendChild(tsLink);
+    },
+  },
+  {
     id: "modMagicMissile",
     header: "Magic Missile",
     description: "Adds extra dice buttons for multiple darts.",

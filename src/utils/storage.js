@@ -5,6 +5,7 @@ const defaultOptions = {
   modifierKeyCtrl: "adv-dis",
   modifierKeyShift: "adv-dis",
   modChaosBolt: true,
+  modInfiltratorArmorLightningLauncher: true,
   modMagicMissile: true,
   modMelfsMinuteMeteors: true,
   modTollTheDead: true,
