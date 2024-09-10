@@ -170,7 +170,7 @@ export const mods = [
 ];
 
 export const customMod = (label, diceButton, nameSibling) => {
-  if (getParentWithClass(diceButton, "__tohit", 3)) {
+  if (!getParentWithClass(diceButton, "__damage", 3)) {
     return;
   }
 
