@@ -8,6 +8,7 @@ const defaultOptions = {
   modInfiltratorArmorLightningLauncher: true,
   modMagicMissile: true,
   modMelfsMinuteMeteors: true,
+  modScorchingRay: true,
   modTollTheDead: true,
   modTwoWeaponLightOffhand: true,
 };

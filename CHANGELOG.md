@@ -4,8 +4,9 @@
 
 ### Enhancements
 
- * New action modification:
+ * New spell and action modification:
    - **Infiltrator Armor: Lightning Launcher**: Adds an extra dice button for the once per turn action.
+   - **Scorching Ray**: Adds extra dice buttons for multiple rays.
 
 ## 0.14.0 (2024-09-07)
 

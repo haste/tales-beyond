@@ -119,6 +119,44 @@ export const mods = [
     },
   },
   {
+    id: "modScorchingRay",
+    header: "Scorching Ray",
+    description: "Adds extra dice buttons for multiple rays.",
+    check: labelIsHeader,
+    fn: (label, diceButton) => {
+      const extraRays = Number.parseInt(
+        getSiblingWithClass(
+          diceButton,
+          "ddbc-note-components__component--scaled",
+          5,
+        )?.textContent.slice(8) || "0",
+      );
+
+      for (let i = 1; i < 3 + extraRays + 1; i++) {
+        const diceValue = getDiceValue(diceButton).replace(2, 2 * i);
+
+        const clonedButton = diceButton.cloneNode(true);
+        const damageText = clonedButton.querySelector(".ddbc-damage__value");
+        damageText.innerText = diceValue;
+
+        const tsLink = talespireLink(
+          clonedButton,
+          i > 1 ? `${label} (${i} rays)` : label,
+          diceValue,
+        );
+        diceButton.parentElement.appendChild(tsLink);
+      }
+
+      diceButton.style = "display: none;";
+      diceButton.classList.add("tales-beyond-extension");
+      diceButton.parentElement.parentElement.classList.add(
+        "tales-beyond-extension-versatile",
+      );
+
+      return true;
+    },
+  },
+  {
     id: "modTollTheDead",
     header: "Toll the Dead",
     description: "Adds an extra dice button for damaged targets.",
