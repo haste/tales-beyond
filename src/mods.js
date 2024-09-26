@@ -13,7 +13,7 @@ export const mods = [
     description: "Changes the dice to include the missing d6.",
     check: labelIsHeader,
     fn: (label, diceButton) => {
-      const level = getParentWithClass(diceButton, "ddbc-combat-attack")
+      const level = getParentWithClass(diceButton, "ddbc-combat-attack", 4)
         ? 1
         : Number.parseInt(
             getSiblingWithClass(
@@ -229,7 +229,7 @@ export const mods = [
 ];
 
 export const customMod = (label, diceButton, nameSibling) => {
-  if (!getParentWithClass(diceButton, "__damage", 3)) {
+  if (!getParentWithClass(diceButton, "__damage", 2)) {
     return;
   }
 

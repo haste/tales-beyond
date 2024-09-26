@@ -164,12 +164,12 @@ export const getParentWithClass = (node, name, attempts = 5) => {
     return;
   }
 
-  if (node.classList.contains(name)) {
+  if (node.className.includes(name)) {
     return node;
   }
 
   if (node.parentElement) {
-    return getSiblingWithClass(node.parentElement, name, --attempts);
+    return getParentWithClass(node.parentElement, name, --attempts);
   }
   return;
 };
