@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.16.0 (Unreleased)
+
+### Enhancements
+
+ * Now does a better job of combining dice in text. For example **Hand of Healing** is no longer two separate dice entries.
+
 ## 0.15.0 (2024-09-13)
 
 ### Enhancements

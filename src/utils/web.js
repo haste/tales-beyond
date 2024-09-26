@@ -52,14 +52,26 @@ export const getTextNodes = (root) => {
 // the end of a #text node and the next element has a .ddbc-snippet__tag
 // class, then we absorb that into our dice button.
 const processNextElement = (node, match) => {
+  const nextOffset = match.index + match[0].length;
+  if (match.groups.sign) {
+    return [nextOffset, match, null];
+  }
+
   const origDice = diceValueFromMatch(match.groups);
   const nextSibling = node.nextElementSibling;
-  const nextOffset = match.index + match[0].length;
+
+  const parentTooltip = getParentWithClass(
+    node.parentElement,
+    "ddbc-tooltip",
+    2,
+  );
+  const parentTooltipSibling = parentTooltip?.nextElementSibling;
 
   if (
     nextOffset + 3 === node.textContent.length &&
-    !match.groups.sign &&
-    node.textContent.slice(nextOffset, nextOffset + 3).match(/ [-+] /) &&
+    node.textContent
+      .slice(nextOffset, nextOffset + 3)
+      .match(/( [-+] | [-+]\d+)/) &&
     nextSibling?.querySelector(".ddbc-snippet__tag")
   ) {
     match.groups.sign = node.textContent.slice(nextOffset + 1, nextOffset + 2);
@@ -75,6 +87,22 @@ const processNextElement = (node, match) => {
     return [nextOffset + 3, match, linkContent];
   }
 
+  if (
+    node.textContent.slice(nextOffset).trim().length === 0 &&
+    (nextSibling?.textContent.match(/[-+]\d+$/) ||
+      (parentTooltipSibling?.classList.contains("ddbc-tooltip") &&
+        parentTooltipSibling?.textContent.match(/[-+]\d+$/)))
+  ) {
+    const modNode = nextSibling || parentTooltipSibling;
+    match.groups.sign = modNode.textContent.slice(0, 1);
+    match.groups.modifier = modNode.textContent.slice(1);
+
+    const linkContent = new DocumentFragment();
+    linkContent.appendChild(document.createTextNode(`${origDice}\u00A0`));
+    linkContent.appendChild(modNode);
+
+    return [node.textContent.length, match, linkContent];
+  }
   return [nextOffset, match, null];
 };
 
