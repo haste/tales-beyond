@@ -5,6 +5,7 @@
 ### Enhancements
 
  * Now does a better job of combining dice in text. For example **Hand of Healing** is no longer two separate dice entries.
+ * Can now be used as a symbiote in TaleSpire.
 
 ## 0.15.0 (2024-09-13)
 

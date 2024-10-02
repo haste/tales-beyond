@@ -1,0 +1,38 @@
+{
+  "manifestVersion": 1,
+  "name": "Tales Beyond - D&D Beyond Viewer",
+  "license": "MIT",
+  "summary": "D&D Beyond Viewer with dice roller",
+  "entryPoint": "/index.html",
+  "about": {
+    "website": "https://github.com/haste/tales-beyond",
+    "authors": ["Trond A Ekseth"]
+  },
+  "api": {
+    "version": "0.1",
+    "initTimeout": 10,
+    "subscriptions": {
+      "symbiote": {
+        "onStateChangeEvent": "handleSymbioteStateChange"
+      }
+    }
+  },
+  "controls": {
+    "reload": true,
+    "navigation": true
+  },
+  "icons": {
+    "64x64": "/icons/icon_64.png"
+  },
+  "environment": {
+    "loadTargetBehavior": "popup",
+    "capabilities": ["runInBackground"],
+    "extras": [
+      "colorStyles",
+      "fonts",
+      "/characters.js",
+      "/css/dialog.css",
+      "/css/styles.css"
+    ]
+  }
+}

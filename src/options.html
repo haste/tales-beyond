@@ -10,18 +10,27 @@
   </head>
 
   <body>
-    <h1>
-      <img src="icons/icon.svg">
-      Tales Beyond
-    </h1>
+    <main>
+      <div class="content">
+        <h1>
+          <img src="icons/icon_48.png">
+          Tales Beyond
+        </h1>
+        <section id="modifiers">
+          <h4>Modifier key behavior</h4>
+          <div id="key-list"></div>
+        </section>
 
-    <div class="container">
-      <h4>Modifier key behavior</h4>
-      <div id="key-list"></div>
+        <section id="actions">
+          <h4>Action and Spell modifications</h4>
+          <div id="mod-list"> </div>
+        </section>
+      </div>
+    </main>
 
-      <h4>Action and Spell modifications</h4>
-      <div id="mod-list"></div>
-    </div>
+    <footer>
+      <a href="https://www.dndbeyond.com/sign-in?returnUrl=/characters">Return to D&amp;D Beyond</a>
+    </footer>
 
     <template id="option-key">
       <div class="form-floating mb-3">

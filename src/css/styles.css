@@ -27,3 +27,16 @@ button.integrated-dice__container.tales-beyond-extension:hover ~ .ddbc-saving-th
 .ddbc-saving-throws-summary__ability-modifier > button.integrated-dice__container.tales-beyond-extension:hover {
   background: transparent;
 }
+
+.tales-beyond-extension-options img {
+  max-width: 100%;
+  max-height: 19px;
+}
+
+.tales-beyond-extension-options [class*="mobile"] {
+  margin-right: 4px;
+}
+
+.tales-beyond-extension-options [class*="mobile"] img {
+  max-height: 32px;
+}

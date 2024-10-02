@@ -13,45 +13,61 @@ const defaultOptions = {
   modTwoWeaponLightOffhand: true,
 };
 
-// TODO: Check if this is required when Firefox is moved to Manifest V3
-// We wrap this in a Promise so we get the same behavior in Firefox and Chrome
-const localStorageGet = (keys) => {
-  return new Promise((resolve, reject) => {
-    chrome.storage.local.get(keys, (result) => {
-      if (chrome.runtime.lastError) {
-        return reject(chrome.runtime.lastError);
-      }
+let settings = {};
+let localStorageGet;
+let getOptions;
+let saveOption;
 
-      resolve(result);
+if (typeof chrome !== "undefined" && chrome.storage) {
+  // TODO: Check if this is required when Firefox is moved to Manifest V3
+  // We wrap this in a Promise so we get the same behavior in Firefox and Chrome
+  localStorageGet = (keys) => {
+    return new Promise((resolve, reject) => {
+      chrome.storage.local.get(keys, (result) => {
+        if (chrome.runtime.lastError) {
+          return reject(chrome.runtime.lastError);
+        }
+
+        resolve(result);
+      });
     });
-  });
-};
+  };
 
-export const getOptions = async (keys) => {
-  const userOptions = await localStorageGet();
-  if (!userOptions?.version) {
-    await saveOption("version", VERSION);
-  }
+  getOptions = async (keys) => {
+    const userOptions = await localStorageGet(keys);
+    settings = { ...defaultOptions, ...userOptions };
+    return settings;
+  };
 
-  settings = { ...defaultOptions, ...userOptions };
-  return settings;
-};
+  saveOption = async (key, value) => {
+    await chrome.storage.local.set({ [key]: value });
+  };
 
-export const saveOption = async (key, value) => {
-  await chrome.storage.local.set({ [key]: value });
-};
+  const init = async () => {
+    await getOptions();
+    chrome.storage.local.onChanged.addListener((changes) => {
+      for (const key of Object.keys(changes)) {
+        settings[key] = changes[key].newValue;
+      }
+    });
+  };
 
-export let settings = {};
-
-const init = async () => {
-  await getOptions();
-  chrome.storage.local.onChanged.addListener((changes) => {
-    for (const key of Object.keys(changes)) {
-      settings[key] = changes[key].newValue;
-    }
-  });
-};
-
-if (typeof chrome !== "undefined") {
   init();
+} else if (typeof TS !== "undefined" && TS.localStorage) {
+  saveOption = async (key, value) => {
+    settings[key] = value;
+    await TS.localStorage.global.setBlob(JSON.stringify(settings));
+  };
+
+  // TODO: Implement `keys` argument
+  getOptions = async (keys) => {
+    const userOptions = JSON.parse(
+      (await TS.localStorage.global.getBlob()) || "{}",
+    );
+
+    settings = { ...defaultOptions, ...userOptions };
+    return settings;
+  };
 }
+
+export { getOptions, saveOption, settings };

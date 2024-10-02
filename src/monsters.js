@@ -1,5 +1,5 @@
-import { namedObserver } from "~/observer";
 import { processBlockAbilities, processBlockTidbits } from "~/utils/dndbeyond";
+import { namedObserver } from "~/utils/observer";
 import { talespireLink } from "~/utils/talespire";
 import { embedInText, getTextNodes } from "~/utils/web";
 
@@ -39,7 +39,7 @@ const updateMonsters = (node) => {
   }
 };
 
-const main = () => {
+export const monsterWatcher = () => {
   // Single monster detail page
   updateMonsters(document.querySelector(".detail-content"));
 
@@ -65,5 +65,3 @@ const main = () => {
     subtree: true,
   });
 };
-
-main();

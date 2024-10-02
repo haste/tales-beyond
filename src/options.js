@@ -18,27 +18,35 @@ const keys = [
 
 const restoreOptions = async () => {
   const settings = await getOptions();
-  const keyTemplate = document.querySelector("#option-key");
-  const keyList = document.querySelector("#key-list");
-  for (const key of keys) {
-    const option = keyTemplate.content.cloneNode(true);
-    const select = option.querySelector("select");
-    select.addEventListener("change", (event) =>
-      saveOption(key.id, event.target.value),
-    );
-    select.setAttribute("id", key.id);
 
-    const label = option.querySelector("label");
-    label.setAttribute("for", key.id);
-    label.textContent = key.label;
+  // Remove the modifier keys section as it isn't something we can support in
+  // TaleSpire currently.
+  if (typeof TS !== "undefined") {
+    document.querySelector("#modifiers").remove();
+    document.querySelector("footer").dataset.talespire = "";
+  } else {
+    const keyTemplate = document.querySelector("#option-key");
+    const keyList = document.querySelector("#key-list");
+    for (const key of keys) {
+      const option = keyTemplate.content.cloneNode(true);
+      const select = option.querySelector("select");
+      select.addEventListener("change", (event) =>
+        saveOption(key.id, event.target.value),
+      );
+      select.setAttribute("id", key.id);
 
-    for (const opt of option.querySelectorAll("option")) {
-      if (opt.value === settings[key.id]) {
-        opt.setAttribute("selected", "");
+      const label = option.querySelector("label");
+      label.setAttribute("for", key.id);
+      label.textContent = key.label;
+
+      for (const opt of option.querySelectorAll("option")) {
+        if (opt.value === settings[key.id]) {
+          opt.setAttribute("selected", "");
+        }
       }
-    }
 
-    keyList.appendChild(option);
+      keyList.appendChild(option);
+    }
   }
 
   const modTemplate = document.querySelector("#option-mod");
@@ -66,4 +74,8 @@ const restoreOptions = async () => {
   }
 };
 
-document.addEventListener("DOMContentLoaded", restoreOptions);
+document.addEventListener("readystatechange", (event) => {
+  if (event.target.readyState === "complete") {
+    restoreOptions();
+  }
+});

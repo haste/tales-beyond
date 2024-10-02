@@ -10,16 +10,24 @@ body {
   font-family: system-ui,sans-serif;
   font-size: 1.15rem;
   line-height: 1.6;
-  display: flex;
-  flex-direction: column;
+  display: grid;
   margin: 0;
   padding: 0;
+  min-height: 100vh;
+  grid-template-rows: 1fr auto;
 }
 
-.container {
+main {
+  grid-row: 1;
+  position: relative;
+  overflow-y: auto;
   margin-left: auto;
   margin-right: auto;
   width: min(70ch, 100% - 2rem);
+}
+
+.content {
+  position: absolute;
 }
 
 h1 {
@@ -63,4 +71,28 @@ h4:not(:first-child) {
 
 .option .form-switch {
   grid-area: checkbox;
+}
+
+footer {
+  margin-top: auto;
+  background-image: linear-gradient(#27272c00, #16141a);
+  display: none;
+  align-items: center;
+  grid-row: 2;
+  height: 3rem;
+}
+
+footer[data-talespire] {
+  display: flex;
+}
+
+footer:hover {
+  background-image: linear-gradient(#27272c00, #34313c);
+}
+
+footer a {
+  color: #ab79d6;
+  text-decoration: none;
+  flex: 1;
+  text-align: center;
 }

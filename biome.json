@@ -33,7 +33,7 @@
     }
   },
   "javascript": {
-    "globals": ["TB_DRY_RUN_TALESPIRE_LINKS", "chrome"]
+    "globals": ["TB_DRY_RUN_TALESPIRE_LINKS", "chrome", "TS"]
   },
   "overrides": [
     {

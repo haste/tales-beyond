@@ -1,5 +1,5 @@
+import svgLogo from "~/icons/icon.svg";
 import { customMod } from "~/mods";
-import { namedObserver } from "~/observer";
 import { injectThemeStyle } from "~/themes";
 import {
   getCharacterAbilities,
@@ -7,6 +7,8 @@ import {
   processBlockAbilities,
   processBlockTidbits,
 } from "~/utils/dndbeyond";
+import { namedObserver } from "~/utils/observer";
+import { getOptions } from "~/utils/storage";
 import { talespireLink } from "~/utils/talespire";
 import {
   embedInText,
@@ -157,14 +159,53 @@ const processIntegratedDice = (addedNode) => {
   }
 };
 
-const characterAppWatcher = () => {
+const injectOptionButton = async () => {
+  const settings = await getOptions();
+  const charApp = document.querySelector('[name="character-app"]');
+  if (
+    !(charApp && settings?.symbioteURL) ||
+    document.querySelector(".tales-beyond-extension-options")
+  ) {
+    return;
+  }
+
+  const gapNode = charApp.querySelector('[class*="--gap"]');
+  if (!gapNode) {
+    return;
+  }
+
+  const baseClass = gapNode.className.substring(
+    0,
+    gapNode.className.indexOf("__"),
+  );
+
+  const div = document.createElement("div");
+  div.className = gapNode.className.substring(
+    0,
+    gapNode.className.lastIndexOf(" "),
+  );
+  div.classList.add("tales-beyond-extension-options");
+  div.innerHTML = `
+    <div class="${baseClass}__button" role="button">
+      <img src="${svgLogo}" title="Tales Beyond Options">
+    </div>
+`;
+
+  div.addEventListener("click", () => {
+    window.location.href = `${settings.symbioteURL}/options.html`;
+  });
+
+  gapNode.after(div);
+};
+
+export const characterAppWatcher = (showOptionsButton = false) => {
   const options = {
     childList: true,
     subtree: true,
   };
 
   let wasDiceDisabled;
-  const callback = (mutationList, observer) => {
+  const callback = async (mutationList, observer) => {
     const isCharacterSelected = /^\/characters\/\d+\/?$/.test(
       window.location.pathname,
     );
@@ -189,6 +230,10 @@ const characterAppWatcher = () => {
     injectThemeStyle();
 
     observer.disconnect();
+
+    if (showOptionsButton) {
+      await injectOptionButton();
+    }
 
     for (const mutation of mutationList) {
       // This is a bit of a hack, but things get a bit messy when enabling dice,
@@ -229,7 +274,7 @@ const characterAppWatcher = () => {
   );
 };
 
-const sidebarPortalWatcher = () => {
+export const sidebarPortalWatcher = () => {
   const callback = (mutationList, _observer) => {
     for (const mutation of mutationList) {
       if (mutation.addedNodes.length === 0) {
@@ -293,7 +338,7 @@ const showEnableDiceDialog = () => {
   dialog.addEventListener("touchend", closeDialog);
 
   const img = dialog.querySelector(".tales-beyond-extension-dialog img");
-  img.src = chrome.runtime.getURL("icons/icon.svg");
+  img.src = svgLogo;
 
   const button = dialog.querySelector(".tales-beyond-extension-dialog button");
   button.addEventListener("click", () => dialog.close());
@@ -302,10 +347,3 @@ const showEnableDiceDialog = () => {
   document.body.appendChild(dialog);
   dialog.showModal();
 };
-
-const main = () => {
-  characterAppWatcher();
-  sidebarPortalWatcher();
-};
-
-main();
