@@ -397,7 +397,9 @@ export const injectThemeStyle = () => {
   }
 
   let styles;
-  switch (mainColor.toLowerCase()) {
+  // The trim() is here because the Chromium version TaleSpire uses returns the
+  // CSS variable with spaces preserved
+  switch (mainColor.toLowerCase().trim()) {
     case "#e5623e":
       styles = themes["Barbarian Fire"];
       break;
