@@ -184,7 +184,7 @@ export const mods = [
     id: "modTwoWeaponLightOffhand",
     header: "Two-Weapon Fighting",
     description:
-      "Adds an extra dice button for making bonus attacks with light weapons" +
+      "Adds an extra dice button for making bonus attacks with light weapons " +
       "without positive modifier.",
     check: always,
     fn: (label, diceButton, nameSibling) => {
