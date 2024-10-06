@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.16.0 (Unreleased)
+## 0.16.0 (2024-10-06)
 
 ### Enhancements
 
