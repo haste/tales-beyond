@@ -25,6 +25,7 @@
     "64x64": "/icons/icon_64.png"
   },
   "environment": {
+    "symbiote_width": 769,
     "loadTargetBehavior": "popup",
     "capabilities": ["runInBackground"],
     "extras": [
