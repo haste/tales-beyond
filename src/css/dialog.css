@@ -7,7 +7,7 @@
   color: #c5c5ce;
   border-radius: .5em;
   border: 3px #ab79d6 solid;
-  box-shadow: 0 .5rem 1rem rgba(0,0,0,.3)
+  box-shadow: 0 .5rem 1rem rgba(0, 0, 0, 0.3);
 }
 
 .tales-beyond-extension-dialog h2 {
@@ -23,7 +23,9 @@
   width: 2rem;
 }
 
-.tales-beyond-extension-dialog p, .tales-beyond-extension-dialog ul, .tales-beyond-extension-dialog button {
+.tales-beyond-extension-dialog p,
+.tales-beyond-extension-dialog ul,
+.tales-beyond-extension-dialog button {
   margin: 1rem 0 0 0;
 }
 

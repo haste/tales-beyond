@@ -11,20 +11,25 @@ button.integrated-dice__container.tales-beyond-extension:hover {
   background: var(--tales-beyond-hover-background, #fdefe7);
 }
 
-button.integrated-dice__container.tales-beyond-extension:hover ~ .ddbc-saving-throw-selection-box-svg,
-button.integrated-dice__container.tales-beyond-extension:hover ~ .ddbc-saving-throw-selection-small-box-svg {
+button.integrated-dice__container.tales-beyond-extension:hover
+  ~ .ddbc-saving-throw-selection-box-svg,
+button.integrated-dice__container.tales-beyond-extension:hover
+  ~ .ddbc-saving-throw-selection-small-box-svg {
   fill: var(--tales-beyond-hover-background, #fdefe7);
 }
 
-.tales-beyond-extension-versatile button.integrated-dice__container.tales-beyond-extension {
+.tales-beyond-extension-versatile
+  button.integrated-dice__container.tales-beyond-extension {
   margin-bottom: 3px;
 }
 
-.ddbc-saving-throws-summary__ability-modifier > button.integrated-dice__container.tales-beyond-extension{
+.ddbc-saving-throws-summary__ability-modifier
+  > button.integrated-dice__container.tales-beyond-extension {
   border: 0;
 }
 
-.ddbc-saving-throws-summary__ability-modifier > button.integrated-dice__container.tales-beyond-extension:hover {
+.ddbc-saving-throws-summary__ability-modifier
+  > button.integrated-dice__container.tales-beyond-extension:hover {
   background: transparent;
 }
 
