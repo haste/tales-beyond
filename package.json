@@ -16,6 +16,6 @@
     "bootstrap": "^5.3.3",
     "chrome-webstore-upload-cli": "^3.3.1",
     "sass": "^1.79.4",
-    "web-ext": "8.2.0"
+    "web-ext": "8.3.0"
   }
 }
