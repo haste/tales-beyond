@@ -64,11 +64,6 @@ h4:not(:first-child) {
   font-weight: 600;
 }
 
-.option .description {
-  gird-area: description;
-}
-
-
 .option .form-switch {
   grid-area: checkbox;
 }
