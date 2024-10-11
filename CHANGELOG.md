@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.16.1 (Unreleased)
+
+### Bug fixes
+
+ * Prevent dice buttons from showing up in item names after D&D Beyond update.
+
 ## 0.16.0 (2024-10-06)
 
 ### Enhancements

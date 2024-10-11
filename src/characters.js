@@ -253,7 +253,7 @@ export const characterAppWatcher = (showOptionsButton = false) => {
           const parentNode = node.parentElement;
           if (
             // Don't embed in item names
-            parentNode.classList.contains("ddbc-item-name") ||
+            parentNode.className.includes("itemName") ||
             isParentsProcessed(parentNode)
           ) {
             continue;
