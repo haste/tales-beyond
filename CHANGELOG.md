@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.16.1 (Unreleased)
+## 0.16.1 (2024-10-11)
 
 ### Bug fixes
 
