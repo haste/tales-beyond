@@ -15,7 +15,7 @@
     "@biomejs/biome": "1.9.3",
     "bootstrap": "^5.3.3",
     "chrome-webstore-upload-cli": "^3.3.1",
-    "sass": "^1.79.4",
+    "sass": "^1.79.5",
     "web-ext": "8.3.0"
   }
 }
