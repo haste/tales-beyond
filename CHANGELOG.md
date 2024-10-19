@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.16.2 (Unreleased)
+
+### Bug fixes
+
+ * Correctly roll dice without labels when used as a symbiote in TaleSpire.
+
 ## 0.16.1 (2024-10-11)
 
 ### Bug fixes
