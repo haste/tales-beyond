@@ -102,6 +102,7 @@ const processIntegratedDice = (addedNode) => {
   )) {
     const previousSibling = diceButton.previousSibling;
     const parentPreviousSibling = diceButton.parentElement?.previousSibling;
+    const parentNextSibling = diceButton.parentElement?.nextSibling;
     const nameSibling = getSiblingWithClass(diceButton, "__name");
     let diceValue = getDiceValue(diceButton);
 
@@ -139,6 +140,11 @@ const processIntegratedDice = (addedNode) => {
     ) {
       const abbr = parentPreviousSibling.querySelector("abbr");
       label = `${abbr.title} (Saving)`;
+    } else if (
+      // Initiative (Mobile)
+      parentNextSibling?.className.includes("_labelMobile")
+    ) {
+      label = parentNextSibling.textContent;
     } else if (
       // Initiative
       previousSibling?.tagName === "H2"

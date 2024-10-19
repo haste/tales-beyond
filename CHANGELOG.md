@@ -5,6 +5,7 @@
 ### Bug fixes
 
  * Correctly roll dice without labels when used as a symbiote in TaleSpire.
+ * Fix missing label on Initiative rolls on D&D Beyond's mobile layout.
 
 ## 0.16.1 (2024-10-11)
 
