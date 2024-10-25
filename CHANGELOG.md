@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.16.3 (Unreleased)
+
+### Bug fixes
+
+ * Fix issues with rolling after D&D Beyond updated.
+
 ## 0.16.2 (2024-10-19)
 
 ### Bug fixes

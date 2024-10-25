@@ -142,7 +142,7 @@ const processIntegratedDice = (addedNode) => {
       label = `${abbr.title} (Saving)`;
     } else if (
       // Initiative (Mobile)
-      parentNextSibling?.className.includes("_labelMobile")
+      parentNextSibling?.className?.includes("_labelMobile")
     ) {
       label = parentNextSibling.textContent;
     } else if (
