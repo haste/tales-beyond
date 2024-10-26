@@ -1,10 +1,10 @@
 #!/usr/bin/env bun
 
+// Creates chrome and symbiote zips
+
 import path from "node:path";
 import Bun, { $ } from "bun";
 
-await $`rm -rf build/*`;
-await $`bun run build`;
 await $`bun web-ext build -o -s build/chrome`;
 
 const { version } = await Bun.file(

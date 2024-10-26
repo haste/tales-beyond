@@ -1,0 +1,45 @@
+name: Release
+on:
+  push:
+    tags:
+      - v*
+jobs:
+  main:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v1
+        with:
+          bun-version-file: ".tool-versions"
+      - name: Install dependencies
+        run: bun install
+      - name: Run build:css
+        run: bun run build:css
+      - name: Run build
+        run: bun run build
+      - name: Run checks
+        run: bun run check
+      - name: Run tests
+        run: bun test
+      - name: Run build:release
+        run: bun run build:release
+      - name: Release
+        run: |
+          bun web-ext sign \
+            -s build/firefox/ \
+            --channel listed \
+            --api-key ${AMO_API_KEY} \
+            --api-secret ${AMO_SECRET}
+
+          bun chrome-webstore-upload \
+            --source tales_beyond-${GITHUB_REF_NAME:1}.zip \
+            --extension-id ${CWS_EXTENSION_ID} \
+            --client-id ${CWS_CLIENT_ID} \
+            --client-secret ${CWS_CLIENT_SECRET} \
+            --refresh-token ${CWS_REFRESH_TOKEN}
+      - name: Add artifacts
+        uses: softprops/action-gh-release@v2
+        with:
+          files: web-ext-artifacts/*
