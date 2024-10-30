@@ -19,15 +19,15 @@ body {
 
 main {
   grid-row: 1;
-  position: relative;
-  overflow-y: auto;
-  margin-left: auto;
-  margin-right: auto;
+  justify-content: center;
+  justify-self: center;
+  margin-bottom: 3em;
   width: min(70ch, 100% - 2rem);
 }
 
 .content {
   position: absolute;
+  width: min(70ch, 100% - 2rem);
 }
 
 h1 {
@@ -75,6 +75,10 @@ footer {
   align-items: center;
   grid-row: 2;
   height: 3rem;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
 }
 
 footer[data-talespire] {
