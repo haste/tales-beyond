@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.16.4 (Unreleased)
+
+### Bug fixes
+
+ * Dice buttons will no longer be added to item names in the sidebar heading.
+
 ## 0.16.3 (2024-10-25)
 
 ### Bug fixes

@@ -59,6 +59,11 @@ const hijackSidebar = () => {
         continue;
       }
 
+      // Skip item names
+      if (parentElement.className.includes("itemName")) {
+        continue;
+      }
+
       // Matches actions in creatures under extras.
       if (parentElement.tagName === "P") {
         let action = parentElement.querySelector("strong");
