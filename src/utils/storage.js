@@ -1,6 +1,7 @@
 const VERSION = 1;
 const defaultOptions = {
   version: VERSION,
+  contextMenuEnabled: true,
   modifierKeyAlt: "adv-dis",
   modifierKeyCtrl: "adv-dis",
   modifierKeyShift: "adv-dis",

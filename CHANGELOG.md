@@ -1,10 +1,14 @@
 # Changelog
 
-## 0.16.4 (Unreleased)
+## 0.17.0 (Unreleased)
 
 ### Bug fixes
 
  * Dice buttons will no longer be added to item names in the sidebar heading.
+
+### Enhancements
+
+ * It's now possible to right-click dice buttons to roll with Advantage or Disadvantage.
 
 ## 0.16.3 (2024-10-25)
 

@@ -1,3 +1,4 @@
+import { injectContextMenu } from "~/contextmenu";
 import svgLogo from "~/icons/icon.svg";
 import { customMod } from "~/mods";
 import { injectThemeStyle } from "~/themes";
@@ -239,6 +240,7 @@ export const characterAppWatcher = (showOptionsButton = false) => {
 
     getCharacterAbilities();
     injectThemeStyle();
+    await injectContextMenu();
 
     observer.disconnect();
 

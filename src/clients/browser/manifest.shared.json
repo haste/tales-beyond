@@ -12,7 +12,7 @@
       "matches": ["*://*.dndbeyond.com/characters/*"],
       "run_at": "document_end",
       "js": ["characters.js"],
-      "css": ["css/dialog.css", "css/styles.css"]
+      "css": ["css/dialog.css", "css/styles.css", "css/contextmenu.css"]
     },
     {
       "matches": ["*://*.dndbeyond.com/monsters*"],

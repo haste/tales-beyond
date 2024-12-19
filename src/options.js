@@ -1,6 +1,15 @@
 import { mods } from "~/mods";
 import { getOptions, saveOption } from "~/utils/storage";
 
+const general = [
+  {
+    id: "contextMenuEnabled",
+    header: "Right-click menu",
+    description:
+      "Open a menu when right-clicking dice buttons to roll with Advantage or Disadvantage.",
+  },
+];
+
 const keys = [
   {
     id: "modifierKeyShift",
@@ -71,6 +80,30 @@ const restoreOptions = async () => {
     description.appendChild(text);
 
     modList.append(option);
+  }
+
+  const generalList = document.querySelector("#general-list");
+  for (const opt of general) {
+    // Re-use mod template
+    const option = modTemplate.content.cloneNode(true);
+    option.querySelector("label").setAttribute("for", opt.id);
+
+    const input = option.querySelector("input");
+    input.addEventListener("change", (event) =>
+      saveOption(opt.id, event.target.checked),
+    );
+    input.setAttribute("id", opt.id);
+    if (settings[opt.id]) {
+      input.setAttribute("checked", "");
+    }
+
+    const description = option.querySelector(".description");
+    description.firstElementChild.textContent = opt.header;
+
+    const text = document.createTextNode(opt.description);
+    description.appendChild(text);
+
+    generalList.append(option);
   }
 };
 

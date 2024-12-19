@@ -33,6 +33,7 @@
       "fonts",
       "/characters.js",
       "/css/dialog.css",
+      "/css/contextmenu.css",
       "/css/styles.css"
     ]
   }

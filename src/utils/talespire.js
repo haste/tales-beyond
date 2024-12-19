@@ -31,6 +31,30 @@ const checkModifierKeys = (event, name) => {
   return modifierAction(action, name);
 };
 
+export const triggerTalespire = (name, dice, extraDice) => {
+  dice = dice.replace(/d100/g, "d100+d10");
+
+  let uri;
+  if (typeof name === "string") {
+    uri = `talespire://dice/${encodeURIComponent(name)}:${dice}${extraDice ? `/${dice}` : ""}`;
+  } else {
+    uri = `talespire://dice/${dice}${extraDice ? `/${dice}` : ""}`;
+  }
+
+  if (TB_DRY_RUN_TALESPIRE_LINKS === "true") {
+    // biome-ignore lint/suspicious/noConsoleLog: Used during dev only
+    console.log("TaleSpire Link", { name, dice, extraDice, uri });
+  } else if (typeof TS !== "undefined" && TS.dice) {
+    const rollDescriptors = [{ name: name ?? "", roll: dice }];
+    if (extraDice) {
+      rollDescriptors.push({ name: "", roll: dice });
+    }
+    TS.dice.putDiceInTray(rollDescriptors);
+  } else {
+    window.open(uri, "_self");
+  }
+};
+
 export const talespireLink = (elem, label, dice, diceLabel) => {
   label = label?.trim();
 
@@ -39,33 +63,13 @@ export const talespireLink = (elem, label, dice, diceLabel) => {
   link.classList.add("tales-beyond-extension");
   link.dataset.tsLabel = label;
   link.dataset.tsDice = dice;
-  link.onclick = (event) => {
+  link.addEventListener("click", (event) => {
     event.stopPropagation();
-
-    dice = dice.replace(/d100/g, "d100+d10");
 
     const { name, extraDice } = checkModifierKeys(event, label);
 
-    let uri;
-    if (typeof name === "string") {
-      uri = `talespire://dice/${encodeURIComponent(name)}:${dice}${extraDice ? `/${dice}` : ""}`;
-    } else {
-      uri = `talespire://dice/${dice}${extraDice ? `/${dice}` : ""}`;
-    }
-
-    if (TB_DRY_RUN_TALESPIRE_LINKS === "true") {
-      // biome-ignore lint/suspicious/noConsoleLog: Used during dev only
-      console.log("TaleSpire Link", { name, dice, extraDice, uri });
-    } else if (typeof TS !== "undefined" && TS.dice) {
-      const rollDescriptors = [{ name: label ?? "", roll: dice }];
-      if (extraDice) {
-        rollDescriptors.push({ name: "", roll: extraDice });
-      }
-      TS.dice.putDiceInTray(rollDescriptors);
-    } else {
-      window.open(uri, "_self");
-    }
-  };
+    triggerTalespire(name, dice, extraDice);
+  });
 
   if (diceLabel) {
     link.innerText = diceLabel;
