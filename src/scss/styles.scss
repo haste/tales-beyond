@@ -1,0 +1,44 @@
+button.integrated-dice__container.tales-beyond-extension {
+  border: 1px solid var(--tales-beyond-border, #c53131);
+  border-radius: 4px;
+  background: var(--tales-beyond-background, #fefefe);
+  color: var(--tales-beyond-text, inherit);
+  cursor: pointer;
+  &:hover {
+    border: 1px solid var(--tales-beyond-hover-border, #c53131);
+    background: var(--tales-beyond-hover-background, #fdefe7);
+    ~ {
+      .ddbc-saving-throw-selection-box-svg {
+        fill: var(--tales-beyond-hover-background, #fdefe7);
+      }
+      .ddbc-saving-throw-selection-small-box-svg {
+        fill: var(--tales-beyond-hover-background, #fdefe7);
+      }
+    }
+  }
+}
+.tales-beyond-extension-versatile {
+  button.integrated-dice__container.tales-beyond-extension {
+    margin-bottom: 3px;
+  }
+}
+.ddbc-saving-throws-summary__ability-modifier {
+  > button.integrated-dice__container.tales-beyond-extension {
+    border: 0;
+    &:hover {
+      background: transparent;
+    }
+  }
+}
+.tales-beyond-extension-options {
+  img {
+    max-width: 100%;
+    max-height: 19px;
+  }
+  [class*="mobile"] {
+    margin-right: 4px;
+    img {
+      max-height: 32px;
+    }
+  }
+}

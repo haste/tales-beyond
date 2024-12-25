@@ -1,7 +1,13 @@
-*,
-*:before,
-*:after {
+* {
   box-sizing: border-box;
+
+  &:before {
+    box-sizing: border-box;
+  }
+
+  &:after {
+    box-sizing: border-box;
+  }
 }
 
 body {
@@ -35,21 +41,22 @@ h1 {
   margin: 0;
   padding: 1rem;
   display: flex;
-  gap: .5rem;
+  gap: 0.5rem;
   align-items: center;
   justify-content: center;
+
+  img {
+    width: 2rem;
+  }
 }
 
-h1 img {
-  width: 2rem;
-}
-
-h4:first-child {
-  margin-top: 1.5rem;
-}
-
-h4:not(:first-child) {
-  margin-top: 3rem;
+h4 {
+  &:first-child {
+    margin-top: 1.5rem;
+  }
+  &:not(:first-child) {
+    margin-top: 3rem;
+  }
 }
 
 .option {
@@ -58,14 +65,14 @@ h4:not(:first-child) {
   grid-template-areas: "text checkbox";
   gap: 0.5em;
   align-items: center;
-}
 
-.option header {
-  font-weight: 600;
-}
+  header {
+    font-weight: 600;
+  }
 
-.option .form-switch {
-  grid-area: checkbox;
+  .form-switch {
+    grid-area: checkbox;
+  }
 }
 
 footer {
@@ -79,19 +86,19 @@ footer {
   bottom: 0;
   left: 0;
   right: 0;
-}
 
-footer[data-talespire] {
-  display: flex;
-}
+  &:hover {
+    background-image: linear-gradient(#27272c00, #34313c);
+  }
 
-footer:hover {
-  background-image: linear-gradient(#27272c00, #34313c);
-}
+  a {
+    color: #ab79d6;
+    text-decoration: none;
+    flex: 1;
+    text-align: center;
+  }
 
-footer a {
-  color: #ab79d6;
-  text-decoration: none;
-  flex: 1;
-  text-align: center;
+  [data-talespire] {
+    display: flex;
+  }
 }

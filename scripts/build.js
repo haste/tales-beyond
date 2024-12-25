@@ -1,13 +1,16 @@
 #!/usr/bin/env bun
 
-import Bun, { $ } from "bun";
+import Bun, { $, Glob } from "bun";
 
 import fs from "node:fs/promises";
 import path from "node:path";
+import * as sass from "sass";
 
+const nodeModulesDir = path.join(process.cwd(), "node_modules");
 const srcDir = path.join(process.cwd(), "src");
-const browserSrcDir = path.join(process.cwd(), "src/clients/browser");
-const symbioteSrcDir = path.join(process.cwd(), "src/clients/symbiote");
+const sharedDir = path.join(process.cwd(), "build/shared");
+const browserSrcDir = path.join(srcDir, "clients/browser");
+const symbioteSrcDir = path.join(srcDir, "clients/symbiote");
 const browsers = ["firefox", "chrome"];
 
 const inlineSVG = {
@@ -56,8 +59,13 @@ const bunBuild = async (config) => {
   }
 };
 
+const buildShared = async () => {
+  await fs.mkdir(sharedDir, { recursive: true });
+  await $`cp -rf ${srcDir}/{icons,options.html} LICENSE README.md CHANGELOG.md ${sharedDir}`;
+};
+
 const buildBrowser = async () => {
-  const sharedDir = path.join(process.cwd(), "build/shared-browser");
+  const sharedBrowserDir = path.join(process.cwd(), "build/shared-browser");
 
   const { version } = await Bun.file(
     path.join(process.cwd(), "package.json"),
@@ -70,7 +78,7 @@ const buildBrowser = async () => {
     for (const js of script.js) {
       await bunBuild({
         entrypoints: [path.join(browserSrcDir, js)],
-        outdir: sharedDir,
+        outdir: sharedBrowserDir,
       });
     }
   }
@@ -78,18 +86,20 @@ const buildBrowser = async () => {
   for (const js of ["options.js"]) {
     await bunBuild({
       entrypoints: [path.join(srcDir, js)],
-      outdir: sharedDir,
+      outdir: sharedBrowserDir,
     });
   }
 
-  await $`cp -rf ${browserSrcDir}/background.js ${sharedDir}`;
-  await $`cp -rf ${srcDir}/{icons,css,options.html} LICENSE README.md CHANGELOG.md ${sharedDir}`;
+  await $`cp -rf ${browserSrcDir}/background.js ${sharedBrowserDir}`;
 
   for (const browser of browsers) {
     const buildDir = path.join(process.cwd(), "build", browser);
 
     // Shared files
     await fs.cp(sharedDir, buildDir, {
+      recursive: true,
+    });
+    await fs.cp(sharedBrowserDir, buildDir, {
       recursive: true,
     });
 
@@ -142,8 +152,12 @@ const buildSymbiote = async () => {
     });
   }
 
+  // Shared files
+  await fs.cp(sharedDir, buildDir, {
+    recursive: true,
+  });
+
   await $`cp -rf ${symbioteSrcDir}/index.html ${buildDir}`;
-  await $`cp -rf ${srcDir}/{icons,css,options.html} LICENSE README.md CHANGELOG.md ${buildDir}`;
 
   // Manifest
   const manifest = { version, ...manifestBase };
@@ -153,7 +167,36 @@ const buildSymbiote = async () => {
   );
 };
 
+const buildSCSS = async () => {
+  const scssFiles = path.join(srcDir, "scss/*.scss");
+  const cssPath = path.join(sharedDir, "css");
+
+  const glob = new Glob(scssFiles);
+  for await (const file of glob.scan(".")) {
+    const result = sass.compile(file, {
+      style: "compressed",
+      sourceMap: true,
+      sourceMapIncludeSources: true,
+      loadPaths: [nodeModulesDir],
+      // https://github.com/twbs/bootstrap/issues/29853
+      silenceDeprecations: ["import"],
+      quietDeps: true,
+    });
+
+    await Bun.write(
+      path.format({
+        ...path.parse(path.join(cssPath, path.basename(file))),
+        base: "",
+        ext: ".css",
+      }),
+      result.css,
+    );
+  }
+};
+
 export const build = async () => {
+  await buildSCSS();
+  await buildShared();
   await buildBrowser();
   await buildSymbiote();
   console.log("Build complete");

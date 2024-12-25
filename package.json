@@ -5,7 +5,6 @@
   "type": "module",
   "scripts": {
     "build": "bun run --bun scripts/build.js",
-    "build:css": "sass --style compressed --source-map --embed-sources --no-error-css --load-path=node_modules src/scss/:src/css/",
     "build:release": "bun run --bun scripts/release.js",
     "watch": "bun run --bun --watch scripts/watch.js",
     "check": "bun biome check src/ scripts/",
