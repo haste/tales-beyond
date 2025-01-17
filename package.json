@@ -10,7 +10,7 @@
     "check": "bun biome check src/ scripts/",
     "check:write": "bun biome check --write src/ scripts/"
   },
-  "packageManager": "bun@1.1.42",
+  "packageManager": "bun@1.1.45",
   "devDependencies": {
     "@biomejs/biome": "1.9.4",
     "bootstrap": "^5.3.3",
