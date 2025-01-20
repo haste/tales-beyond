@@ -18,7 +18,7 @@
       "matches": ["*://*.dndbeyond.com/monsters*"],
       "run_at": "document_end",
       "js": ["monsters.js"],
-      "css": ["css/styles.css"]
+      "css": ["css/styles.css", "css/contextmenu.css"]
     }
   ]
 }

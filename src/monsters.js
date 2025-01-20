@@ -1,3 +1,4 @@
+import { injectContextMenu } from "~/contextmenu";
 import { processBlockAbilities, processBlockTidbits } from "~/utils/dndbeyond";
 import { namedObserver } from "~/utils/observer";
 import { talespireLink } from "~/utils/talespire";
@@ -44,8 +45,11 @@ export const monsterWatcher = () => {
   updateMonsters(document.querySelector(".detail-content"));
 
   // Search list
-  const callback = (mutationList, observer) => {
+  const callback = async (mutationList, observer) => {
     observer.disconnect();
+
+    await injectContextMenu();
+
     for (const mutation of mutationList) {
       for (const node of mutation.addedNodes) {
         if (node.nodeType === 1 && node.classList.contains("more-info")) {
@@ -53,6 +57,7 @@ export const monsterWatcher = () => {
         }
       }
     }
+
     observer.observe(document.querySelector("section.primary-content"), {
       childList: true,
       subtree: true,

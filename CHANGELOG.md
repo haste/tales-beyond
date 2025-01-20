@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+### Enhancements
+
+ * Enabled right-click menu on monster pages.
+
 ## 0.17.0 (2024-12-19)
 
 ### Bug fixes
