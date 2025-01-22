@@ -1,10 +1,13 @@
 import { describe, expect, test } from "bun:test";
 
-import { diceRegex } from "~/utils/web";
+import { diceRegex, isValidDice } from "~/utils/web";
 
 describe("diceRegex", () => {
   const regexGroups = (str) =>
-    [...str.matchAll(diceRegex)].map((m) => m.groups);
+    [...str.matchAll(diceRegex)].map((m) => ({
+      ...m.groups,
+      valid: isValidDice(m),
+    }));
 
   const fillWithUndefined = (expected) =>
     expected.map((e) => ({
@@ -15,6 +18,7 @@ describe("diceRegex", () => {
       sign: undefined,
       soloModifier: undefined,
       soloModifierType: undefined,
+      valid: true,
       ...e,
     }));
 
@@ -159,6 +163,7 @@ describe("diceRegex", () => {
         {
           soloModifier: "+2",
           soloModifierType: "Some",
+          valid: false,
         },
       ],
     },
@@ -193,6 +198,16 @@ describe("diceRegex", () => {
       expected: [
         {
           soloModifier: "+10",
+        },
+      ],
+    },
+    {
+      input: "PHB-2024",
+      expected: [
+        {
+          soloModifier: "-2024",
+          soloModifierType: "PHB",
+          valid: false,
         },
       ],
     },

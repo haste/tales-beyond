@@ -131,3 +131,39 @@ export const getCharacterActionsInCombat = () => {
 
   return actions;
 };
+
+// Include defaults to handle extras on mobile without opening the skills
+// section
+let previousCharacterSkills = [
+  "Acrobatics",
+  "Animal Handling",
+  "Arcana",
+  "Athletics",
+  "Deception",
+  "History",
+  "Insight",
+  "Intimidation",
+  "Investigation",
+  "Medicine",
+  "Nature",
+  "Perception",
+  "Performance",
+  "Persuasion",
+  "Religion",
+  "Sleight of Hand",
+  "Stealth",
+  "Survival",
+];
+export const getCharacterSkills = () => {
+  const skills = Array.from(
+    document.querySelectorAll(".ct-skills__item .ct-skills__col--skill"),
+  ).map((node) => node.textContent);
+
+  if (!skills.length) {
+    return previousCharacterSkills;
+  }
+
+  previousCharacterSkills = skills;
+
+  return skills;
+};

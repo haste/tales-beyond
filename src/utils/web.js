@@ -1,5 +1,20 @@
-import { getCharacterAbilities } from "~/utils/dndbeyond";
+import { getCharacterAbilities, getCharacterSkills } from "~/utils/dndbeyond";
 import { talespireLink } from "~/utils/talespire";
+
+const validSoloModifierType = [
+  "CHA",
+  "Charisma",
+  "CON",
+  "Constitution",
+  "DEX",
+  "Dexterity",
+  "INT",
+  "Intelligence",
+  "STR",
+  "Strength",
+  "WIS",
+  "Wisdom",
+];
 
 export const diceValueFromMatch = ({
   dice,
@@ -20,6 +35,21 @@ export const diceValueFromMatch = ({
     sign = "";
   }
   return `${numDice}d${dice}${sign}${modifier}`;
+};
+
+export const isValidDice = (match) => {
+  const soloModifierType = match.groups.soloModifierType;
+  if (
+    soloModifierType &&
+    !(
+      validSoloModifierType.includes(soloModifierType) ||
+      getCharacterSkills().includes(soloModifierType)
+    )
+  ) {
+    return false;
+  }
+
+  return true;
 };
 
 export const diceRegex =
@@ -111,6 +141,10 @@ export const embedInText = (node, labelOrCallback) => {
   let fragment;
   const textContent = node.textContent;
   for (let match of textContent.matchAll(diceRegex)) {
+    if (!isValidDice(match)) {
+      continue;
+    }
+
     if (offset === 0) {
       fragment = new DocumentFragment();
 
