@@ -90,11 +90,7 @@ const processNextElement = (node, match) => {
   const origDice = diceValueFromMatch(match.groups);
   const nextSibling = node.nextElementSibling;
 
-  const parentTooltip = getParentWithClass(
-    node.parentElement,
-    "ddbc-tooltip",
-    2,
-  );
+  const parentTooltip = node.parentElement.closest(".ddbc-tooltip");
   const parentTooltipSibling = parentTooltip?.nextElementSibling;
 
   if (
@@ -136,9 +132,30 @@ const processNextElement = (node, match) => {
   return [nextOffset, match, null];
 };
 
+// This is similar to the above. For example Healing Hands (2024) uses the
+// characters profiency as dice number.
+const processPreviousElement = (node, match) => {
+  const previousSibling = node.previousElementSibling;
+
+  if (
+    !match.groups.numDice &&
+    previousSibling?.classList.contains("ddbc-tooltip") &&
+    previousSibling
+      ?.querySelector(".ddbc-snippet__tag")
+      ?.textContent.match(/^\d+$/)
+  ) {
+    match.groups.numDice =
+      previousSibling.querySelector(".ddbc-snippet__tag").textContent;
+    return [previousSibling, match];
+  }
+
+  return [null, match];
+};
+
 export const embedInText = (node, labelOrCallback) => {
   let offset = 0;
   let fragment;
+  let prependNode;
   const textContent = node.textContent;
   for (let match of textContent.matchAll(diceRegex)) {
     if (!isValidDice(match)) {
@@ -147,6 +164,8 @@ export const embedInText = (node, labelOrCallback) => {
 
     if (offset === 0) {
       fragment = new DocumentFragment();
+
+      [prependNode, match] = processPreviousElement(node, match);
 
       if (match.index !== 0) {
         fragment.appendChild(
@@ -190,6 +209,11 @@ export const embedInText = (node, labelOrCallback) => {
     if (linkContent) {
       link.replaceChildren(linkContent);
     }
+
+    if (prependNode) {
+      link.prepend(prependNode);
+    }
+
     fragment.appendChild(link);
     offset = nextOffset;
   }

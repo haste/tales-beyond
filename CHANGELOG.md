@@ -5,6 +5,7 @@
 ### Enhancements
 
  * Enabled right-click menu on monster pages.
+ * Healing Hands (2024) (and similar feats) will now correctly include the number of dice.
 
 ## 0.17.0 (2024-12-19)
 
