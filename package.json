@@ -13,6 +13,7 @@
   "packageManager": "bun@1.1.45",
   "devDependencies": {
     "@biomejs/biome": "1.9.4",
+    "@happy-dom/global-registrator": "^16.7.2",
     "bootstrap": "^5.3.3",
     "chrome-webstore-upload-cli": "^3.3.1",
     "sass": "^1.83.0",
