@@ -264,15 +264,11 @@ export const characterAppWatcher = (showOptionsButton = false) => {
       for (const addedNode of mutation.addedNodes) {
         for (const node of getTextNodes(addedNode)) {
           const parentNode = node.parentElement;
-          if (
-            // Don't embed in item names
-            parentNode.className.includes("itemName") ||
-            isParentsProcessed(parentNode)
-          ) {
+          if (isParentsProcessed(parentNode)) {
             continue;
           }
 
-          embedInText(node);
+          embedInText(node, null, false);
         }
       }
     }
