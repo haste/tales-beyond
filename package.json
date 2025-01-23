@@ -10,7 +10,7 @@
     "check": "bun biome check src/ scripts/",
     "check:write": "bun biome check --write src/ scripts/"
   },
-  "packageManager": "bun@1.1.45",
+  "packageManager": "bun@1.2.0",
   "devDependencies": {
     "@biomejs/biome": "1.9.4",
     "@happy-dom/global-registrator": "^16.7.2",
