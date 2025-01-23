@@ -37,14 +37,18 @@ export const diceValueFromMatch = ({
   return `${numDice}d${dice}${sign}${modifier}`;
 };
 
-export const isValidDice = (match, allowDicelessModifier = true) => {
+export const isValidDice = (
+  match,
+  characterSkills = [],
+  allowDicelessModifier = true,
+) => {
   const soloModifierType = match.groups.soloModifierType;
   if (
     !(allowDicelessModifier || match.groups.dice) ||
     (soloModifierType &&
       !(
         validSoloModifierType.includes(soloModifierType) ||
-        getCharacterSkills().includes(soloModifierType)
+        characterSkills.includes(soloModifierType)
       ))
   ) {
     return false;
@@ -157,9 +161,12 @@ export const embedInText = (node, labelOrCallback, allowDicelessModifier) => {
   let offset = 0;
   let fragment;
   let prependNode;
+
+  const characterSkills = getCharacterSkills();
   const textContent = node.textContent;
+
   for (let match of textContent.matchAll(diceRegex)) {
-    if (!isValidDice(match, allowDicelessModifier)) {
+    if (!isValidDice(match, characterSkills, allowDicelessModifier)) {
       continue;
     }
 
