@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Bug fixes
+
+ * Fixed header of features not being set as dice labels after D&D Beyond update.
+
 ### Enhancements
 
  * Enabled right-click menu on monster pages.
