@@ -1,10 +1,10 @@
 import { describe, expect, test } from "bun:test";
 
-import { diceRegex, isValidDice } from "~/utils/web";
+import { getDiceRegex, isValidDice } from "~/utils/web";
 
 describe("diceRegex", () => {
   const regexGroups = (str) =>
-    [...str.matchAll(diceRegex)].map((m) => ({
+    [...str.matchAll(getDiceRegex())].map((m) => ({
       ...m.groups,
       valid: isValidDice(m),
     }));

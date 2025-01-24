@@ -37,19 +37,14 @@ export const diceValueFromMatch = ({
   return `${numDice}d${dice}${sign}${modifier}`;
 };
 
-export const isValidDice = (
-  match,
-  characterSkills = [],
-  allowDicelessModifier = true,
-) => {
+export const isValidDice = (match, characterSkills = []) => {
   const soloModifierType = match.groups.soloModifierType;
   if (
-    !(allowDicelessModifier || match.groups.dice) ||
-    (soloModifierType &&
-      !(
-        validSoloModifierType.includes(soloModifierType) ||
-        characterSkills.includes(soloModifierType)
-      ))
+    soloModifierType &&
+    !(
+      validSoloModifierType.includes(soloModifierType) ||
+      characterSkills.includes(soloModifierType)
+    )
   ) {
     return false;
   }
@@ -57,13 +52,25 @@ export const isValidDice = (
   return true;
 };
 
-export const diceRegex =
-  /((?<numDice>\d+)?d(?<dice>\d+)(?:\s*(?<sign>[+-])\s*(?:your (?<modifierType>\w+) modifier|(?<modifier>(?!\d+d\d+)\d+)))?|(?:(?<soloModifierType>[A-Z]{3}|\b[A-Z][a-zA-Z]*\b)\s*)?(?<soloModifier>[+-](?:\d(?![m\d])|\d\d+(?!m))))/g;
+const fullDiceRegex =
+  /(?<numDice>\d+)?d(?<dice>\d+)(?:\s*(?<sign>[+-])\s*(?:your (?<modifierType>\w+) modifier|(?<modifier>(?!\d+d\d+)\d+)))?/;
+const soloModifierRegex =
+  /(?:(?<soloModifierType>[A-Z]{3}|\b[A-Z][a-zA-Z]*\b)\s*)?(?<soloModifier>[+-](?:\d(?![m\d])|\d\d+(?!m)))/;
+
+export const getDiceRegex = (matchDicelessModifier = true) => {
+  return new RegExp(
+    [fullDiceRegex, ...(matchDicelessModifier ? [soloModifierRegex] : [])]
+      .map((regex) => regex.source)
+      .join("|"),
+    "g",
+  );
+};
 
 export const getTextNodes = (root) => {
   if (!root) {
     return [];
   }
+  const diceRegex = getDiceRegex();
   const treeWalker = document.createTreeWalker(
     root,
     NodeFilter.SHOW_TEXT,
@@ -157,16 +164,17 @@ const processPreviousElement = (node, match) => {
   return [null, match];
 };
 
-export const embedInText = (node, labelOrCallback, allowDicelessModifier) => {
+export const embedInText = (node, labelOrCallback, matchDicelessModifier) => {
   let offset = 0;
   let fragment;
   let prependNode;
 
   const characterSkills = getCharacterSkills();
+  const diceRegex = getDiceRegex(matchDicelessModifier);
   const textContent = node.textContent;
 
   for (let match of textContent.matchAll(diceRegex)) {
-    if (!isValidDice(match, characterSkills, allowDicelessModifier)) {
+    if (!isValidDice(match, characterSkills)) {
       continue;
     }
 

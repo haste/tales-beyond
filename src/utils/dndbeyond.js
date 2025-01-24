@@ -1,6 +1,6 @@
 import { abilityNames } from "~/consts";
 import {
-  diceRegex,
+  getDiceRegex,
   diceValueFromMatch,
   embedInText,
   getTextNodes,
@@ -16,7 +16,7 @@ export const getDiceValue = (node) => {
   if (!numberDisplay) {
     // See if we can find one unique dice value within the node.
     const matches = [];
-    for (const match of node.textContent.matchAll(diceRegex)) {
+    for (const match of node.textContent.matchAll(getDiceRegex())) {
       matches.push(diceValueFromMatch(match.groups));
     }
 
