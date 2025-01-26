@@ -24,6 +24,12 @@ jobs:
       - name: Run build:release
         run: bun run build:release
       - name: Release
+        env:
+          AMO_API_KEY: ${{ secrets.AMO_API_KEY }}
+          AMO_SECRET: ${{ secrets.AMO_SECRET }}
+          CWS_EXTENSION_ID: ${{ secrets.CWS_EXTENSION_ID }}
+          CWS_CLIENT_ID: ${{ secrets.CWS_CLIENT_ID }}
+          CWS_REFRESH_TOKEN: ${{ secrets.CWS_REFRESH_TOKEN }}
         run: |
           bun web-ext sign \
             -s build/firefox/ \
