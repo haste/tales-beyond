@@ -15,8 +15,6 @@ jobs:
           bun-version-file: ".tool-versions"
       - name: Install dependencies
         run: bun install
-      - name: Run build:css
-        run: bun run build:css
       - name: Run build
         run: bun run build
       - name: Run checks
