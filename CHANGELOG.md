@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+### Bug fixes
+
+ * Fix header of actions not being set as dice labels.
+
 ## 0.18.0 (2025-01-26)
 
 ### Bug fixes

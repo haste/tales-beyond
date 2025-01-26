@@ -210,7 +210,8 @@ export const embedInText = (node, labelOrCallback, matchDicelessModifier) => {
     if (!label) {
       // Only fetch #text nodes directly under the parent. In most (all?) just
       // using node.firstChild.textContent would probably be enough.
-      const heading = getSiblingWithClass(node.parentElement, "_heading__", 7);
+      // Actions use __heading while Features & Traits use heading
+      const heading = getSiblingWithClass(node.parentElement, "_heading", 7);
       if (heading) {
         label = Array.prototype.filter
           .call(heading.childNodes, (node) => node.nodeType === 3)
