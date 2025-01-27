@@ -38,7 +38,7 @@ jobs:
             --api-secret ${AMO_SECRET}
 
           bun chrome-webstore-upload \
-            --source tales_beyond-${GITHUB_REF_NAME:1}.zip \
+            --source web-ext-artifacts/tales_beyond-${GITHUB_REF_NAME:1}.zip \
             --extension-id ${CWS_EXTENSION_ID} \
             --client-id ${CWS_CLIENT_ID} \
             --client-secret ${CWS_CLIENT_SECRET} \
