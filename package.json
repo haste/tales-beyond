@@ -9,7 +9,8 @@
     "watch": "bun run --bun --watch scripts/watch.js",
     "check": "bun biome check src/ scripts/",
     "check:write": "bun biome check --write src/ scripts/",
-    "changelog:amo": "bun run scripts/changelog.js amo CHANGELOG.md"
+    "changelog:amo": "bun run scripts/changelog.js amo CHANGELOG.md",
+    "changelog:modio": "bun run scripts/changelog.js modio CHANGELOG.md"
   },
   "packageManager": "bun@1.2.2",
   "devDependencies": {

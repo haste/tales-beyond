@@ -46,6 +46,17 @@ jobs:
             --client-id ${CWS_CLIENT_ID} \
             --client-secret ${CWS_CLIENT_SECRET} \
             --refresh-token ${CWS_REFRESH_TOKEN}
+
+          curl -X POST ${MODIO_API_URL}/games/3963/mods/4389946/files \
+            --fail \
+            -H "Authorization: Bearer ${MODIO_API_TOKEN}" \
+            -H 'Content-Type: multipart/form-data' \
+            -H 'Accept: application/json' \
+            -F "filedata=@web-ext-artifacts/tales-beyond-symbiote-${GITHUB_REF_NAME:1}.zip" \
+            -F "version=${GITHUB_REF_NAME:1}" \
+            -F "changelog=$(bun changelog:modio)" \
+            -F 'active=true' \
+            -F "filehash=$(md5sum web-ext-artifacts/tales-beyond-symbiote-${GITHUB_REF_NAME:1}.zip | cut -c -32)"
       - name: Add artifacts
         uses: softprops/action-gh-release@v2
         with:
