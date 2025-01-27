@@ -31,9 +31,12 @@ jobs:
           CWS_CLIENT_ID: ${{ secrets.CWS_CLIENT_ID }}
           CWS_REFRESH_TOKEN: ${{ secrets.CWS_REFRESH_TOKEN }}
         run: |
+          bun changelog:amo > amo.json
+
           bun web-ext sign \
             -s build/firefox/ \
             --channel listed \
+            --amo-metadata amo.json \
             --api-key ${AMO_API_KEY} \
             --api-secret ${AMO_SECRET}
 
