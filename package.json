@@ -11,7 +11,7 @@
     "check:write": "bun biome check --write src/ scripts/",
     "changelog:amo": "bun run scripts/changelog.js amo CHANGELOG.md"
   },
-  "packageManager": "bun@1.2.0",
+  "packageManager": "bun@1.2.2",
   "devDependencies": {
     "@biomejs/biome": "1.9.4",
     "bootstrap": "^5.3.3",
