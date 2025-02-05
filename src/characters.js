@@ -6,6 +6,7 @@ import {
   getCharacterAbilities,
   getDiceValue,
   processBlockAbilities,
+  processBlockAttributes,
   processBlockTidbits,
 } from "~/utils/dndbeyond";
 import { namedObserver } from "~/utils/observer";
@@ -44,6 +45,7 @@ const hijackSidebar = () => {
 
     observer.disconnect();
 
+    processBlockAttributes(paneContent, headerNode.textContent);
     processBlockAbilities(paneContent, headerNode.textContent);
     processBlockTidbits(paneContent, headerNode.textContent);
 

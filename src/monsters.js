@@ -1,5 +1,9 @@
 import { injectContextMenu } from "~/contextmenu";
-import { processBlockAbilities, processBlockTidbits } from "~/utils/dndbeyond";
+import {
+  processBlockAbilities,
+  processBlockAttributes,
+  processBlockTidbits,
+} from "~/utils/dndbeyond";
 import { namedObserver } from "~/utils/observer";
 import { talespireLink } from "~/utils/talespire";
 import { embedInText, getTextNodes } from "~/utils/web";
@@ -10,10 +14,11 @@ const updateMonsters = (node) => {
   }
 
   const monsterName = node
-    .querySelector(".mon-stat-block__name")
+    .querySelector(".mon-stat-block__name, .mon-stat-block-2024__name")
     .textContent.trim();
 
   processBlockAbilities(node, monsterName);
+  processBlockAttributes(node, monsterName);
   processBlockTidbits(node, monsterName);
 
   // Get proper labels on saving throws and skills

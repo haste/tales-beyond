@@ -146,7 +146,7 @@ const processNextElement = (node, match) => {
 
 // This is similar to the above. For example Healing Hands (2024) uses the
 // characters profiency as dice number.
-const processPreviousElement = (node, match) => {
+const processPreviousElement = (node, match, characterSkills) => {
   const previousSibling = node.previousElementSibling;
 
   if (
@@ -158,16 +158,25 @@ const processPreviousElement = (node, match) => {
   ) {
     match.groups.numDice =
       previousSibling.querySelector(".ddbc-snippet__tag").textContent;
-    return [previousSibling, match];
+    return [previousSibling, match, null];
   }
 
-  return [null, match];
+  if (
+    !match.groups.soloModifierType &&
+    previousSibling?.classList.contains("skill-tooltip") &&
+    characterSkills.includes(previousSibling.textContent)
+  ) {
+    match.groups.soloModifierType = previousSibling.textContent;
+    return [null, match, previousSibling.textContent];
+  }
+  return [null, match, null];
 };
 
 export const embedInText = (node, labelOrCallback, matchDicelessModifier) => {
   let offset = 0;
   let fragment;
   let prependNode;
+  let appendLabel;
 
   const characterSkills = getCharacterSkills();
   const diceRegex = getDiceRegex(matchDicelessModifier);
@@ -181,7 +190,11 @@ export const embedInText = (node, labelOrCallback, matchDicelessModifier) => {
     if (offset === 0) {
       fragment = new DocumentFragment();
 
-      [prependNode, match] = processPreviousElement(node, match);
+      [prependNode, match, appendLabel] = processPreviousElement(
+        node,
+        match,
+        characterSkills,
+      );
 
       if (match.index !== 0) {
         fragment.appendChild(
@@ -218,6 +231,10 @@ export const embedInText = (node, labelOrCallback, matchDicelessModifier) => {
           .map((node) => node.textContent)
           .join(" ");
       }
+    }
+
+    if (label && appendLabel) {
+      label = `${label}: ${appendLabel}`;
     }
 
     const link = talespireLink(null, label, dice, match[0]);

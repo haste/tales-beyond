@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+### Enhancements
+
+ * Support the new 2024 monster stat block design.
+
 ## 0.18.1 (2025-01-27)
 
 ### Bug fixes

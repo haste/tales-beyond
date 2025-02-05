@@ -1,8 +1,8 @@
 import { abilityNames } from "~/consts";
 import {
-  getDiceRegex,
   diceValueFromMatch,
   embedInText,
+  getDiceRegex,
   getTextNodes,
 } from "~/utils/web";
 
@@ -40,6 +40,7 @@ export const getDiceValue = (node) => {
 
 // Handles abilities on creatures and vehicles in sidebar, and on monster pages
 export const processBlockAbilities = (node, label) => {
+  // 2014
   for (const statNode of node.querySelectorAll(
     ".ddbc-creature-block__ability-stat, .ability-block__stat, .ct-vehicle-block__ability-stat",
   )) {
@@ -54,6 +55,34 @@ export const processBlockAbilities = (node, label) => {
         ".ddbc-creature-block__ability-modifier, .ability-block__modifier, .ct-vehicle-block__ability-modifier",
       ),
     ).map((textNode) => embedInText(textNode, `${label}: ${ability}`));
+  }
+
+  // 2024
+  for (const statRow of node.querySelectorAll(
+    '.mon-stat-block-2024__stats tr, [class^="styles_stats"] tr',
+  )) {
+    const [abilityAbr, _value, modifier, saving] = statRow.children;
+    const ability = abilityNames[abilityAbr.textContent];
+
+    getTextNodes(modifier).map((textNode) =>
+      embedInText(textNode, `${label}: ${ability}`),
+    );
+
+    getTextNodes(saving).map((textNode) =>
+      embedInText(textNode, `${label}: ${ability} (Saving)`),
+    );
+  }
+};
+
+export const processBlockAttributes = (node, label) => {
+  for (const attributeLabel of node.querySelectorAll(
+    '.mon-stat-block-2024__attribute-label, [class^="styles_attributeLabel"]',
+  )) {
+    if (attributeLabel.textContent === "Initiative") {
+      getTextNodes(attributeLabel.nextElementSibling).map((textNode) =>
+        embedInText(textNode, `${label}: Initiative`),
+      );
+    }
   }
 };
 
