@@ -13,7 +13,7 @@ const mozillaRenderer = {
 
 const modioRenderer = {
   heading({ tokens }) {
-    return `${this.parser.parseInline(tokens)}\n`;
+    return `${this.parser.parseInline(tokens)}\n\n`;
   },
 
   list({ items }) {
