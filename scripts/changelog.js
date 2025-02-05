@@ -44,8 +44,8 @@ const offsets = [...md.matchAll(/## (?<version>\S+) \((?<date>[^\)]+)\)/g)].map(
 );
 
 const latestEntry = md.slice(
-  md.indexOf("### ", offsets[1].index),
-  offsets[2].index - 2,
+  md.indexOf("### ", offsets[0].index),
+  offsets[1].index - 2,
 );
 
 if (format === "amo") {
