@@ -3,6 +3,7 @@ import {
   processBlockAbilities,
   processBlockAttributes,
   processBlockTidbits,
+  processBlockTraitsAction,
 } from "~/utils/dndbeyond";
 import { namedObserver } from "~/utils/observer";
 import { talespireLink } from "~/utils/talespire";
@@ -16,12 +17,6 @@ const updateMonsters = (node) => {
   const monsterName = node
     .querySelector(".mon-stat-block__name, .mon-stat-block-2024__name")
     .textContent.trim();
-
-  processBlockAbilities(node, monsterName);
-  processBlockAttributes(node, monsterName);
-  processBlockTidbits(node, monsterName);
-
-  // Get proper labels on saving throws and skills
 
   // Replace dice notations
   for (const diceNode of node.querySelectorAll("[data-dicenotation]")) {
@@ -38,6 +33,12 @@ const updateMonsters = (node) => {
 
     diceNode.replaceWith(link);
   }
+
+  // Get proper labels on abilities, saving throws, skills, traits and actions
+  processBlockAbilities(node, monsterName);
+  processBlockAttributes(node, monsterName);
+  processBlockTidbits(node, monsterName);
+  processBlockTraitsAction(node, monsterName);
 
   // Match anything we missed
   for (const textNode of getTextNodes(node)) {

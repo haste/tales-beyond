@@ -8,6 +8,7 @@ import {
   processBlockAbilities,
   processBlockAttributes,
   processBlockTidbits,
+  processBlockTraitsAction,
 } from "~/utils/dndbeyond";
 import { namedObserver } from "~/utils/observer";
 import { getOptions } from "~/utils/storage";
@@ -45,12 +46,13 @@ const hijackSidebar = () => {
 
     observer.disconnect();
 
-    processBlockAttributes(paneContent, headerNode.textContent);
-    processBlockAbilities(paneContent, headerNode.textContent);
-    processBlockTidbits(paneContent, headerNode.textContent);
+    const label = headerNode.textContent.trim();
+    processBlockAttributes(paneContent, label);
+    processBlockAbilities(paneContent, label);
+    processBlockTidbits(paneContent, label);
+    processBlockTraitsAction(paneContent, label);
 
     for (const node of getTextNodes(paneContent)) {
-      let label = headerNode.textContent;
       const parentElement = node.parentElement;
       const isShortRestContainer =
         parentElement.parentElement?.classList.contains(
@@ -65,20 +67,6 @@ const hijackSidebar = () => {
       // Skip item names
       if (parentElement.className.includes("itemName")) {
         continue;
-      }
-
-      // Matches actions in creatures under extras.
-      if (parentElement.tagName === "P") {
-        let action = parentElement.querySelector("strong");
-        if (action) {
-          action = action.textContent
-            // Get rid of .
-            .slice(0, -1)
-            // Get rid of text in parentheses
-            .replace(/\([^()]*\)/g, "")
-            .trim();
-          label = `${label}: ${action}`;
-        }
       }
 
       embedInText(node, label);

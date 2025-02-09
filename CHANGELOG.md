@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+### Enhancements
+
+ * Dice buttons are now added to spell search and detail pages. Monsters within spell descriptions are also supported.
+
 ## 0.19.0 (2025-02-05)
 
 ### Enhancements

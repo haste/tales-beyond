@@ -47,19 +47,19 @@ export const processBlockAbilities = (node, label) => {
     const ability =
       abilityNames[
         statNode.querySelector(
-          ".ddbc-creature-block__ability-heading, .ability-block__heading, .ct-vehicle-block__ability-heading",
+          ".ddbc-creature-block__ability-heading, .ability-block__heading, .ct-vehicle-block__ability-heading, .stat-block-ability-scores-stat",
         ).textContent
       ];
     getTextNodes(
       statNode.querySelector(
-        ".ddbc-creature-block__ability-modifier, .ability-block__modifier, .ct-vehicle-block__ability-modifier",
+        ".ddbc-creature-block__ability-modifier, .ability-block__modifier, .ct-vehicle-block__ability-modifier, .stat-block-ability-scores-modifier",
       ),
     ).map((textNode) => embedInText(textNode, `${label}: ${ability}`));
   }
 
   // 2024
   for (const statRow of node.querySelectorAll(
-    '.mon-stat-block-2024__stats tr, [class^="styles_stats"] tr',
+    '.mon-stat-block-2024__stats tr, [class^="styles_stats"] tr, .stats tr',
   )) {
     const [abilityAbr, _value, modifier, saving] = statRow.children;
     const ability = abilityNames[abilityAbr.textContent];
@@ -119,6 +119,27 @@ export const processBlockTidbits = (node, label) => {
           return label;
         });
       });
+    }
+  }
+};
+
+export const processBlockTraitsAction = (node, label) => {
+  for (const textNode of getTextNodes(node)) {
+    const parentElement = textNode.parentElement;
+
+    // Matches actions in creatures under extras.
+    if (parentElement.tagName === "P") {
+      let action = parentElement.querySelector("strong");
+      if (action) {
+        action = action.textContent
+          // Get rid of .
+          .slice(0, -1)
+          // Get rid of text in parentheses
+          .replace(/\([^()]*\)/g, "")
+          .trim();
+
+        embedInText(textNode, `${label}: ${action}`);
+      }
     }
   }
 };

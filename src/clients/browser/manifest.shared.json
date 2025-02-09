@@ -19,6 +19,12 @@
       "run_at": "document_end",
       "js": ["monsters.js"],
       "css": ["css/styles.css", "css/contextmenu.css"]
+    },
+    {
+      "matches": ["*://*.dndbeyond.com/spells*"],
+      "run_at": "document_end",
+      "js": ["spells.js"],
+      "css": ["css/styles.css", "css/contextmenu.css"]
     }
   ]
 }
