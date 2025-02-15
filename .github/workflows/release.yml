@@ -23,13 +23,10 @@ jobs:
         run: bun test
       - name: Run build:release
         run: bun run build:release
-      - name: Release
+      - name: Release Firefox
         env:
           AMO_API_KEY: ${{ secrets.AMO_API_KEY }}
           AMO_SECRET: ${{ secrets.AMO_SECRET }}
-          CWS_EXTENSION_ID: ${{ secrets.CWS_EXTENSION_ID }}
-          CWS_CLIENT_ID: ${{ secrets.CWS_CLIENT_ID }}
-          CWS_REFRESH_TOKEN: ${{ secrets.CWS_REFRESH_TOKEN }}
         run: |
           bun changelog:amo > amo.json
 
@@ -39,14 +36,11 @@ jobs:
             --amo-metadata amo.json \
             --api-key ${AMO_API_KEY} \
             --api-secret ${AMO_SECRET}
-
-          bun chrome-webstore-upload \
-            --source web-ext-artifacts/tales_beyond-${GITHUB_REF_NAME:1}.zip \
-            --extension-id ${CWS_EXTENSION_ID} \
-            --client-id ${CWS_CLIENT_ID} \
-            --client-secret ${CWS_CLIENT_SECRET} \
-            --refresh-token ${CWS_REFRESH_TOKEN}
-
+      - name: Release Symbiote
+        env:
+          MODIO_API_URL: ${{ secrets.MODIO_API_URL }}
+          MODIO_API_TOKEN: ${{ secrets.MODIO_API_TOKEN }}
+        run: |
           curl -X POST ${MODIO_API_URL}/games/3963/mods/4389946/files \
             --fail \
             -H "Authorization: Bearer ${MODIO_API_TOKEN}" \
@@ -57,6 +51,19 @@ jobs:
             -F "changelog=$(bun changelog:modio)" \
             -F 'active=true' \
             -F "filehash=$(md5sum web-ext-artifacts/tales-beyond-symbiote-${GITHUB_REF_NAME:1}.zip | cut -c -32)"
+      - name: Release Chrome
+        env:
+          CWS_EXTENSION_ID: ${{ secrets.CWS_EXTENSION_ID }}
+          CWS_CLIENT_ID: ${{ secrets.CWS_CLIENT_ID }}
+          CWS_CLIENT_SECRET: ${{ secrets.CWS_CLIENT_SECRET }}
+          CWS_REFRESH_TOKEN: ${{ secrets.CWS_REFRESH_TOKEN }}
+        run: |
+          bun chrome-webstore-upload \
+            --source web-ext-artifacts/tales_beyond-${GITHUB_REF_NAME:1}.zip \
+            --extension-id ${CWS_EXTENSION_ID} \
+            --client-id ${CWS_CLIENT_ID} \
+            --client-secret ${CWS_CLIENT_SECRET} \
+            --refresh-token ${CWS_REFRESH_TOKEN}
       - name: Add artifacts
         uses: softprops/action-gh-release@v2
         with:
