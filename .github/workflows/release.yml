@@ -42,7 +42,7 @@ jobs:
           MODIO_API_TOKEN: ${{ secrets.MODIO_API_TOKEN }}
         run: |
           curl -X POST ${MODIO_API_URL}/games/3963/mods/4389946/files \
-            --fail \
+            --silent --output /dev/null --show-error --fail \
             -H "Authorization: Bearer ${MODIO_API_TOKEN}" \
             -H 'Content-Type: multipart/form-data' \
             -H 'Accept: application/json' \
