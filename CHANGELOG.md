@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Bug fixes
+
+ * Fixed handling of some negative dice values in 2024 stat block not being converted into dice buttons.
+
 ### Enhancements
 
  * Dice buttons are now added to spell search and detail pages. Monsters within spell descriptions are also supported.

@@ -24,16 +24,23 @@ export const diceValueFromMatch = ({
   sign = "",
   soloModifier,
 }) => {
+  if (sign === "−" || sign === "–") {
+    sign = "-";
+  }
+
   if (soloModifier) {
+    soloModifier = soloModifier.replace(/[−–]/g, "-");
     return `${numDice}d20${soloModifier}`;
   }
 
   if (modifierType) {
     modifier = getCharacterAbilities()[modifierType];
   }
+
   if (+modifier < 0) {
     sign = "";
   }
+
   return `${numDice}d${dice}${sign}${modifier}`;
 };
 
@@ -53,9 +60,9 @@ export const isValidDice = (match, characterSkills = []) => {
 };
 
 const fullDiceRegex =
-  /(?<numDice>\d+)?d(?<dice>\d+)(?:\s*(?<sign>[+-])\s*(?:your (?<modifierType>\w+) modifier|(?<modifier>(?!\d+d\d+)\d+)))?/;
+  /(?<numDice>\d+)?d(?<dice>\d+)(?:\s*(?<sign>[\-+−–])\s*(?:your (?<modifierType>\w+) modifier|(?<modifier>(?!\d+d\d+)\d+)))?/;
 const soloModifierRegex =
-  /(?:(?<soloModifierType>[A-Z]{3}|\b[A-Z][a-zA-Z]*\b)\s*)?(?<soloModifier>[+-](?:\d(?![m\d])|\d\d+(?!m)))/;
+  /(?:(?<soloModifierType>[A-Z]{3}|\b[A-Z][a-zA-Z]*\b)\s*)?(?<soloModifier>[\-+−–](?:\d(?![m\d])|\d\d+(?!m)))/;
 
 export const getDiceRegex = (matchDicelessModifier = true) => {
   return new RegExp(

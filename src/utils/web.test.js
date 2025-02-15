@@ -216,6 +216,28 @@ describe("diceRegex", () => {
         },
       ],
     },
+    // Monster Manual 2024
+    {
+      // U+2212
+      input: "−3",
+      expected: [
+        {
+          soloModifier: "−3",
+          valid: true,
+        },
+      ],
+    },
+    // Monster Manual 2024
+    {
+      // U+2013
+      input: "–3",
+      expected: [
+        {
+          soloModifier: "–3",
+          valid: true,
+        },
+      ],
+    },
   ]) {
     test(setup.input, () => {
       expect(regexGroups(setup.input)).toEqual(

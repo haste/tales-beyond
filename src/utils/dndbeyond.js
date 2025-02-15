@@ -64,13 +64,13 @@ export const processBlockAbilities = (node, label) => {
     const [abilityAbr, _value, modifier, saving] = statRow.children;
     const ability = abilityNames[abilityAbr.textContent];
 
-    getTextNodes(modifier).map((textNode) =>
-      embedInText(textNode, `${label}: ${ability}`),
-    );
+    getTextNodes(modifier).map((textNode) => {
+      embedInText(textNode, `${label}: ${ability}`);
+    });
 
-    getTextNodes(saving).map((textNode) =>
-      embedInText(textNode, `${label}: ${ability} (Saving)`),
-    );
+    getTextNodes(saving).map((textNode) => {
+      embedInText(textNode, `${label}: ${ability} (Saving)`);
+    });
   }
 };
 
