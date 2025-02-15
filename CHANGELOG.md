@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+### Bug fixes
+
+ * Fix dices buttons no longer working in character pages.
+
 ## 0.20.0 (2025-02-15)
 
 ### Bug fixes

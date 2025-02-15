@@ -56,7 +56,7 @@ export const triggerTalespire = (name, dice, extraDice) => {
 export const talespireLink = (elem, label, dice, diceLabel) => {
   label = label?.trim();
   dice = dice.replace(/d100/g, "d100+d10").replace(/[−–]/g, "-");
-  diceLabel = diceLabel.replace(/[−–]/g, "-");
+  diceLabel = diceLabel?.replace(/[−–]/g, "-");
 
   const link = document.createElement("button");
   link.classList.add("integrated-dice__container");
