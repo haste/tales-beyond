@@ -12,7 +12,7 @@
     "changelog:amo": "bun run scripts/changelog.js amo CHANGELOG.md",
     "changelog:modio": "bun run scripts/changelog.js modio CHANGELOG.md"
   },
-  "packageManager": "bun@1.2.2",
+  "packageManager": "bun@1.2.3",
   "devDependencies": {
     "@biomejs/biome": "1.9.4",
     "bootstrap": "^5.3.3",
