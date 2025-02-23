@@ -78,9 +78,9 @@ export const processBlockAttributes = (node, label) => {
   for (const attributeLabel of node.querySelectorAll(
     '.mon-stat-block-2024__attribute-label, [class^="styles_attributeLabel"]',
   )) {
-    if (attributeLabel.textContent === "Initiative") {
+    if (["Initiative", "HP"].includes(attributeLabel.textContent)) {
       getTextNodes(attributeLabel.nextElementSibling).map((textNode) =>
-        embedInText(textNode, `${label}: Initiative`),
+        embedInText(textNode, `${label}: ${attributeLabel.textContent}`),
       );
     }
   }
@@ -88,13 +88,13 @@ export const processBlockAttributes = (node, label) => {
 
 export const processBlockTidbits = (node, label) => {
   for (const tidbitNode of node.querySelectorAll(
-    '[class^="styles_attribute__"], .mon-stat-block__tidbit',
+    '[class^="styles_attribute__"], .mon-stat-block__tidbit, .mon-stat-block-2024__tidbit',
   )) {
     const tidbit = tidbitNode.querySelector(
-      '[class^="styles_attributeLabel__"], .mon-stat-block__tidbit-label',
+      '[class^="styles_attributeLabel__"], .mon-stat-block__tidbit-label, .mon-stat-block-2024__tidbit-label',
     ).textContent;
     const dataNode = tidbitNode.querySelector(
-      "p, .mon-stat-block__tidbit-data",
+      "p, .mon-stat-block__tidbit-data, .mon-stat-block-2024__tidbit-data",
     );
 
     if (tidbit === "Saving Throws") {
