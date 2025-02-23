@@ -16,7 +16,11 @@ const updateMonsters = (node) => {
 
   const monsterName = node
     .querySelector(".mon-stat-block__name, .mon-stat-block-2024__name")
-    .textContent.trim();
+    ?.textContent.trim();
+
+  if (!monsterName) {
+    return;
+  }
 
   // Replace dice notations
   for (const diceNode of node.querySelectorAll("[data-dicenotation]")) {
