@@ -42,24 +42,24 @@ export const getDiceValue = (node) => {
 export const processBlockAbilities = (node, label) => {
   // 2014
   for (const statNode of node.querySelectorAll(
-    ".ddbc-creature-block__ability-stat, .ability-block__stat, .ct-vehicle-block__ability-stat",
+    '[class^="styles_stat__"], .ability-block__stat, .ct-vehicle-block__ability-stat',
   )) {
     const ability =
       abilityNames[
         statNode.querySelector(
-          ".ddbc-creature-block__ability-heading, .ability-block__heading, .ct-vehicle-block__ability-heading, .stat-block-ability-scores-stat",
+          '[class^="styles_statHeading__"], .ability-block__heading, .ct-vehicle-block__ability-heading, .stat-block-ability-scores-stat',
         ).textContent
       ];
     getTextNodes(
       statNode.querySelector(
-        ".ddbc-creature-block__ability-modifier, .ability-block__modifier, .ct-vehicle-block__ability-modifier, .stat-block-ability-scores-modifier",
+        '[class^="styles_statModifier"], .ability-block__modifier, .ct-vehicle-block__ability-modifier, .stat-block-ability-scores-modifier',
       ),
     ).map((textNode) => embedInText(textNode, `${label}: ${ability}`));
   }
 
   // 2024
   for (const statRow of node.querySelectorAll(
-    '.mon-stat-block-2024__stats tr, [class^="styles_stats"] tr, .stats tr',
+    '.mon-stat-block-2024__stats tr, [class^="styles_stats__"] tr, .stats tr',
   )) {
     const [abilityAbr, _value, modifier, saving] = statRow.children;
     const ability = abilityNames[abilityAbr.textContent];
@@ -88,13 +88,13 @@ export const processBlockAttributes = (node, label) => {
 
 export const processBlockTidbits = (node, label) => {
   for (const tidbitNode of node.querySelectorAll(
-    ".ddbc-creature-block__tidbit, .mon-stat-block__tidbit",
+    '[class^="styles_attribute__"], .mon-stat-block__tidbit',
   )) {
     const tidbit = tidbitNode.querySelector(
-      ".ddbc-creature-block__tidbit-label, .mon-stat-block__tidbit-label",
+      '[class^="styles_attributeLabel__"], .mon-stat-block__tidbit-label',
     ).textContent;
     const dataNode = tidbitNode.querySelector(
-      ".ddbc-creature-block__tidbit-data, .mon-stat-block__tidbit-data",
+      "p, .mon-stat-block__tidbit-data",
     );
 
     if (tidbit === "Saving Throws") {

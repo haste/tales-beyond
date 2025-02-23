@@ -5,6 +5,7 @@
 ### Bug fixes
 
  * No longer stops processing monster search page after encountering locked content.
+ * Fix dice labels missing on 2014 creatures within sidebar on character sheet after changes made on DNDBeyond.
 
 ## 0.20.1 (2025-02-15)
 
