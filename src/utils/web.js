@@ -240,7 +240,7 @@ export const embedInText = (node, labelOrCallback, matchDicelessModifier) => {
       }
     }
 
-    if (label && appendLabel) {
+    if (label && appendLabel && !label.endsWith(appendLabel)) {
       label = `${label}: ${appendLabel}`;
     }
 
