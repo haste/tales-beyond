@@ -238,6 +238,17 @@ describe("diceRegex", () => {
         },
       ],
     },
+
+    // On vehicles
+    {
+      input: "-10 ft.",
+      expected: [],
+    },
+    // On vehicles
+    {
+      input: "-5 ft.",
+      expected: [],
+    },
   ]) {
     test(setup.input, () => {
       expect(regexGroups(setup.input)).toEqual(

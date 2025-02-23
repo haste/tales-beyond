@@ -62,7 +62,7 @@ export const isValidDice = (match, characterSkills = []) => {
 const fullDiceRegex =
   /(?<numDice>\d+)?d(?<dice>\d+)(?:\s*(?<sign>[\-+−–])\s*(?:your (?<modifierType>\w+) modifier|(?<modifier>(?!\d+d\d+)\d+)))?/;
 const soloModifierRegex =
-  /(?:(?<soloModifierType>[A-Z]{3}|\b[A-Z][a-zA-Z]*\b)\s*)?(?<soloModifier>[\-+−–](?:\d(?![m\d])|\d\d+(?!m)))/;
+  /(?:(?<soloModifierType>[A-Z]{3}|\b[A-Z][a-zA-Z]*\b)\s*)?(?<soloModifier>[\-+−–](?:\d(?!\s*(?:[m\d]|ft))|\d\d+(?!\s*(?:m|ft))))/;
 
 export const getDiceRegex = (matchDicelessModifier = true) => {
   return new RegExp(
