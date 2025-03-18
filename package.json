@@ -19,7 +19,7 @@
     "chrome-webstore-upload-cli": "^3.3.1",
     "global-jsdom": "^26.0.0",
     "marked": "^15.0.7",
-    "sass": "^1.85.1",
+    "sass": "^1.86.0",
     "web-ext": "8.5.0"
   }
 }
