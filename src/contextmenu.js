@@ -104,6 +104,8 @@ const contextMenu = (event) => {
   <div class="item advantage">Advantage</div>
   <div class="item">Normal</div>
   <div class="item disadvantage">Disadvantage</div>
+  <hr />
+  <div class="item critical">Critical Hit</div>
 </div>
   `;
   const img = contextmenu.querySelector("img");

@@ -6,7 +6,7 @@ const general = [
     id: "contextMenuEnabled",
     header: "Right-click menu",
     description:
-      "Open a menu when right-clicking dice buttons to roll with Advantage or Disadvantage.",
+      "Open a menu when right-clicking dice buttons to roll with Advantage, Disadvantage, or as a Critical Hit.",
   },
 ];
 
