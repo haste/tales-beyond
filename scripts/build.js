@@ -61,7 +61,11 @@ const bunBuild = async (config) => {
 
 const buildShared = async () => {
   await fs.mkdir(sharedDir, { recursive: true });
-  await $`cp -rf ${srcDir}/{icons,options.html} LICENSE README.md CHANGELOG.md ${sharedDir}`;
+  await fs.cp(path.join(srcDir, "icons"), path.join(sharedDir, "icons"), { recursive: true });
+  await fs.copyFile(path.join(srcDir, "options.html"), path.join(sharedDir, "options.html"));
+  await fs.copyFile("LICENSE", path.join(sharedDir, "LICENSE"));
+  await fs.copyFile("README.md", path.join(sharedDir, "README.md"));
+  await fs.copyFile("CHANGELOG.md", path.join(sharedDir, "CHANGELOG.md"));
 };
 
 const buildBrowser = async () => {
@@ -90,7 +94,7 @@ const buildBrowser = async () => {
     });
   }
 
-  await $`cp -rf ${browserSrcDir}/background.js ${sharedBrowserDir}`;
+  await fs.copyFile(path.join(browserSrcDir, "background.js"), path.join(sharedBrowserDir, "background.js"));
 
   for (const browser of browsers) {
     const buildDir = path.join(process.cwd(), "build", browser);
@@ -157,7 +161,7 @@ const buildSymbiote = async () => {
     recursive: true,
   });
 
-  await $`cp -rf ${symbioteSrcDir}/index.html ${buildDir}`;
+  await fs.copyFile(path.join(symbioteSrcDir, "index.html"), path.join(buildDir, "index.html"));
 
   // Manifest
   const manifest = { version, ...manifestBase };
