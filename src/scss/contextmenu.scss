@@ -66,5 +66,9 @@
     .disadvantage:not(:hover) {
       text-decoration: red wavy underline;
     }
+
+    .critical:not(:hover) {
+      text-decoration: orange wavy underline;
+    }
   }
 }
