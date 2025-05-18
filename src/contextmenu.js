@@ -53,6 +53,12 @@ const setupListeners = (button, contextmenu) => {
   dis.addEventListener("click", action("DIS"));
   crit.addEventListener("click", action("CRIT"));
 
+  const isD20 = /\d*d20/.test(originalDice);
+
+  adv.style.display = isD20 ? "block" : "none";
+  dis.style.display = isD20 ? "block" : "none";
+  crit.style.display = isD20 ? "none" : "block";
+
   window.addEventListener("click", detectLightDismiss, {
     capture: true,
     passive: true,
@@ -113,7 +119,6 @@ const contextMenu = (event) => {
   <div class="item advantage">Advantage</div>
   <div class="item">Normal</div>
   <div class="item disadvantage">Disadvantage</div>
-  <hr />
   <div class="item critical">Critical Hit</div>
 </div>
   `;
