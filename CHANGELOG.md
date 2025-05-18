@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.21.0 (2025-05-18)
+
+### Enhancements
+
+ * Added support for Critical Hit damage.
+ * The right-click menu is now sensitive to the type of roll.
+
 ## 0.20.2 (2025-02-23)
 
 ### Bug fixes
