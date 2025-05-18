@@ -1,6 +1,7 @@
 import svgLogo from "~/icons/icon.svg";
 import { getOptions } from "~/utils/storage";
 import { triggerTalespire } from "~/utils/talespire";
+import { doubleDiceExpression } from "~/utils/diceUtils";
 
 const removeAllMenus = () => {
   for (const activeMenu of document.querySelectorAll(
@@ -26,12 +27,19 @@ const detectLightDismiss = (event) => {
 
 const setupListeners = (button, contextmenu) => {
   const label = button.dataset.tsLabel;
-  const dice = button.dataset.tsDice;
+  const originalDice = button.dataset.tsDice;
 
   const action = (labelSuffix) => () => {
+    let dice = originalDice;
+
     if (labelSuffix) {
       const name = label ? `${label} (${labelSuffix})` : labelSuffix;
-      triggerTalespire(name, dice, true);
+      if (labelSuffix === "CRIT") {
+        dice = doubleDiceExpression(dice);
+        triggerTalespire(name, dice);
+      } else{
+        triggerTalespire(name, dice, true);
+      }
     } else {
       triggerTalespire(label, dice);
     }
@@ -39,10 +47,11 @@ const setupListeners = (button, contextmenu) => {
     removeAllMenus();
   };
 
-  const [adv, flat, dis] = contextmenu.querySelectorAll(".item");
+  const [adv, flat, dis, crit] = contextmenu.querySelectorAll(".item");
   adv.addEventListener("click", action("ADV"));
   flat.addEventListener("click", action());
   dis.addEventListener("click", action("DIS"));
+  crit.addEventListener("click", action("CRIT"));
 
   window.addEventListener("click", detectLightDismiss, {
     capture: true,

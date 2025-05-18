@@ -1,4 +1,6 @@
 import { settings } from "~/utils/storage";
+import { doubleDiceExpression } from "~/utils/diceUtils";
+
 
 const modifierAction = (action, name) => {
   switch (action) {
@@ -8,6 +10,8 @@ const modifierAction = (action, name) => {
       return { name: `${name} (DIS)`, extraDice: true };
     case "adv-dis":
       return { name: `${name} (ADV/DIS)`, extraDice: true };
+    case 'crit':
+      return { name: `${name} (CRIT)`, extraDice: false };
 
     default:
       return { name, extraDice: false };
@@ -67,6 +71,10 @@ export const talespireLink = (elem, label, dice, diceLabel) => {
     event.stopPropagation();
 
     const { name, extraDice } = checkModifierKeys(event, label);
+
+    if (name.includes("CRIT")){
+      dice = doubleDiceExpression(dice);
+    }
 
     triggerTalespire(name, dice, extraDice);
   });
