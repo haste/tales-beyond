@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+### Enhancements
+
+ * Added support for Critical Hit damage.
+
 ## 0.20.2 (2025-02-23)
 
 ### Bug fixes
