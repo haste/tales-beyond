@@ -1,8 +1,18 @@
 {
   "name": "Tales Beyond",
-  "description": "Replaces D&D Beyond's digital dices with links to TaleSpire",
   "version": "0.20.2",
-  "type": "module",
+  "devDependencies": {
+    "@biomejs/biome": "1.9.4",
+    "adm-zip": "^0.5.16",
+    "bootstrap": "^5.3.6",
+    "chrome-webstore-upload-cli": "^3.3.2",
+    "global-jsdom": "^26.0.0",
+    "marked": "^15.0.11",
+    "sass": "^1.88.0",
+    "web-ext": "8.6.0"
+  },
+  "description": "Replaces D&D Beyond's digital dices with links to TaleSpire",
+  "packageManager": "bun@1.2.13",
   "scripts": {
     "build": "bun run --bun scripts/build.js",
     "build:release": "bun run --bun scripts/release.js",
@@ -12,17 +22,5 @@
     "changelog:amo": "bun run scripts/changelog.js amo CHANGELOG.md",
     "changelog:modio": "bun run scripts/changelog.js modio CHANGELOG.md"
   },
-  "packageManager": "bun@1.2.13",
-  "devDependencies": {
-    "@biomejs/biome": "1.9.4",
-    "bootstrap": "^5.3.6",
-    "chrome-webstore-upload-cli": "^3.3.2",
-    "global-jsdom": "^26.0.0",
-    "marked": "^15.0.11",
-    "sass": "^1.88.0",
-    "web-ext": "8.6.0"
-  },
-  "dependencies": {
-    "adm-zip": "^0.5.16"
-  }
+  "type": "module"
 }
