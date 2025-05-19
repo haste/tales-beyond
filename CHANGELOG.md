@@ -5,6 +5,7 @@
 ### Bug fixes
 
  * Fixed missing underline styling on context menu items.
+ * Fixed context menu not being aligned with the button clicked.
 
 ## 0.21.1 (2025-05-19)
 
