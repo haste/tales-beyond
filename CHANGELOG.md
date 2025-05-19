@@ -1,6 +1,10 @@
 # Changelog
 
-## Unreleased
+## 0.21.1 (2025-05-19)
+
+### Notes
+
+ * 0.21.0 was tagged, but not fully released.
 
 ### Enhancements
 
