@@ -126,8 +126,8 @@ const contextMenu = (event) => {
   img.src = svgLogo;
 
   document.body.appendChild(contextmenu);
-  positionMenu(diceButton, contextmenu);
   setupListeners(diceButton, contextmenu);
+  positionMenu(diceButton, contextmenu);
 };
 
 export const injectContextMenu = async () => {
