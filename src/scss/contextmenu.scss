@@ -59,15 +59,15 @@
       cursor: pointer;
     }
 
-    .advantage:not(:hover) {
+    &.advantage:not(:hover) {
       text-decoration: green wavy underline;
     }
 
-    .disadvantage:not(:hover) {
+    &.disadvantage:not(:hover) {
       text-decoration: red wavy underline;
     }
 
-    .critical:not(:hover) {
+    &.critical:not(:hover) {
       text-decoration: orange wavy underline;
     }
   }

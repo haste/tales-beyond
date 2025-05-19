@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+### Bug fixes
+
+ * Fixed missing underline styling on context menu items.
+
 ## 0.21.1 (2025-05-19)
 
 ### Notes
