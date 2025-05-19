@@ -1,4 +1,5 @@
 import svgLogo from "~/icons/icon.svg";
+import { doubleDiceExpression } from "~/utils/diceUtils";
 import { getOptions } from "~/utils/storage";
 import { triggerTalespire } from "~/utils/talespire";
 
@@ -26,12 +27,19 @@ const detectLightDismiss = (event) => {
 
 const setupListeners = (button, contextmenu) => {
   const label = button.dataset.tsLabel;
-  const dice = button.dataset.tsDice;
+  const originalDice = button.dataset.tsDice;
 
   const action = (labelSuffix) => () => {
+    let dice = originalDice;
+
     if (labelSuffix) {
       const name = label ? `${label} (${labelSuffix})` : labelSuffix;
-      triggerTalespire(name, dice, true);
+      if (labelSuffix === "CRIT") {
+        dice = doubleDiceExpression(dice);
+        triggerTalespire(name, dice);
+      } else {
+        triggerTalespire(name, dice, true);
+      }
     } else {
       triggerTalespire(label, dice);
     }
@@ -39,10 +47,17 @@ const setupListeners = (button, contextmenu) => {
     removeAllMenus();
   };
 
-  const [adv, flat, dis] = contextmenu.querySelectorAll(".item");
+  const [adv, flat, dis, crit] = contextmenu.querySelectorAll(".item");
   adv.addEventListener("click", action("ADV"));
   flat.addEventListener("click", action());
   dis.addEventListener("click", action("DIS"));
+  crit.addEventListener("click", action("CRIT"));
+
+  const isD20 = /\d*d20/.test(originalDice);
+
+  adv.style.display = isD20 ? "block" : "none";
+  dis.style.display = isD20 ? "block" : "none";
+  crit.style.display = isD20 ? "none" : "block";
 
   window.addEventListener("click", detectLightDismiss, {
     capture: true,
@@ -104,6 +119,7 @@ const contextMenu = (event) => {
   <div class="item advantage">Advantage</div>
   <div class="item">Normal</div>
   <div class="item disadvantage">Disadvantage</div>
+  <div class="item critical">Critical Hit</div>
 </div>
   `;
   const img = contextmenu.querySelector("img");
