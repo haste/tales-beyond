@@ -2,10 +2,10 @@
 
 // Creates chrome and symbiote zips
 
-import path from "node:path";
 import fs from "node:fs/promises";
-import Bun, { $ } from "bun";
+import path from "node:path";
 import AdmZip from "adm-zip";
+import Bun, { $ } from "bun";
 
 await $`bun web-ext build -o -s build/chrome`;
 
@@ -16,9 +16,9 @@ const { version } = await Bun.file(
 const symbioteZip = `web-ext-artifacts/tales-beyond-symbiote-${version}.zip`;
 
 try {
-    await fs.unlink(symbioteZip);
+  await fs.unlink(symbioteZip);
 } catch (err) {
-    if (err.code !== "ENOENT") throw err;
+  if (err.code !== "ENOENT") throw err;
 }
 
 const zip = new AdmZip();

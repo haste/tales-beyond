@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
 
-import Bun, { $, Glob } from "bun";
+import Bun, { Glob } from "bun";
 
 import fs from "node:fs/promises";
 import path from "node:path";
@@ -61,8 +61,13 @@ const bunBuild = async (config) => {
 
 const buildShared = async () => {
   await fs.mkdir(sharedDir, { recursive: true });
-  await fs.cp(path.join(srcDir, "icons"), path.join(sharedDir, "icons"), { recursive: true });
-  await fs.copyFile(path.join(srcDir, "options.html"), path.join(sharedDir, "options.html"));
+  await fs.cp(path.join(srcDir, "icons"), path.join(sharedDir, "icons"), {
+    recursive: true,
+  });
+  await fs.copyFile(
+    path.join(srcDir, "options.html"),
+    path.join(sharedDir, "options.html"),
+  );
   await fs.copyFile("LICENSE", path.join(sharedDir, "LICENSE"));
   await fs.copyFile("README.md", path.join(sharedDir, "README.md"));
   await fs.copyFile("CHANGELOG.md", path.join(sharedDir, "CHANGELOG.md"));
@@ -94,7 +99,10 @@ const buildBrowser = async () => {
     });
   }
 
-  await fs.copyFile(path.join(browserSrcDir, "background.js"), path.join(sharedBrowserDir, "background.js"));
+  await fs.copyFile(
+    path.join(browserSrcDir, "background.js"),
+    path.join(sharedBrowserDir, "background.js"),
+  );
 
   for (const browser of browsers) {
     const buildDir = path.join(process.cwd(), "build", browser);
@@ -161,7 +169,10 @@ const buildSymbiote = async () => {
     recursive: true,
   });
 
-  await fs.copyFile(path.join(symbioteSrcDir, "index.html"), path.join(buildDir, "index.html"));
+  await fs.copyFile(
+    path.join(symbioteSrcDir, "index.html"),
+    path.join(buildDir, "index.html"),
+  );
 
   // Manifest
   const manifest = { version, ...manifestBase };
