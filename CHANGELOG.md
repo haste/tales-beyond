@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.21.2 (2025-05-20)
 
 ### Bug fixes
 

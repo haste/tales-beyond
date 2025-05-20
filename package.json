@@ -1,6 +1,6 @@
 {
   "name": "Tales Beyond",
-  "version": "0.21.1",
+  "version": "0.21.2",
   "devDependencies": {
     "@biomejs/biome": "1.9.4",
     "adm-zip": "^0.5.16",
