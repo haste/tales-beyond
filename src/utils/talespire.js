@@ -71,7 +71,7 @@ export const talespireLink = (elem, label, dice, diceLabel) => {
 
     const { name, extraDice } = checkModifierKeys(event, label);
 
-    if (name.includes("CRIT")) {
+    if (name?.includes("CRIT")) {
       dice = doubleDiceExpression(dice);
     }
 
