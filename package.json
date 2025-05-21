@@ -8,7 +8,7 @@
     "chrome-webstore-upload-cli": "^3.3.2",
     "global-jsdom": "^26.0.0",
     "marked": "^15.0.11",
-    "sass": "^1.88.0",
+    "sass": "^1.89.0",
     "web-ext": "8.6.0"
   },
   "description": "Replaces D&D Beyond's digital dices with links to TaleSpire",
