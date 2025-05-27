@@ -9,7 +9,7 @@
     "global-jsdom": "^26.0.0",
     "marked": "^15.0.12",
     "sass": "^1.89.0",
-    "web-ext": "8.6.0"
+    "web-ext": "8.7.1"
   },
   "description": "Replaces D&D Beyond's digital dices with links to TaleSpire",
   "packageManager": "bun@1.2.13",
