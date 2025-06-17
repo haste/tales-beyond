@@ -2,7 +2,7 @@
   "name": "Tales Beyond",
   "version": "0.21.2",
   "devDependencies": {
-    "@biomejs/biome": "1.9.4",
+    "@biomejs/biome": "2.0.0",
     "adm-zip": "^0.5.16",
     "bootstrap": "^5.3.6",
     "chrome-webstore-upload-cli": "^3.3.2",
