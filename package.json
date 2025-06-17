@@ -4,7 +4,7 @@
   "devDependencies": {
     "@biomejs/biome": "1.9.4",
     "adm-zip": "^0.5.16",
-    "bootstrap": "^5.3.6",
+    "bootstrap": "^5.3.7",
     "chrome-webstore-upload-cli": "^3.3.2",
     "global-jsdom": "^26.0.0",
     "marked": "^15.0.12",
