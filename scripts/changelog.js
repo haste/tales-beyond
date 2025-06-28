@@ -35,7 +35,7 @@ const modioRenderer = {
 
 const md = await Bun.file(input).text();
 
-const offsets = [...md.matchAll(/## (?<version>\S+) \((?<date>[^\)]+)\)/g)].map(
+const offsets = [...md.matchAll(/## (?<version>\S+) \((?<date>[^)]+)\)/g)].map(
   (match) => ({
     index: match.index,
     version: match.groups.version,

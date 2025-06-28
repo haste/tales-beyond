@@ -61,7 +61,7 @@ if (typeof chrome !== "undefined" && chrome.storage) {
   };
 
   // TODO: Implement `keys` argument
-  getOptions = async (keys) => {
+  getOptions = async (_keys) => {
     const userOptions = JSON.parse(
       (await TS.localStorage.global.getBlob()) || "{}",
     );
