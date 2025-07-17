@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+### Bug fixes
+
+ * No longer matches ranges in spells, descriptions, etc.
+
 ## 0.21.2 (2025-05-20)
 
 ### Bug fixes

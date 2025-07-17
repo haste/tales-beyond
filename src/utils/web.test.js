@@ -216,6 +216,17 @@ describe("diceRegex", () => {
         },
       ],
     },
+    // In spells like Teleport (2014)
+    {
+      input: "01-05",
+      expected: [],
+    },
+    // In spells like Divine Word (2024), Storm of Vengeance, (2024)
+    {
+      input: "0-20",
+      expected: [],
+    },
+
     // Monster Manual 2024
     {
       // U+2212
