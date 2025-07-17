@@ -1,27 +1,55 @@
 import { mods } from "~/mods";
-import { getOptions, saveOption } from "~/utils/storage";
+import { addUIElement, BOOLEAN, DROPDOWN } from "~/utils/options";
+import { getOptions } from "~/utils/storage";
 
 const general = [
   {
     id: "contextMenuEnabled",
+    type: BOOLEAN,
     header: "Right-click menu",
     description:
       "Open a menu when right-clicking dice buttons to roll with Advantage, Disadvantage, or as a Critical Hit.",
   },
+  {
+    id: "prefixWithCharacterName",
+    type: DROPDOWN,
+    header: "Prefix dice rolls with",
+    options: [
+      { value: "full", label: "Full character name" },
+      { value: "first", label: "First part of character name" },
+      { value: "last", label: "Last part of character name" },
+      { value: "initials", label: "Initials of character name" },
+      { value: "none", label: "Nothing" },
+    ],
+  },
+];
+
+const modifierOptions = [
+  { value: "adv", label: "Advantage" },
+  { value: "adv-dis", label: "Advantage / Disadvantage" },
+  { value: "dis", label: "Disadvantage" },
+  { value: "crit", label: "Critical Hit" },
+  { value: "none", label: "None" },
 ];
 
 const keys = [
   {
     id: "modifierKeyShift",
-    label: "Shift key",
+    type: DROPDOWN,
+    header: "Shift key",
+    options: modifierOptions,
   },
   {
     id: "modifierKeyCtrl",
-    label: "Ctrl key",
+    type: DROPDOWN,
+    header: "Ctrl key",
+    options: modifierOptions,
   },
   {
     id: "modifierKeyAlt",
-    label: "Alt key",
+    type: DROPDOWN,
+    header: "Alt key",
+    options: modifierOptions,
   },
 ];
 
@@ -34,76 +62,20 @@ const restoreOptions = async () => {
     document.querySelector("#modifiers").remove();
     document.querySelector("footer").dataset.talespire = "";
   } else {
-    const keyTemplate = document.querySelector("#option-key");
     const keyList = document.querySelector("#key-list");
     for (const key of keys) {
-      const option = keyTemplate.content.cloneNode(true);
-      const select = option.querySelector("select");
-      select.addEventListener("change", (event) =>
-        saveOption(key.id, event.target.value),
-      );
-      select.setAttribute("id", key.id);
-
-      const label = option.querySelector("label");
-      label.setAttribute("for", key.id);
-      label.textContent = key.label;
-
-      for (const opt of option.querySelectorAll("option")) {
-        if (opt.value === settings[key.id]) {
-          opt.setAttribute("selected", "");
-        }
-      }
-
-      keyList.appendChild(option);
+      addUIElement(settings, keyList, key);
     }
   }
 
-  const modTemplate = document.querySelector("#option-mod");
   const modList = document.querySelector("#mod-list");
   for (const mod of mods) {
-    const option = modTemplate.content.cloneNode(true);
-    option.querySelector("label").setAttribute("for", mod.id);
-
-    const input = option.querySelector("input");
-    input.addEventListener("change", (event) =>
-      saveOption(mod.id, event.target.checked),
-    );
-    input.setAttribute("id", mod.id);
-    if (settings[mod.id]) {
-      input.setAttribute("checked", "");
-    }
-
-    const description = option.querySelector(".description");
-    description.firstElementChild.textContent = mod.header;
-
-    const text = document.createTextNode(mod.description);
-    description.appendChild(text);
-
-    modList.append(option);
+    addUIElement(settings, modList, mod);
   }
 
   const generalList = document.querySelector("#general-list");
   for (const opt of general) {
-    // Re-use mod template
-    const option = modTemplate.content.cloneNode(true);
-    option.querySelector("label").setAttribute("for", opt.id);
-
-    const input = option.querySelector("input");
-    input.addEventListener("change", (event) =>
-      saveOption(opt.id, event.target.checked),
-    );
-    input.setAttribute("id", opt.id);
-    if (settings[opt.id]) {
-      input.setAttribute("checked", "");
-    }
-
-    const description = option.querySelector(".description");
-    description.firstElementChild.textContent = opt.header;
-
-    const text = document.createTextNode(opt.description);
-    description.appendChild(text);
-
-    generalList.append(option);
+    addUIElement(settings, generalList, opt);
   }
 };
 

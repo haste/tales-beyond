@@ -1,4 +1,4 @@
-const VERSION = 1;
+const VERSION = 2;
 const defaultOptions = {
   version: VERSION,
   contextMenuEnabled: true,
@@ -12,12 +12,27 @@ const defaultOptions = {
   modScorchingRay: true,
   modTollTheDead: true,
   modTwoWeaponLightOffhand: true,
+  prefixWithCharacterName: "none",
 };
 
 let settings = {};
 let localStorageGet;
 let getOptions;
 let saveOption;
+
+const migrateUserOptions = (userOptions) => {
+  switch (userOptions?.version) {
+    case 1:
+      return migrateUserOptions({
+        ...userOptions,
+        version: 2,
+        previousCharacterName: "initials",
+      });
+
+    default:
+      return userOptions;
+  }
+};
 
 if (typeof chrome !== "undefined" && chrome.storage) {
   // TODO: Check if this is required when Firefox is moved to Manifest V3
@@ -36,7 +51,7 @@ if (typeof chrome !== "undefined" && chrome.storage) {
 
   getOptions = async (keys) => {
     const userOptions = await localStorageGet(keys);
-    settings = { ...defaultOptions, ...userOptions };
+    settings = { ...defaultOptions, ...migrateUserOptions(userOptions) };
     return settings;
   };
 
@@ -66,7 +81,7 @@ if (typeof chrome !== "undefined" && chrome.storage) {
       (await TS.localStorage.global.getBlob()) || "{}",
     );
 
-    settings = { ...defaultOptions, ...userOptions };
+    settings = { ...defaultOptions, ...migrateUserOptions(userOptions) };
     return settings;
   };
 }

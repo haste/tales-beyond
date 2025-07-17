@@ -1,4 +1,5 @@
 import { doubleDiceExpression } from "~/utils/diceUtils";
+import { getCharacterName } from "~/utils/dndbeyond";
 import { settings } from "~/utils/storage";
 
 const modifierAction = (action, name) => {
@@ -34,18 +35,56 @@ const checkModifierKeys = (event, name) => {
   return modifierAction(action, name);
 };
 
-export const triggerTalespire = (name, dice, extraDice) => {
+const formatCharacterName = () => {
+  const name = getCharacterName();
+  if (typeof name !== "string") {
+    return null;
+  }
+
+  switch (settings.prefixWithCharacterName) {
+    case "initials":
+      return name
+        .replace(/[^\p{L}\p{N}\s]/gu, "")
+        .match(/(^\S|\s\S)?/g)
+        .map((v) => v.trim())
+        .join("")
+        .toLocaleUpperCase();
+    case "first":
+      return name.split(/\s/)[0];
+    case "last":
+      return name.split(/\s/).pop() || "";
+    case "full":
+      return name;
+    default:
+      return null;
+  }
+};
+
+const prefixWithCharacterName = (label) => {
+  const name =
+    settings.prefixWithCharacterName !== "none" ? formatCharacterName() : null;
+
+  if (typeof label === "string" && typeof name === "string") {
+    return `${name}: ${label}`;
+  }
+
+  return name || label;
+};
+
+export const triggerTalespire = (label, dice, extraDice) => {
+  label = prefixWithCharacterName(label);
+
   let uri;
-  if (typeof name === "string") {
-    uri = `talespire://dice/${encodeURIComponent(name)}:${dice}${extraDice ? `/${dice}` : ""}`;
+  if (typeof label === "string") {
+    uri = `talespire://dice/${encodeURIComponent(label)}:${dice}${extraDice ? `/${dice}` : ""}`;
   } else {
     uri = `talespire://dice/${dice}${extraDice ? `/${dice}` : ""}`;
   }
 
   if (TB_DRY_RUN_TALESPIRE_LINKS === "true") {
-    console.log("TaleSpire Link", { name, dice, extraDice, uri });
+    console.log("TaleSpire Link", { name: label, dice, extraDice, uri });
   } else if (typeof TS !== "undefined" && TS.dice) {
-    const rollDescriptors = [{ name: name ?? "", roll: dice }];
+    const rollDescriptors = [{ name: label ?? "", roll: dice }];
     if (extraDice) {
       rollDescriptors.push({ name: "", roll: dice });
     }

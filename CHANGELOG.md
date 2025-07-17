@@ -6,6 +6,10 @@
 
  * No longer matches ranges in spells, descriptions, etc.
 
+### Enhancements
+
+ * Character name can now be used as a prefix on dice rolls.
+
 ## 0.21.2 (2025-05-20)
 
 ### Bug fixes

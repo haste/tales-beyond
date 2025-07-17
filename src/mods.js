@@ -1,4 +1,5 @@
 import { getCharacterActionsInCombat, getDiceValue } from "~/utils/dndbeyond";
+import { BOOLEAN } from "~/utils/options";
 import { settings } from "~/utils/storage";
 import { talespireLink } from "~/utils/talespire";
 import { getParentWithClass, getSiblingWithClass } from "~/utils/web";
@@ -9,6 +10,7 @@ const labelIsHeader = (mod, label) => mod.header === label;
 export const mods = [
   {
     id: "modChaosBolt",
+    type: BOOLEAN,
     header: "Chaos Bolt",
     description: "Changes the dice to include the missing d6.",
     check: labelIsHeader,
@@ -37,6 +39,7 @@ export const mods = [
   },
   {
     id: "modInfiltratorArmorLightningLauncher",
+    type: BOOLEAN,
     header: "Infiltrator Armor: Lightning Launcher",
     description:
       "Add an extra dice button for the once per turn 1d6 extra damage.",
@@ -58,6 +61,7 @@ export const mods = [
   },
   {
     id: "modMagicMissile",
+    type: BOOLEAN,
     header: "Magic Missile",
     description: "Adds extra dice buttons for multiple darts.",
     check: labelIsHeader,
@@ -96,6 +100,7 @@ export const mods = [
   },
   {
     id: "modMelfsMinuteMeteors",
+    type: BOOLEAN,
     header: "Melf's Minute Meteors",
     description: "Adds an extra dice button for throwing two meteors.",
     check: labelIsHeader,
@@ -120,6 +125,7 @@ export const mods = [
   },
   {
     id: "modScorchingRay",
+    type: BOOLEAN,
     header: "Scorching Ray",
     description: "Adds extra dice buttons for multiple rays.",
     check: labelIsHeader,
@@ -158,6 +164,7 @@ export const mods = [
   },
   {
     id: "modTollTheDead",
+    type: BOOLEAN,
     header: "Toll the Dead",
     description: "Adds an extra dice button for damaged targets.",
     check: labelIsHeader,
@@ -182,6 +189,7 @@ export const mods = [
   },
   {
     id: "modTwoWeaponLightOffhand",
+    type: BOOLEAN,
     header: "Two-Weapon Fighting",
     description:
       "Adds an extra dice button for making bonus attacks with light weapons " +

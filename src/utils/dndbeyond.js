@@ -217,3 +217,16 @@ export const getCharacterSkills = () => {
 
   return skills;
 };
+
+let previousCharacterName = null;
+export const getCharacterName = () => {
+  const heading = document.querySelector(".ddbc-character-tidbits__heading h1");
+  const name = heading?.textContent?.trim();
+
+  if (name) {
+    previousCharacterName = name;
+    return name;
+  }
+
+  return previousCharacterName;
+};

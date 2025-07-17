@@ -30,19 +30,13 @@
         <footer>
             <a href="https://www.dndbeyond.com/sign-in?returnUrl=/characters">Return to D&amp;D Beyond</a>
         </footer>
-        <template id="option-key">
-            <div class="form-floating mb-3">
-                <select class="form-select">
-                    <option value="adv">Advantage</option>
-                    <option value="adv-dis">Advantage / Disadvantage</option>
-                    <option value="dis">Disadvantage</option>
-                    <option value="crit">Critical Hit</option>
-                    <option value="none">None</option>
-                </select>
-                <label>Alt key</label>
+        <template id="template-dropdown">
+            <div class="input-group mb-3">
+                <label class="input-group-text w-25"></label>
+                <select class="form-select"></select>
             </div>
         </template>
-        <template id="option-mod">
+        <template id="template-checkbox">
             <label class="form-control option form-check-label mb-3">
                 <div class="description">
                     <header>
