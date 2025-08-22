@@ -64,11 +64,11 @@ export const processBlockAbilities = (node, label) => {
     const [abilityAbr, _value, modifier, saving] = statRow.children;
     const ability = abilityNames[abilityAbr.textContent];
 
-    getTextNodes(modifier).map((textNode) => {
+    getTextNodes(modifier).forEach((textNode) => {
       embedInText(textNode, `${label}: ${ability}`);
     });
 
-    getTextNodes(saving).map((textNode) => {
+    getTextNodes(saving).forEach((textNode) => {
       embedInText(textNode, `${label}: ${ability} (Saving)`);
     });
   }
@@ -105,7 +105,7 @@ export const processBlockTidbits = (node, label) => {
         }),
       );
     } else if (tidbit === "Skills") {
-      getTextNodes(dataNode).map((textNode) => {
+      getTextNodes(dataNode).forEach((textNode) => {
         embedInText(textNode, (match, _dice) => {
           const skill = textNode.previousSibling?.textContent;
           if (skill) {
