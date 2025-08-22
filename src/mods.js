@@ -23,6 +23,7 @@ export const mods = [
               "ct-content-group__header-content",
               9,
             )?.textContent.slice(0, -8),
+            10,
           );
 
       const damageValue = getSiblingWithClass(
@@ -72,6 +73,7 @@ export const mods = [
           "ddbc-note-components__component--scaled",
           5,
         )?.textContent.slice(8) || "0",
+        10,
       );
 
       for (let i = 1; i < 3 + extraDarts + 1; i++) {
@@ -136,6 +138,7 @@ export const mods = [
           "ddbc-note-components__component--scaled",
           5,
         )?.textContent.slice(8) || "0",
+        10,
       );
 
       for (let i = 1; i < 3 + extraRays + 1; i++) {
