@@ -230,3 +230,15 @@ export const getCharacterName = () => {
 
   return previousCharacterName;
 };
+
+export const getCharacterId = () => {
+  const characterMatch = window.location.pathname.match(
+    /^\/characters\/(?<characterId>\d+)\/?$/,
+  );
+
+  if (!characterMatch) {
+    return;
+  }
+
+  return characterMatch.groups.characterId;
+};

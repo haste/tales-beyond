@@ -28,6 +28,7 @@ const inlineSVG = {
 };
 
 const bunBuild = async (config) => {
+  await fs.mkdir(config.outdir, { recursive: true });
   const result = await Bun.build({
     plugins: [inlineSVG],
     sourcemap: "inline",
@@ -86,7 +87,7 @@ const buildBrowser = async () => {
     for (const js of script.js) {
       await bunBuild({
         entrypoints: [path.join(browserSrcDir, js)],
-        outdir: sharedBrowserDir,
+        outdir: path.join(sharedBrowserDir, path.dirname(js)),
       });
     }
   }

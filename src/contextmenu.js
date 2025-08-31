@@ -1,3 +1,5 @@
+import { arrow, computePosition, flip, offset } from "@floating-ui/dom";
+
 import svgLogo from "~/icons/icon.svg";
 import { doubleDiceExpression } from "~/utils/diceUtils";
 import { getOptions } from "~/utils/storage";
@@ -70,30 +72,6 @@ const setupListeners = (button, contextmenu) => {
   });
 };
 
-const positionMenu = (button, contextmenu) => {
-  const menu = contextmenu.querySelector(".menu");
-  const arrow = contextmenu.querySelector(" .arrow");
-
-  const buttonRect = button.getBoundingClientRect();
-  const menuRect = menu.getBoundingClientRect();
-
-  const top =
-    (buttonRect.top + buttonRect.bottom) / 2 -
-    menuRect.height / 2 +
-    window.scrollY;
-
-  menu.style.top = `${top}px`;
-
-  // Avoid end of screen
-  if (window.innerWidth < buttonRect.right + menuRect.width + 10) {
-    arrow.classList.add("right");
-    menu.style.left = `${buttonRect.left - menuRect.right - 10}px`;
-  } else {
-    arrow.classList.add("left");
-    menu.style.left = `${buttonRect.right - menuRect.left + 10}px`;
-  }
-};
-
 const contextMenu = (event) => {
   const diceButton = event.target.closest(".integrated-dice__container");
   if (!diceButton) {
@@ -125,9 +103,44 @@ const contextMenu = (event) => {
   const img = contextmenu.querySelector("img");
   img.src = svgLogo;
 
+  const arrowNode = contextmenu.querySelector(".arrow");
+
+  const arrowLen = arrowNode.offsetWidth;
+  const floatingOffset = Math.sqrt(2 * arrowLen ** 2) / 2;
+
   document.body.appendChild(contextmenu);
   setupListeners(diceButton, contextmenu);
-  positionMenu(diceButton, contextmenu);
+
+  computePosition(diceButton, contextmenu, {
+    middleware: [offset(floatingOffset), flip(), arrow({ element: arrowNode })],
+    placement: "right",
+  }).then(({ x, y, middlewareData, placement }) => {
+    Object.assign(contextmenu.style, {
+      left: `${x}px`,
+      top: `${y}px`,
+    });
+
+    const side = placement.split("-")[0];
+
+    const staticSide = {
+      top: "bottom",
+      right: "left",
+      bottom: "top",
+      left: "right",
+    }[side];
+
+    if (middlewareData.arrow) {
+      const { x, y } = middlewareData.arrow;
+      Object.assign(arrowNode.style, {
+        left: x != null ? `${x}px` : "",
+        top: y != null ? `${y}px` : "",
+        right: "",
+        bottom: "",
+        [staticSide]: `${-arrowLen / 2}px`,
+        transform: "rotate(45deg)",
+      });
+    }
+  });
 };
 
 export const injectContextMenu = async () => {

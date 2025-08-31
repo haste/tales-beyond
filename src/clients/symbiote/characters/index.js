@@ -10,7 +10,7 @@ document.addEventListener(
     ) {
       getOptions();
 
-      characterAppWatcher(true);
+      characterAppWatcher();
       sidebarPortalWatcher();
     }
   },

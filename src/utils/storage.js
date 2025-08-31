@@ -1,7 +1,8 @@
-const VERSION = 2;
+const VERSION = 3;
 const defaultOptions = {
   version: VERSION,
   contextMenuEnabled: true,
+  deactivatedCharacters: [],
   modifierKeyAlt: "adv-dis",
   modifierKeyCtrl: "adv-dis",
   modifierKeyShift: "adv-dis",
@@ -19,8 +20,9 @@ let settings = {};
 let localStorageGet;
 let getOptions;
 let saveOption;
+let saveOptions;
 
-const migrateUserOptions = (userOptions) => {
+const migrateUserOptions = async (userOptions) => {
   switch (userOptions?.version) {
     case 1:
       return migrateUserOptions({
@@ -29,7 +31,15 @@ const migrateUserOptions = (userOptions) => {
         previousCharacterName: "initials",
       });
 
+    case 2:
+      return migrateUserOptions({
+        ...userOptions,
+        version: 3,
+        deactivatedCharacters: [],
+      });
+
     default:
+      await saveOptions(userOptions);
       return userOptions;
   }
 };
@@ -51,12 +61,19 @@ if (typeof chrome !== "undefined" && chrome.storage) {
 
   getOptions = async (keys) => {
     const userOptions = await localStorageGet(keys);
-    settings = { ...defaultOptions, ...migrateUserOptions(userOptions) };
+    settings = {
+      ...defaultOptions,
+      ...(await migrateUserOptions(userOptions)),
+    };
     return settings;
   };
 
   saveOption = async (key, value) => {
     await chrome.storage.local.set({ [key]: value });
+  };
+
+  saveOptions = async (value) => {
+    await chrome.storage.local.set(value);
   };
 
   const init = async () => {
@@ -75,15 +92,23 @@ if (typeof chrome !== "undefined" && chrome.storage) {
     await TS.localStorage.global.setBlob(JSON.stringify(settings));
   };
 
+  saveOptions = async (value) => {
+    settings = value;
+    await TS.localStorage.global.setBlob(JSON.stringify(settings));
+  };
+
   // TODO: Implement `keys` argument
   getOptions = async (_keys) => {
     const userOptions = JSON.parse(
       (await TS.localStorage.global.getBlob()) || "{}",
     );
 
-    settings = { ...defaultOptions, ...migrateUserOptions(userOptions) };
+    settings = {
+      ...defaultOptions,
+      ...(await migrateUserOptions(userOptions)),
+    };
     return settings;
   };
 }
 
-export { getOptions, saveOption, settings };
+export { getOptions, saveOption, saveOptions, settings };

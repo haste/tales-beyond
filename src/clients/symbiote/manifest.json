@@ -31,9 +31,10 @@
     "extras": [
       "colorStyles",
       "fonts",
-      "/characters.js",
+      "/characters/index.js",
       "/css/dialog.css",
       "/css/contextmenu.css",
+      "/css/iconmenu.css",
       "/css/styles.css"
     ]
   }

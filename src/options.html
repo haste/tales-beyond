@@ -26,6 +26,14 @@
                 <h4>Action and Spell modifications</h4>
                 <div id="mod-list"></div>
             </section>
+            <section id="deactivated-characters">
+                <h4>Deactivated characters</h4>
+                <p class="none-deactivated">
+                    To deactivate Tales Beyond for a character, open its sheet, click the Tales Beyond icon,
+                    and select <em>Deactivate for this character</em>.
+                </p>
+                <div id="deactivated-list"></div>
+            </section>
         </main>
         <footer>
             <a href="https://www.dndbeyond.com/sign-in?returnUrl=/characters">Return to D&amp;D Beyond</a>
@@ -46,6 +54,12 @@
                     <input class="form-check-input" type="checkbox" role="switch">
                 </div>
             </label>
+        </template>
+        <template id="template-deactivated-character">
+            <div class="input-group mb-3">
+                <label class="input-group-text flex-fill"></label>
+                <button class="btn">Activate</button>
+            </div>
         </template>
         <script src="options.js" type="module"></script>
     </body>

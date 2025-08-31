@@ -1,4 +1,11 @@
 .tales-beyond-extension-contextmenu {
+  z-index: 9999;
+  position: absolute;
+  width: max-content;
+  top: 0;
+  left: 0;
+  padding: 5px;
+
   h2 {
     color: #ab79d6;
     margin: 0rem 0 0 0;
@@ -15,25 +22,14 @@
 
   .arrow {
     position: absolute;
-    width: 0;
-    height: 0;
-    border-top: 10px solid transparent;
-    border-bottom: 10px solid transparent;
-    top: calc(50% - 10px);
-
-    &.left {
-      border-right: 10px solid #27272c;
-      left: -9px;
-    }
-    &.right {
-      border-left: 10px solid #27272c;
-      right: -9px;
-    }
+    width: 10px;
+    height: 10px;
+    z-index: -1;
+    background: #27272c;
+    pointer-events: none;
   }
 
   .menu {
-    position: absolute;
-    z-index: 2000;
     background: #27272c;
     padding: 6px 8px;
     color: #c5c5ce;
@@ -41,9 +37,6 @@
     box-shadow: 0 .5rem 1rem rgba(0, 0, 0, 0.3);
     text-align: center;
     font-size: 12px;
-    min-width: max-content;
-    /* Required because of Popover API */
-    inset: 0px auto auto 0px;
     margin: 0;
     border: none;
   }

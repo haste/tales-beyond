@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+### Enhancements
+
+ * Support deactivating Tales Beyond per character.
+
 ## 0.22.0 (2025-07-18)
 
 ### Bug fixes

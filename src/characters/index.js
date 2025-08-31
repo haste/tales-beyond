@@ -1,9 +1,14 @@
+import {
+  injectOptionButton,
+  isCharacterDeactivated,
+} from "~/characters/iconmenu";
 import { injectContextMenu } from "~/contextmenu";
 import svgLogo from "~/icons/icon.svg";
 import { customMod } from "~/mods";
 import { injectThemeStyle } from "~/themes";
 import {
   getCharacterAbilities,
+  getCharacterId,
   getDiceValue,
   processBlockAbilities,
   processBlockAttributes,
@@ -11,7 +16,6 @@ import {
   processBlockTraitsAction,
 } from "~/utils/dndbeyond";
 import { namedObserver } from "~/utils/observer";
-import { getOptions } from "~/utils/storage";
 import { talespireLink } from "~/utils/talespire";
 import {
   embedInText,
@@ -161,46 +165,7 @@ const processIntegratedDice = (addedNode) => {
   }
 };
 
-const injectOptionButton = async () => {
-  const settings = await getOptions();
-  const charApp = document.querySelector('[name="character-app"]');
-  if (
-    !(charApp && settings?.symbioteURL) ||
-    document.querySelector(".tales-beyond-extension-options")
-  ) {
-    return;
-  }
-
-  const gapNode = charApp.querySelector('[class*="--gap"]');
-  if (!gapNode) {
-    return;
-  }
-
-  const baseClass = gapNode.className.substring(
-    0,
-    gapNode.className.indexOf("__"),
-  );
-
-  const div = document.createElement("div");
-  div.className = gapNode.className.substring(
-    0,
-    gapNode.className.lastIndexOf(" "),
-  );
-  div.classList.add("tales-beyond-extension-options");
-  div.innerHTML = `
-    <div class="${baseClass}__button" role="button">
-      <img src="${svgLogo}" title="Tales Beyond Options">
-    </div>
-`;
-
-  div.addEventListener("click", () => {
-    window.location.href = `${settings.symbioteURL}/options.html`;
-  });
-
-  gapNode.after(div);
-};
-
-export const characterAppWatcher = (showOptionsButton = false) => {
+export const characterAppWatcher = () => {
   const options = {
     childList: true,
     subtree: true,
@@ -208,10 +173,8 @@ export const characterAppWatcher = (showOptionsButton = false) => {
 
   let wasDiceDisabled;
   const callback = async (mutationList, observer) => {
-    const isCharacterSelected = /^\/characters\/\d+\/?$/.test(
-      window.location.pathname,
-    );
-    if (!isCharacterSelected) {
+    const characterId = getCharacterId();
+    if (!characterId || (await isCharacterDeactivated(characterId))) {
       return;
     }
 
@@ -234,9 +197,7 @@ export const characterAppWatcher = (showOptionsButton = false) => {
 
     observer.disconnect();
 
-    if (showOptionsButton) {
-      await injectOptionButton();
-    }
+    injectOptionButton();
 
     for (const mutation of mutationList) {
       // This is a bit of a hack, but things get a bit messy when enabling dice,

@@ -1,5 +1,10 @@
 import { mods } from "~/mods";
-import { addUIElement, BOOLEAN, DROPDOWN } from "~/utils/options";
+import {
+  addUIElement,
+  BOOLEAN,
+  DEACTIVATE_CHARACTER,
+  DROPDOWN,
+} from "~/utils/options";
 import { getOptions } from "~/utils/storage";
 
 const general = [
@@ -76,6 +81,15 @@ const restoreOptions = async () => {
   const generalList = document.querySelector("#general-list");
   for (const opt of general) {
     addUIElement(settings, generalList, opt);
+  }
+
+  const deactivatedList = document.querySelector("#deactivated-list");
+  for (const character of settings.deactivatedCharacters) {
+    addUIElement(settings, deactivatedList, {
+      id: character.id,
+      header: `${character.name} (${character.id})`,
+      type: DEACTIVATE_CHARACTER,
+    });
   }
 };
 

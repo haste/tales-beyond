@@ -59,6 +59,30 @@ h4 {
   }
 }
 
+p {
+  font-size: 1rem;
+}
+
+button {
+  background-color: #ab79d6;
+  border: 1px solid #ab79d6;
+  border-radius: 0.5em;
+  color: #351d4a;
+  font-weight: 500;
+  padding: 0 1em 0em;
+  text-decoration: none;
+
+  &:hover {
+    border: 1px solid #ab79d6;
+    color: #ab79d6;
+    background-color: #351d4a;
+  }
+}
+
+.none-deactivated:has(+ #deactivated-list > div.input-group) {
+  display: none;
+}
+
 .option {
   display: grid;
   grid-template-columns: auto 2.5em;
