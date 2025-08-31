@@ -18,8 +18,8 @@
     "build": "bun run --bun scripts/build.js",
     "build:release": "bun run --bun scripts/release.js",
     "watch": "bun run --bun --watch scripts/watch.js",
-    "check": "bun biome check src/ scripts/",
-    "check:write": "bun biome check --write src/ scripts/",
+    "check": "bun biome check biome.json src/ scripts/",
+    "check:write": "bun biome check --write biome.json src/ scripts/",
     "changelog:amo": "bun run scripts/changelog.js amo CHANGELOG.md",
     "changelog:modio": "bun run scripts/changelog.js modio CHANGELOG.md"
   },
