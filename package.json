@@ -9,6 +9,7 @@
     "chrome-webstore-upload-cli": "^3.3.2",
     "global-jsdom": "^26.0.0",
     "marked": "^16.2.1",
+    "prettier": "3.6.2",
     "sass": "^1.91.0",
     "web-ext": "8.9.0"
   },
@@ -18,8 +19,12 @@
     "build": "bun run --bun scripts/build.js",
     "build:release": "bun run --bun scripts/release.js",
     "watch": "bun run --bun --watch scripts/watch.js",
-    "check": "bun biome check biome.json src/ scripts/",
-    "check:write": "bun biome check --write biome.json src/ scripts/",
+    "check": "bun run check:biome && bun run check:prettier",
+    "check:write": "bun run check:biome:write && bun run check:prettier:write",
+    "check:biome": "bun biome check biome.json src/ scripts/",
+    "check:biome:write": "bun biome check --write biome.json src/ scripts/",
+    "check:prettier": "bun prettier --check src/scss/",
+    "check:prettier:write": "bun prettier --write src/scss/",
     "changelog:amo": "bun run scripts/changelog.js amo CHANGELOG.md",
     "changelog:modio": "bun run scripts/changelog.js modio CHANGELOG.md"
   },
