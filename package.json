@@ -21,10 +21,10 @@
     "watch": "bun run --bun --watch scripts/watch.js",
     "check": "bun run check:biome && bun run check:prettier",
     "check:write": "bun run check:biome:write && bun run check:prettier:write",
-    "check:biome": "bun biome check biome.json src/ scripts/",
-    "check:biome:write": "bun biome check --write biome.json src/ scripts/",
+    "check:biome": "bun biome check --error-on-warnings biome.json src/ scripts/",
+    "check:biome:write": "bun check:biome --write",
     "check:prettier": "bun prettier --check src/scss/",
-    "check:prettier:write": "bun prettier --write src/scss/",
+    "check:prettier:write": "bun check:prettier --write",
     "changelog:amo": "bun run scripts/changelog.js amo CHANGELOG.md",
     "changelog:modio": "bun run scripts/changelog.js modio CHANGELOG.md"
   },
