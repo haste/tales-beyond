@@ -36,6 +36,8 @@ export const injectOptionButton = () => {
   menuNode
     .querySelector(".item.deactivate-character")
     .addEventListener("click", async () => {
+      menuNode.hidePopover();
+
       const settings = await getOptions();
       const characterId = getCharacterId();
       if (!(await isCharacterDeactivated(characterId))) {
@@ -53,6 +55,8 @@ export const injectOptionButton = () => {
   menuNode
     .querySelector(".item.options")
     .addEventListener("click", async () => {
+      menuNode.hidePopover();
+
       const settings = await getOptions();
       if (settings?.symbioteURL) {
         window.location.href = `${settings.symbioteURL}/options.html`;
@@ -93,10 +97,6 @@ export const injectOptionButton = () => {
         top: `${y}px`,
       });
     });
-  });
-
-  headerGroup.addEventListener("click", () => {
-    //menuNode.togglePopover({ source: menuNode });
   });
 
   gapNode.after(headerGroup);
