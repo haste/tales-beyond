@@ -57,6 +57,8 @@ if (format === "amo") {
         release_notes: {
           "en-US": marked.parse(latestEntry).trim(),
         },
+        approval_notes:
+          "Source can be built by installing bun (https://bun.sh/) and running `bun install` followed by `bun run build`",
       },
     }),
   );
