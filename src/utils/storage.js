@@ -44,6 +44,7 @@ const migrateUserOptions = async (userOptions) => {
   }
 };
 
+// biome-ignore lint/complexity/useOptionalChain: Defined in env
 if (typeof chrome !== "undefined" && chrome.storage) {
   // TODO: Check if this is required when Firefox is moved to Manifest V3
   // We wrap this in a Promise so we get the same behavior in Firefox and Chrome
@@ -86,6 +87,7 @@ if (typeof chrome !== "undefined" && chrome.storage) {
   };
 
   init();
+  // biome-ignore lint/complexity/useOptionalChain: Defined in env
 } else if (typeof TS !== "undefined" && TS.localStorage) {
   saveOption = async (key, value) => {
     settings[key] = value;

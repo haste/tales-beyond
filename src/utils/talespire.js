@@ -83,6 +83,7 @@ export const triggerTalespire = (label, dice, extraDice) => {
 
   if (TB_DRY_RUN_TALESPIRE_LINKS === "true") {
     console.log("TaleSpire Link", { name: label, dice, extraDice, uri });
+    // biome-ignore lint/complexity/useOptionalChain: Defined in env
   } else if (typeof TS !== "undefined" && TS.dice) {
     const rollDescriptors = [{ name: label ?? "", roll: dice }];
     if (extraDice) {
