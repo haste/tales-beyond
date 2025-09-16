@@ -3,19 +3,8 @@ import { marked } from "marked";
 
 const [_exec, _script, format, input] = Bun.argv;
 
-const mozillaRenderer = {
-  heading({ tokens }) {
-    const text = this.parser.parseInline(tokens);
-
-    return `<strong>${text}</strong>\n`;
-  },
-};
-
-const modioRenderer = {
-  heading({ tokens }) {
-    return `${this.parser.parseInline(tokens)}\n\n`;
-  },
-
+const sharedRenderer = {
+  // Block-level
   list({ items }) {
     const body = [];
     for (const item of items) {
@@ -28,8 +17,33 @@ const modioRenderer = {
     return ` - ${this.parser.parseInline(tokens)}\n`;
   },
 
+  // Inline-level
+  strong({ tokens }) {
+    const text = this.parser.parseInline(tokens);
+    return `**${text}**`;
+  },
+
+  em({ tokens }) {
+    const text = this.parser.parseInline(tokens);
+    return `_${text}_`;
+  },
+
   text(token) {
     return token.tokens ? this.parser.parseInline(token.tokens) : token.text;
+  },
+};
+
+const mozillaRenderer = {
+  ...sharedRenderer,
+  heading({ tokens }) {
+    return `**${this.parser.parseInline(tokens)}**\n\n`;
+  },
+};
+
+const modioRenderer = {
+  ...sharedRenderer,
+  heading({ tokens }) {
+    return `${this.parser.parseInline(tokens)}\n\n`;
   },
 };
 
