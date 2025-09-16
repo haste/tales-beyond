@@ -14,7 +14,7 @@
     "web-ext": "8.9.0"
   },
   "description": "Replaces D&D Beyond's digital dices with links to TaleSpire",
-  "packageManager": "bun@1.2.20",
+  "packageManager": "bun@1.2.22",
   "scripts": {
     "build": "bun run --bun scripts/build.js",
     "build:release": "bun run --bun scripts/release.js",
