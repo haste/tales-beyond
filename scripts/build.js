@@ -142,7 +142,7 @@ const buildSymbiote = async () => {
     if (entry.endsWith(".js")) {
       await bunBuild({
         entrypoints: [path.join(symbioteSrcDir, entry)],
-        outdir: buildDir,
+        outdir: path.join(buildDir, path.dirname(entry)),
         wrap: true,
       });
     }
