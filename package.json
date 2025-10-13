@@ -11,7 +11,7 @@
     "marked": "^16.4.0",
     "prettier": "3.6.2",
     "sass": "^1.93.2",
-    "web-ext": "8.10.0"
+    "web-ext": "9.0.0"
   },
   "description": "Replaces D&D Beyond's digital dices with links to TaleSpire",
   "packageManager": "bun@1.2.22",
