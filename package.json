@@ -6,7 +6,7 @@
     "@floating-ui/dom": "^1.7.4",
     "adm-zip": "^0.5.16",
     "bootstrap": "^5.3.8",
-    "chrome-webstore-upload-cli": "^3.4.0",
+    "chrome-webstore-upload-cli": "^3.5.0",
     "global-jsdom": "^27.0.0",
     "marked": "^16.4.0",
     "prettier": "3.6.2",
