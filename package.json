@@ -9,7 +9,7 @@
     "chrome-webstore-upload-cli": "^3.4.0",
     "global-jsdom": "^27.0.0",
     "marked": "^17.0.0",
-    "prettier": "3.7.4",
+    "prettier": "3.8.1",
     "sass": "^1.94.0",
     "web-ext": "9.2.0"
   },
