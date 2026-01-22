@@ -18,7 +18,7 @@ const general = [
   {
     id: "prefixWithCharacterName",
     type: DROPDOWN,
-    header: "Prefix dice rolls with",
+    header: "Prefix rolls with",
     options: [
       { value: "full", label: "Full character name" },
       { value: "first", label: "First part of character name" },

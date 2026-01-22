@@ -83,6 +83,12 @@ button {
   display: none;
 }
 
+.option-dropdown {
+  label {
+    width: 10rem;
+  }
+}
+
 .option {
   display: grid;
   grid-template-columns: auto 2.5em;
@@ -122,7 +128,7 @@ footer {
     text-align: center;
   }
 
-  [data-talespire] {
+  &[data-talespire] {
     display: flex;
   }
 }
