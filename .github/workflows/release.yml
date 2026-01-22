@@ -33,6 +33,8 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     environment: firefox
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v6
       - uses: oven-sh/setup-bun@v2
@@ -58,6 +60,10 @@ jobs:
             --upload-source-code tales-beyond-source-${GITHUB_REF_NAME:1}.zip \
             --api-key ${AMO_API_KEY} \
             --api-secret ${AMO_SECRET}
+      - name: Add xpi to release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: web-ext-artifacts/*.xpi
 
   release-chrome:
     runs-on: ubuntu-latest
