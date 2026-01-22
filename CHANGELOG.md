@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+### Enhancements
+
+ * Tales Beyond icon is now visible on deactivated characters, allowing easy re-activation.
+
 ## 0.23.1 (2026-01-22)
 
 ### Bug fixes

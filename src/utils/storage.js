@@ -111,4 +111,34 @@ if (typeof chrome !== "undefined" && chrome.storage) {
   };
 }
 
-export { getOptions, saveOption, saveOptions, settings };
+const isCharacterDeactivated = async (characterId) => {
+  const options = await getOptions();
+  return options.deactivatedCharacters.some(({ id }) => id === characterId);
+};
+
+const deactivateCharacter = async (characterId, characterName) => {
+  const options = await getOptions();
+  if (options.deactivatedCharacters.some(({ id }) => id === characterId)) {
+    return;
+  }
+  options.deactivatedCharacters.push({ id: characterId, name: characterName });
+  await saveOption("deactivatedCharacters", options.deactivatedCharacters);
+};
+
+const reactivateCharacter = async (characterId) => {
+  const options = await getOptions();
+  const deactivatedCharacters = options.deactivatedCharacters.filter(
+    ({ id }) => id !== characterId,
+  );
+  await saveOption("deactivatedCharacters", deactivatedCharacters);
+};
+
+export {
+  deactivateCharacter,
+  getOptions,
+  isCharacterDeactivated,
+  reactivateCharacter,
+  saveOption,
+  saveOptions,
+  settings,
+};

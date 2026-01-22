@@ -2,16 +2,13 @@ import { computePosition } from "@floating-ui/dom";
 
 import svgLogo from "~/icons/icon.svg";
 import { getCharacterId, getCharacterName } from "~/utils/dndbeyond";
-import { getOptions, saveOption } from "~/utils/storage";
+import {
+  deactivateCharacter,
+  getOptions,
+  reactivateCharacter,
+} from "~/utils/storage";
 
-export const isCharacterDeactivated = async (characterId) => {
-  const settings = await getOptions();
-  return settings.deactivatedCharacters
-    .map(({ id }) => id)
-    .includes(characterId);
-};
-
-export const injectOptionButton = () => {
+export const injectOptionButton = (isDeactivated = false) => {
   const charApp = document.querySelector('[name="character-app"]');
   if (!charApp || document.querySelector(".tales-beyond-extension-icon")) {
     return;
@@ -26,12 +23,16 @@ export const injectOptionButton = () => {
   menuContainer.classList.add("tales-beyond-extension-icon-menu");
   menuContainer.innerHTML = `
   <div id="tales-beyond-extension-icon-menu" class="menu">
-    <div class="item deactivate-character">Deactivate for this character</div>
+    <div class="item toggle-character"></div>
     <div class="item options">Show options</div>
   </div>
 `;
 
   const menuNode = menuContainer.querySelector(".menu");
+  const toggleItem = menuNode.querySelector(".item.toggle-character");
+  toggleItem.textContent = isDeactivated
+    ? "Reactivate for this character"
+    : "Deactivate for this character";
 
   menuNode.addEventListener("click", (event) => {
     event.stopPropagation();
@@ -41,24 +42,17 @@ export const injectOptionButton = () => {
     menuNode.classList.remove("open");
   });
 
-  menuNode
-    .querySelector(".item.deactivate-character")
-    .addEventListener("click", async () => {
-      menuNode.classList.remove("open");
+  toggleItem.addEventListener("click", async () => {
+    menuNode.classList.remove("open");
 
-      const settings = await getOptions();
-      const characterId = getCharacterId();
-      if (!(await isCharacterDeactivated(characterId))) {
-        const deactivatedCharacters = settings.deactivatedCharacters;
-        deactivatedCharacters.push({
-          id: characterId,
-          name: getCharacterName(),
-        });
-        await saveOption("deactivatedCharacters", deactivatedCharacters);
-      }
+    if (isDeactivated) {
+      await reactivateCharacter(getCharacterId());
+    } else {
+      await deactivateCharacter(getCharacterId(), getCharacterName());
+    }
 
-      window.location.reload();
-    });
+    window.location.reload();
+  });
 
   menuNode
     .querySelector(".item.options")
@@ -86,11 +80,18 @@ export const injectOptionButton = () => {
     gapNode.className.lastIndexOf(" "),
   );
   headerGroup.classList.add("tales-beyond-extension-icon");
+  headerGroup.title = isDeactivated
+    ? "Tales Beyond (Deactivated)"
+    : "Tales Beyond";
   headerGroup.innerHTML = `
 <button class="${baseClass}__button" role="button">
-  <img src="${svgLogo}" title="Tales Beyond Options">
+  <img src="${svgLogo}">
 </button>
 `;
+
+  if (isDeactivated) {
+    headerGroup.classList.add("deactivated");
+  }
 
   const button = headerGroup.querySelector("button");
   button.addEventListener("click", (event) => {

@@ -1,4 +1,4 @@
-import { getOptions, saveOption } from "~/utils/storage";
+import { reactivateCharacter, saveOption } from "~/utils/storage";
 
 export const BOOLEAN = Symbol("boolean");
 export const DEACTIVATE_CHARACTER = Symbol("deactivatedCharacter");
@@ -42,11 +42,7 @@ const addDeactivatedCharacter = (parent, entry) => {
 
   const button = base.querySelector("button");
   button.addEventListener("click", async () => {
-    const settings = await getOptions();
-    const deactivatedCharacters = settings.deactivatedCharacters.filter(
-      ({ id }) => id !== entry.id,
-    );
-    await saveOption("deactivatedCharacters", deactivatedCharacters);
+    await reactivateCharacter(entry.id);
     button.parentNode.remove();
   });
 

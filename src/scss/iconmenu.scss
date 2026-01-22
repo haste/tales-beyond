@@ -18,6 +18,14 @@
       max-height: 52px;
     }
   }
+
+  &.deactivated {
+    opacity: 0.5;
+
+    &:hover {
+      opacity: 1;
+    }
+  }
 }
 
 .tales-beyond-extension-icon-menu {

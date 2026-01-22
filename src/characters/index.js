@@ -1,7 +1,4 @@
-import {
-  injectOptionButton,
-  isCharacterDeactivated,
-} from "~/characters/iconmenu";
+import { injectOptionButton } from "~/characters/iconmenu";
 import { injectContextMenu } from "~/contextmenu";
 import svgLogo from "~/icons/icon.svg";
 import { customMod } from "~/mods";
@@ -16,6 +13,7 @@ import {
   processBlockTraitsAction,
 } from "~/utils/dndbeyond";
 import { namedObserver } from "~/utils/observer";
+import { isCharacterDeactivated } from "~/utils/storage";
 import { talespireLink } from "~/utils/talespire";
 import {
   embedInText,
@@ -174,7 +172,14 @@ export const characterAppWatcher = () => {
   let wasDiceDisabled;
   const callback = async (mutationList, observer) => {
     const characterId = getCharacterId();
-    if (!characterId || (await isCharacterDeactivated(characterId))) {
+    if (!characterId) {
+      return;
+    }
+
+    const isDeactivated = await isCharacterDeactivated(characterId);
+    injectOptionButton(isDeactivated);
+
+    if (isDeactivated) {
       return;
     }
 
@@ -196,8 +201,6 @@ export const characterAppWatcher = () => {
     await injectContextMenu();
 
     observer.disconnect();
-
-    injectOptionButton();
 
     for (const mutation of mutationList) {
       // This is a bit of a hack, but things get a bit messy when enabling dice,
