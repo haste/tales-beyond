@@ -25,7 +25,7 @@ export const injectOptionButton = () => {
   const menuContainer = document.createElement("div");
   menuContainer.classList.add("tales-beyond-extension-icon-menu");
   menuContainer.innerHTML = `
-  <div id="tales-beyond-extension-icon-menu" class="menu" popover>
+  <div id="tales-beyond-extension-icon-menu" class="menu">
     <div class="item deactivate-character">Deactivate for this character</div>
     <div class="item options">Show options</div>
   </div>
@@ -33,10 +33,18 @@ export const injectOptionButton = () => {
 
   const menuNode = menuContainer.querySelector(".menu");
 
+  menuNode.addEventListener("click", (event) => {
+    event.stopPropagation();
+  });
+
+  document.addEventListener("click", () => {
+    menuNode.classList.remove("open");
+  });
+
   menuNode
     .querySelector(".item.deactivate-character")
     .addEventListener("click", async () => {
-      menuNode.hidePopover();
+      menuNode.classList.remove("open");
 
       const settings = await getOptions();
       const characterId = getCharacterId();
@@ -55,7 +63,7 @@ export const injectOptionButton = () => {
   menuNode
     .querySelector(".item.options")
     .addEventListener("click", async () => {
-      menuNode.hidePopover();
+      menuNode.classList.remove("open");
 
       const settings = await getOptions();
       if (settings?.symbioteURL) {
@@ -79,29 +87,30 @@ export const injectOptionButton = () => {
   );
   headerGroup.classList.add("tales-beyond-extension-icon");
   headerGroup.innerHTML = `
-<button popovertarget="tales-beyond-extension-icon-menu" class="${baseClass}__button" role="button">
+<button class="${baseClass}__button" role="button">
   <img src="${svgLogo}" title="Tales Beyond Options">
 </button>
 `;
-  menuNode.addEventListener("toggle", (event) => {
-    if (event.newState !== "open") {
-      return;
-    }
 
-    const button = headerGroup.querySelector("button");
-    computePosition(button, menuNode, {
-      placement: "bottom",
-    }).then(({ x, y }) => {
-      Object.assign(menuNode.style, {
-        left: `${x}px`,
-        top: `${y}px`,
+  const button = headerGroup.querySelector("button");
+  button.addEventListener("click", (event) => {
+    event.stopPropagation();
+    const isOpen = menuNode.classList.toggle("open");
+    if (isOpen) {
+      computePosition(button, menuNode, {
+        placement: "bottom",
+      }).then(({ x, y }) => {
+        Object.assign(menuNode.style, {
+          left: `${x}px`,
+          top: `${y}px`,
+        });
       });
-    });
+    }
   });
 
   gapNode.after(headerGroup);
 
-  window.addEventListener("scroll", () => menuNode.hidePopover(), {
+  window.addEventListener("scroll", () => menuNode.classList.remove("open"), {
     capture: true,
     passive: true,
   });
