@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+### Bug fixes
+
+ * Fixed "Show options" not working when used as a symbiote in TaleSpire.
+
 ## 0.23.0 (2025-09-03)
 
 ### Enhancements
