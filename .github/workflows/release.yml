@@ -43,7 +43,7 @@ jobs:
       - name: Install dependencies
         run: bun install
       - name: Download artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           name: release-artifacts
       - name: Release Firefox
@@ -71,7 +71,7 @@ jobs:
     environment: chrome
     steps:
       - name: Download artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           name: release-artifacts
       - name: Release Chrome
@@ -100,7 +100,7 @@ jobs:
       - name: Install dependencies
         run: bun install
       - name: Download artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           name: release-artifacts
       - name: Release Symbiote
@@ -126,7 +126,7 @@ jobs:
       contents: write
     steps:
       - name: Download artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           name: release-artifacts
       - name: Add artifacts
