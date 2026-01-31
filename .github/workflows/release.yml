@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
-      - uses: oven-sh/setup-bun@v2
+      - uses: oven-sh/setup-bun@3d267786b128fe76c2f16a390aa2448b815359f3 # v2
         with:
           bun-version-file: ".tool-versions"
       - name: Install dependencies
@@ -37,7 +37,7 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v6
-      - uses: oven-sh/setup-bun@v2
+      - uses: oven-sh/setup-bun@3d267786b128fe76c2f16a390aa2448b815359f3 # v2
         with:
           bun-version-file: ".tool-versions"
       - name: Install dependencies
@@ -61,7 +61,7 @@ jobs:
             --api-key ${AMO_API_KEY} \
             --api-secret ${AMO_SECRET}
       - name: Add xpi to release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@a06a81a03ee405af7f2048a818ed3f03bbf83c7b # v2
         with:
           files: web-ext-artifacts/*.xpi
 
@@ -94,7 +94,7 @@ jobs:
     environment: symbiote
     steps:
       - uses: actions/checkout@v6
-      - uses: oven-sh/setup-bun@v2
+      - uses: oven-sh/setup-bun@3d267786b128fe76c2f16a390aa2448b815359f3 # v2
         with:
           bun-version-file: ".tool-versions"
       - name: Install dependencies
@@ -130,6 +130,6 @@ jobs:
         with:
           name: release-artifacts
       - name: Add artifacts
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@a06a81a03ee405af7f2048a818ed3f03bbf83c7b # v2
         with:
           files: web-ext-artifacts/*
