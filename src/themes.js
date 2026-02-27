@@ -121,7 +121,7 @@ const themes = {
 }
   `,
 
-  "Figther Rust": `
+  "Fighter Rust": `
 :root {
     --tales-beyond-border: #7e4f3d;
     --tales-beyond-background: inherit;
@@ -396,78 +396,29 @@ export const injectThemeStyle = () => {
     return;
   }
 
-  let styles;
   // The trim() is here because the Chromium version TaleSpire uses returns the
   // CSS variable with spaces preserved
-  switch (mainColor.toLowerCase().trim()) {
-    case "#e5623e":
-      styles = themes["Barbarian Fire"];
-      break;
+  const colorToTheme = {
+    "#e5623e": "Barbarian Fire",
+    "#aa6dab": "Bard Rogue",
+    "#92a2b3": "Cleric Silver",
+    "#79853c": "Druid Moss",
+    "#7e4f3d": "Fighter Rust",
+    "#53a5c5": "Monk Sky",
+    "#b59e54": "Paladin Gold",
+    "#4f7e61": "Range Emerald",
+    "#555752": "Rogue Ash",
+    "#972e2e": "Sorcerer Blood",
+    "#8137af": "Warlock Iris",
+    "#0045b7": "Wizard Cobalt",
+    "#d59139": "Artificer Copper",
+    "#cf9f25": "Gold Dragon",
+    "#eb5118": "Eye of Xanathar",
+    "#99c476": "I Love Flumphs",
+  };
 
-    case "#aa6dab":
-      styles = themes["Bard Rogue"];
-      break;
-
-    case "#92a2b3":
-      styles = themes["Cleric Silver"];
-      break;
-
-    case "#79853c":
-      styles = themes["Druid Moss"];
-      break;
-
-    case "#7e4f3d":
-      styles = themes["Figther Rust"];
-      break;
-
-    case "#53a5c5":
-      styles = themes["Monk Sky"];
-      break;
-
-    case "#b59e54":
-      styles = themes["Paladin Gold"];
-      break;
-
-    case "#4f7e61":
-      styles = themes["Range Emerald"];
-      break;
-
-    case "#555752":
-      styles = themes["Rogue Ash"];
-      break;
-
-    case "#972e2e":
-      styles = themes["Sorcerer Blood"];
-      break;
-
-    case "#8137af":
-      styles = themes["Warlock Iris"];
-      break;
-
-    case "#0045b7":
-      styles = themes["Wizard Cobalt"];
-      break;
-
-    case "#d59139":
-      styles = themes["Artificer Copper"];
-      break;
-
-    case "#cf9f25":
-      styles = themes["Gold Dragon"];
-      break;
-
-    case "#eb5118":
-      styles = themes["Eye of Xanathar"];
-      break;
-
-    case "#99c476":
-      styles = themes["I Love Flumphs"];
-      break;
-
-    default:
-      styles = themes["DDB Red"];
-      break;
-  }
+  const themeName = colorToTheme[mainColor.toLowerCase().trim()];
+  const styles = themes[themeName] ?? themes["DDB Red"];
 
   theme.dataset.mainColor = mainColor;
   if (styles) {
