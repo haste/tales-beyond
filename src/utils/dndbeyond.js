@@ -1,4 +1,5 @@
 import { abilityNames } from "~/consts";
+import { talespireLink } from "~/utils/talespire";
 import {
   diceValueFromMatch,
   embedInText,
@@ -141,6 +142,23 @@ export const processBlockTraitsAction = (node, label) => {
         embedInText(textNode, `${label}: ${action}`);
       }
     }
+  }
+};
+
+export const processBlockDiceNotations = (node, label) => {
+  for (const diceNode of node.querySelectorAll("[data-dicenotation]")) {
+    const dice = diceNode.dataset.dicenotation;
+    const rollAction = diceNode.dataset.rollaction;
+
+    const link = talespireLink(
+      null,
+      `${label}: ${rollAction}`,
+      dice,
+      diceNode.textContent,
+    );
+    link.style = "padding-left: 4px; padding-right: 4px;";
+
+    diceNode.replaceWith(link);
   }
 };
 

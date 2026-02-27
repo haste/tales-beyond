@@ -2,11 +2,11 @@ import { injectContextMenu } from "~/contextmenu";
 import {
   processBlockAbilities,
   processBlockAttributes,
+  processBlockDiceNotations,
   processBlockTidbits,
   processBlockTraitsAction,
 } from "~/utils/dndbeyond";
 import { namedObserver } from "~/utils/observer";
-import { talespireLink } from "~/utils/talespire";
 import { embedInText, getTextNodes } from "~/utils/web";
 
 const updateMonsters = (node) => {
@@ -23,20 +23,7 @@ const updateMonsters = (node) => {
   }
 
   // Replace dice notations
-  for (const diceNode of node.querySelectorAll("[data-dicenotation]")) {
-    const dice = diceNode.dataset.dicenotation;
-    const label = diceNode.dataset.rollaction;
-
-    const link = talespireLink(
-      null,
-      `${monsterName}: ${label}`,
-      dice,
-      diceNode.textContent,
-    );
-    link.style = "padding-left: 4px; padding-right: 4px;";
-
-    diceNode.replaceWith(link);
-  }
+  processBlockDiceNotations(node, monsterName);
 
   // Get proper labels on abilities, saving throws, skills, traits and actions
   processBlockAbilities(node, monsterName);
