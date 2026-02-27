@@ -305,7 +305,7 @@ const showEnableDiceDialog = () => {
 
   const button = dialog.querySelector(".tales-beyond-extension-dialog button");
   button.addEventListener("click", () => dialog.close());
-  button.addEventListener("touchend", dialog.close());
+  button.addEventListener("touchend", () => dialog.close());
 
   document.body.appendChild(dialog);
   dialog.showModal();
