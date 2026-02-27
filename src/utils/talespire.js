@@ -108,12 +108,9 @@ export const talespireLink = (elem, label, dice, diceLabel) => {
     event.stopPropagation();
 
     const { name, extraDice } = checkModifierKeys(event, label);
+    const rollDice = name?.includes("CRIT") ? doubleDiceExpression(dice) : dice;
 
-    if (name?.includes("CRIT")) {
-      dice = doubleDiceExpression(dice);
-    }
-
-    triggerTalespire(name, dice, extraDice);
+    triggerTalespire(name, rollDice, extraDice);
   });
 
   if (diceLabel) {
