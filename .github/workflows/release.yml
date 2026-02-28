@@ -26,6 +26,7 @@ jobs:
         with:
           name: release-artifacts
           path: |
+            build/firefox/
             web-ext-artifacts/*
             tales-beyond-source-*.zip
 
