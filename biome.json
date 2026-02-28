@@ -17,25 +17,28 @@
         "noUnusedImports": "error"
       },
       "style": {
+        "noInferrableTypes": "error",
         "noNegationElse": "error",
-        "useCollapsedElseIf": "error",
-        "useForOf": "error",
         "noParameterAssign": "off",
+        "noUnusedTemplateLiteral": "error",
+        "noUselessElse": "error",
         "useAsConstAssertion": "error",
+        "useBlockStatements": "error",
+        "useCollapsedElseIf": "error",
+        "useCollapsedIf": "error",
         "useDefaultParameterLast": "error",
         "useEnumInitializers": "error",
-        "useSelfClosingElements": "error",
-        "useSingleVarDeclarator": "error",
-        "noUnusedTemplateLiteral": "error",
+        "useForOf": "error",
         "useNumberNamespace": "error",
-        "noInferrableTypes": "error",
-        "noUselessElse": "error"
+        "useSelfClosingElements": "error",
+        "useSingleVarDeclarator": "error"
       },
       "suspicious": {
+        "noConsole": "error",
+        "noDoubleEquals": "error",
         "noEmptyBlockStatements": "error",
         "noSkippedTests": "error",
-        "useAwait": "error",
-        "noConsole": { "level": "error", "options": { "allow": ["log"] } }
+        "useAwait": "error"
       }
     }
   },
@@ -48,7 +51,7 @@
       "linter": {
         "rules": {
           "suspicious": {
-            "noConsole": { "level": "off", "options": { "allow": ["log"] } }
+            "noConsole": "off"
           }
         }
       }

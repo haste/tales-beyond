@@ -86,6 +86,7 @@ export const triggerTalespire = (label, rollOrRolls) => {
   }
 
   if (TB_DRY_RUN_TALESPIRE_LINKS === "true") {
+    // biome-ignore lint/suspicious/noConsole: debugging output
     console.log("TaleSpire Link", { name: label, dice: diceUri, uri });
   } else if (typeof TS !== "undefined" && TS.dice) {
     const rollDescriptors = rolls.map((roll, i) => ({
