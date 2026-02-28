@@ -209,7 +209,9 @@ const buildSCSS = async () => {
   }
 };
 
-export const build = async (targets) => {
+const allTargets = ["firefox", "chrome", "symbiote"];
+
+export const build = async (targets = allTargets) => {
   await buildSCSS();
   await buildShared();
 
@@ -224,5 +226,7 @@ export const build = async (targets) => {
   console.log("Build complete");
 };
 
-const args = process.argv.slice(2);
-await build(args.length > 0 ? args : ["firefox", "chrome", "symbiote"]);
+if (import.meta.main) {
+  const args = process.argv.slice(2);
+  await build(args.length > 0 ? args : undefined);
+}
