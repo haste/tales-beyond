@@ -10,11 +10,15 @@ const sharedRenderer = {
     for (const item of items) {
       body.push(this.listitem(item));
     }
-    return `${body.join("")}\n`;
+    return body.join("");
   },
 
   listitem({ tokens }) {
-    return ` - ${this.parser.parseInline(tokens)}\n`;
+    let text = this.parser.parseInline(tokens.filter((t) => t.type !== "list"));
+    for (const token of tokens.filter((t) => t.type === "list")) {
+      text += `\n${this.list(token).trimEnd()}`;
+    }
+    return `- ${text.replace(/\n/g, "\n  ")}\n`;
   },
 
   // Inline-level
