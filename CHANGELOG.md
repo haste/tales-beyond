@@ -5,6 +5,8 @@
 ### Enhancements
 
  * Tales Beyond icon is now visible on deactivated characters, allowing easy re-activation.
+ * New spell modification:
+   - **Spellfire Flare**: Adds extra dice buttons for multiple blasts.
 
 ## 0.23.1 (2026-01-22)
 

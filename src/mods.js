@@ -166,6 +166,52 @@ export const mods = [
     },
   },
   {
+    id: "modSpellfireFlare",
+    type: BOOLEAN,
+    header: "Spellfire Flare",
+    description: "Adds extra dice buttons for multiple blasts.",
+    check: labelIsHeader,
+    fn: (label, diceButton) => {
+      const level = getParentWithClass(diceButton, "ddbc-combat-attack", 4)
+        ? 1
+        : Number.parseInt(
+            getSiblingWithClass(
+              diceButton,
+              "ct-content-group__header-content",
+              9,
+            )?.textContent.slice(0, -8),
+            10,
+          );
+
+      if (level <= 1) {
+        return false;
+      }
+
+      for (let i = 1; i < 1 + level; i++) {
+        const diceValue = getDiceValue(diceButton).replace(2, 2 * i);
+
+        const clonedButton = diceButton.cloneNode(true);
+        const damageText = clonedButton.querySelector(".ddbc-damage__value");
+        damageText.innerText = diceValue;
+
+        const tsLink = talespireLink(
+          clonedButton,
+          i > 1 ? `${label} (${i} blasts)` : label,
+          diceValue,
+        );
+        diceButton.parentElement.appendChild(tsLink);
+      }
+
+      diceButton.style = "display: none;";
+      diceButton.classList.add("tales-beyond-extension");
+      diceButton.parentElement.parentElement.classList.add(
+        "tales-beyond-extension-versatile",
+      );
+
+      return true;
+    },
+  },
+  {
     id: "modTollTheDead",
     type: BOOLEAN,
     header: "Toll the Dead",

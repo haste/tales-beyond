@@ -1,4 +1,4 @@
-const VERSION = 3;
+const VERSION = 4;
 const defaultOptions = {
   version: VERSION,
   contextMenuEnabled: true,
@@ -11,6 +11,7 @@ const defaultOptions = {
   modMagicMissile: true,
   modMelfsMinuteMeteors: true,
   modScorchingRay: true,
+  modSpellfireFlare: true,
   modTollTheDead: true,
   modTwoWeaponLightOffhand: true,
   prefixWithCharacterName: "none",
@@ -36,6 +37,13 @@ const migrateUserOptions = async (userOptions) => {
         ...userOptions,
         version: 3,
         deactivatedCharacters: [],
+      });
+
+    case 3:
+      return migrateUserOptions({
+        ...userOptions,
+        version: 4,
+        modSpellfireFlare: true,
       });
 
     default:
