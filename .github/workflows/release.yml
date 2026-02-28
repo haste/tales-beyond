@@ -47,6 +47,7 @@ jobs:
         uses: actions/download-artifact@v8
         with:
           name: release-artifacts
+          skip-decompress: true
       - name: Release Firefox
         env:
           AMO_API_KEY: ${{ secrets.AMO_API_KEY }}
@@ -75,6 +76,7 @@ jobs:
         uses: actions/download-artifact@v8
         with:
           name: release-artifacts
+          skip-decompress: true
       - name: Release Chrome
         env:
           CWS_EXTENSION_ID: ${{ secrets.CWS_EXTENSION_ID }}
@@ -104,6 +106,7 @@ jobs:
         uses: actions/download-artifact@v8
         with:
           name: release-artifacts
+          skip-decompress: true
       - name: Release Symbiote
         env:
           MODIO_API_URL: ${{ secrets.MODIO_API_URL }}
@@ -130,6 +133,7 @@ jobs:
         uses: actions/download-artifact@v8
         with:
           name: release-artifacts
+          skip-decompress: true
       - name: Add artifacts
         uses: softprops/action-gh-release@a06a81a03ee405af7f2048a818ed3f03bbf83c7b # v2
         with:
