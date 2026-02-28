@@ -238,7 +238,12 @@ export const characterAppWatcher = () => {
 };
 
 export const sidebarPortalWatcher = () => {
-  const callback = (mutationList, _observer) => {
+  const callback = async (mutationList, _observer) => {
+    const characterId = getCharacterId();
+    if (characterId && (await isCharacterDeactivated(characterId))) {
+      return;
+    }
+
     for (const mutation of mutationList) {
       if (mutation.addedNodes.length === 0) {
         continue;

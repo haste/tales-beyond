@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+### Bug fixes
+
+ * Fixed sidebar still replacing dice when Tales Beyond was deactivated for a character.
+
 ## 0.24.0 (2026-02-28)
 
 ### Enhancements
