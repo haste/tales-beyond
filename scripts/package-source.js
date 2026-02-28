@@ -21,7 +21,7 @@ const sourceZip = new AdmZip();
   "package.json",
   "README.md",
 ].forEach((file) => {
-  sourceZip.addLocalFile(`./${file}`, file);
+  sourceZip.addLocalFile(`./${file}`);
 });
 
 ["docs", "scripts", "src"].forEach((folder) => {
