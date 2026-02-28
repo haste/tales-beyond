@@ -1,7 +1,7 @@
 import { arrow, computePosition, flip, offset } from "@floating-ui/dom";
 
 import svgLogo from "~/icons/icon.svg";
-import { doubleDiceExpression } from "~/utils/diceUtils";
+import { parseRoll } from "~/roll";
 import { getOptions } from "~/utils/storage";
 import { triggerTalespire } from "~/utils/talespire";
 
@@ -29,21 +29,24 @@ const detectLightDismiss = (event) => {
 
 const setupListeners = (button, contextmenu) => {
   const label = button.dataset.tsLabel;
-  const originalDice = button.dataset.tsDice;
+  const roll = parseRoll(button.dataset.tsDice);
+  if (!roll) {
+    return;
+  }
 
   const action = (labelSuffix) => () => {
-    let dice = originalDice;
+    const name = labelSuffix
+      ? label
+        ? `${label} (${labelSuffix})`
+        : labelSuffix
+      : label;
 
-    if (labelSuffix) {
-      const name = label ? `${label} (${labelSuffix})` : labelSuffix;
-      if (labelSuffix === "CRIT") {
-        dice = doubleDiceExpression(dice);
-        triggerTalespire(name, dice);
-      } else {
-        triggerTalespire(name, dice, true);
-      }
+    if (labelSuffix === "CRIT") {
+      triggerTalespire(name, roll.double());
+    } else if (labelSuffix) {
+      triggerTalespire(name, roll.duplicate());
     } else {
-      triggerTalespire(label, dice);
+      triggerTalespire(name, roll);
     }
 
     removeAllMenus();
@@ -55,7 +58,7 @@ const setupListeners = (button, contextmenu) => {
   dis.addEventListener("click", action("DIS"));
   crit.addEventListener("click", action("CRIT"));
 
-  const isD20 = /\d*d20/.test(originalDice);
+  const isD20 = roll.dice[0]?.sides === 20;
 
   adv.style.display = isD20 ? "block" : "none";
   dis.style.display = isD20 ? "block" : "none";

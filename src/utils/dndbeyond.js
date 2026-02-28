@@ -1,16 +1,16 @@
 import { abilityNames } from "~/consts";
+import { getDiceRegex, parseRoll } from "~/roll";
 import { talespireLink } from "~/utils/talespire";
 import {
-  diceValueFromMatch,
   embedInText,
-  getDiceRegex,
   getTextNodes,
+  rollFromMatchWithAbilities,
 } from "~/utils/web";
 
-export const getDiceValue = (node) => {
+export const getRollFromNode = (node) => {
   const damageValue = node.querySelector(".ddbc-damage__value");
   if (damageValue) {
-    return damageValue.textContent;
+    return parseRoll(damageValue.textContent);
   }
 
   const numberDisplay = node.querySelector('[class^="styles_numberDisplay"]');
@@ -18,12 +18,12 @@ export const getDiceValue = (node) => {
     // See if we can find one unique dice value within the node.
     const matches = [];
     for (const match of node.textContent.matchAll(getDiceRegex())) {
-      matches.push(diceValueFromMatch(match.groups));
+      matches.push(rollFromMatchWithAbilities(match.groups).toString());
     }
 
     const uniqMatches = [...new Set(matches)];
     if (uniqMatches.length === 1) {
-      return uniqMatches[0];
+      return parseRoll(uniqMatches[0]);
     }
 
     return;
@@ -35,7 +35,7 @@ export const getDiceValue = (node) => {
       '[class^="styles_sign"]',
     ).textContent;
     const number = numberDisplay.lastChild.textContent;
-    return `1d20${sign}${number}`;
+    return parseRoll(`1d20${sign}${number}`);
   }
 };
 
@@ -147,11 +147,10 @@ export const processBlockTraitsAction = (node, label) => {
 
 export const processBlockDiceNotations = (node, label) => {
   for (const diceNode of node.querySelectorAll("[data-dicenotation]")) {
-    const dice = diceNode.dataset.dicenotation;
+    const dice = parseRoll(diceNode.dataset.dicenotation);
     const rollAction = diceNode.dataset.rollaction;
 
     const link = talespireLink(
-      null,
       `${label}: ${rollAction}`,
       dice,
       diceNode.textContent,

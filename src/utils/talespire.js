@@ -1,20 +1,19 @@
-import { doubleDiceExpression } from "~/utils/diceUtils";
 import { getCharacterName } from "~/utils/dndbeyond";
 import { settings } from "~/utils/storage";
 
 const modifierAction = (action, name) => {
   switch (action) {
     case "adv":
-      return { name: `${name} (ADV)`, extraDice: true };
+      return { name: `${name} (ADV)`, extraDice: true, crit: false };
     case "dis":
-      return { name: `${name} (DIS)`, extraDice: true };
+      return { name: `${name} (DIS)`, extraDice: true, crit: false };
     case "adv-dis":
-      return { name: `${name} (ADV/DIS)`, extraDice: true };
+      return { name: `${name} (ADV/DIS)`, extraDice: true, crit: false };
     case "crit":
-      return { name: `${name} (CRIT)`, extraDice: false };
+      return { name: `${name} (CRIT)`, extraDice: false, crit: true };
 
     default:
-      return { name, extraDice: false };
+      return { name, extraDice: false, crit: false };
   }
 };
 
@@ -29,7 +28,7 @@ const checkModifierKeys = (event, name) => {
   }
 
   if (action === "none") {
-    return { name, extraDice: false };
+    return { name, extraDice: false, crit: false };
   }
 
   return modifierAction(action, name);
@@ -71,54 +70,56 @@ const prefixWithCharacterName = (label) => {
   return name || label;
 };
 
-export const triggerTalespire = (label, dice, extraDice) => {
+const expandD100 = (dice) =>
+  dice.replace(/(\d+)d100(?!\d)/g, (_, count) => `${count}d100+${count}d10`);
+
+export const triggerTalespire = (label, rollOrRolls) => {
+  const rolls = [].concat(rollOrRolls).map((r) => expandD100(r.toString()));
   label = prefixWithCharacterName(label);
 
+  const diceUri = rolls.join("/");
   let uri;
   if (typeof label === "string") {
-    uri = `talespire://dice/${encodeURIComponent(label)}:${dice}${extraDice ? `/${dice}` : ""}`;
+    uri = `talespire://dice/${encodeURIComponent(label)}:${diceUri}`;
   } else {
-    uri = `talespire://dice/${dice}${extraDice ? `/${dice}` : ""}`;
+    uri = `talespire://dice/${diceUri}`;
   }
 
   if (TB_DRY_RUN_TALESPIRE_LINKS === "true") {
-    console.log("TaleSpire Link", { name: label, dice, extraDice, uri });
+    console.log("TaleSpire Link", { name: label, dice: diceUri, uri });
   } else if (typeof TS !== "undefined" && TS.dice) {
-    const rollDescriptors = [{ name: label ?? "", roll: dice }];
-    if (extraDice) {
-      rollDescriptors.push({ name: "", roll: dice });
-    }
+    const rollDescriptors = rolls.map((roll, i) => ({
+      name: i === 0 ? (label ?? "") : "",
+      roll,
+    }));
     TS.dice.putDiceInTray(rollDescriptors);
   } else {
     window.open(uri, "_self");
   }
 };
 
-export const talespireLink = (elem, label, dice, diceLabel) => {
+export const talespireLink = (label, roll, content) => {
   label = label?.trim();
-  dice = dice.replace(/d100/g, "d100+d10").replace(/[−–]/g, "-");
-  diceLabel = diceLabel?.replace(/[−–]/g, "-");
-
+  const diceStr = roll.toString();
   const link = document.createElement("button");
   link.classList.add("integrated-dice__container");
   link.classList.add("tales-beyond-extension");
   link.dataset.tsLabel = label;
-  link.dataset.tsDice = dice;
+  link.dataset.tsDice = diceStr;
   link.addEventListener("click", (event) => {
     event.stopPropagation();
 
-    const { name, extraDice } = checkModifierKeys(event, label);
-    const rollDice = name?.includes("CRIT") ? doubleDiceExpression(dice) : dice;
-
-    triggerTalespire(name, rollDice, extraDice);
+    const { name, extraDice, crit } = checkModifierKeys(event, label);
+    const modified = crit ? roll.double() : roll;
+    triggerTalespire(name, extraDice ? modified.duplicate() : modified);
   });
 
-  if (diceLabel) {
-    link.innerText = diceLabel;
-  } else if (elem) {
-    link.innerHTML = elem.innerHTML;
+  if (typeof content === "string") {
+    link.innerText = content;
+  } else if (content) {
+    link.innerHTML = content.innerHTML;
   } else {
-    link.innerText = dice;
+    link.innerText = diceStr;
   }
 
   return link;

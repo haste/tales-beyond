@@ -1,4 +1,9 @@
-import { getCharacterActionsInCombat, getDiceValue } from "~/utils/dndbeyond";
+import { Dice } from "~/dice";
+import { parseRoll, Roll } from "~/roll";
+import {
+  getCharacterActionsInCombat,
+  getRollFromNode,
+} from "~/utils/dndbeyond";
 import { BOOLEAN } from "~/utils/options";
 import { settings } from "~/utils/storage";
 import { talespireLink } from "~/utils/talespire";
@@ -31,9 +36,11 @@ export const mods = [
         "ddbc-damage__value",
         5,
       );
-      const diceValue = `${damageValue.innerText}+${level}d6`;
+      const diceValue = parseRoll(damageValue.innerText).addDice(
+        new Dice(level, 6),
+      );
 
-      diceButton.replaceWith(talespireLink(null, label, diceValue, diceValue));
+      diceButton.replaceWith(talespireLink(label, diceValue));
 
       return true;
     },
@@ -51,12 +58,14 @@ export const mods = [
         "tales-beyond-extension-versatile",
       );
 
+      const baseDice = getRollFromNode(diceButton);
+      const diceValue = baseDice.double();
+
       const clonedButton = diceButton.cloneNode(true);
       const damageText = clonedButton.querySelector(".ddbc-damage__value");
-      damageText.innerText = damageText.innerText.replace("1d6", "2d6");
+      damageText.innerText = diceValue.toString();
 
-      const diceValue = getDiceValue(clonedButton);
-      const tsLink = talespireLink(clonedButton, label, diceValue);
+      const tsLink = talespireLink(label, diceValue, clonedButton);
       diceButton.parentElement.appendChild(tsLink);
     },
   },
@@ -76,17 +85,18 @@ export const mods = [
         10,
       );
 
+      const baseDice = getRollFromNode(diceButton);
       for (let i = 1; i < 3 + extraDarts + 1; i++) {
-        const diceValue = getDiceValue(diceButton).replaceAll(1, i);
+        const diceValue = baseDice.scale(i);
 
         const clonedButton = diceButton.cloneNode(true);
         const damageText = clonedButton.querySelector(".ddbc-damage__value");
-        damageText.innerText = diceValue;
+        damageText.innerText = diceValue.toString();
 
         const tsLink = talespireLink(
-          clonedButton,
           i > 1 ? `${label} (${i} darts)` : label,
           diceValue,
+          clonedButton,
         );
         diceButton.parentElement.appendChild(tsLink);
       }
@@ -112,15 +122,17 @@ export const mods = [
         "tales-beyond-extension-versatile",
       );
 
+      const baseDice = getRollFromNode(diceButton);
+      const diceValue = baseDice.scale(2);
+
       const clonedButton = diceButton.cloneNode(true);
       const damageText = clonedButton.querySelector(".ddbc-damage__value");
-      damageText.innerText = damageText.innerText.replace("2", "4");
+      damageText.innerText = diceValue.toString();
 
-      const diceValue = getDiceValue(clonedButton);
       const tsLink = talespireLink(
-        clonedButton,
         `${label} (2 meteors)`,
         diceValue,
+        clonedButton,
       );
       diceButton.parentElement.appendChild(tsLink);
     },
@@ -141,17 +153,18 @@ export const mods = [
         10,
       );
 
+      const baseRayDice = getRollFromNode(diceButton);
       for (let i = 1; i < 3 + extraRays + 1; i++) {
-        const diceValue = getDiceValue(diceButton).replace(2, 2 * i);
+        const diceValue = baseRayDice.scale(i);
 
         const clonedButton = diceButton.cloneNode(true);
         const damageText = clonedButton.querySelector(".ddbc-damage__value");
-        damageText.innerText = diceValue;
+        damageText.innerText = diceValue.toString();
 
         const tsLink = talespireLink(
-          clonedButton,
           i > 1 ? `${label} (${i} rays)` : label,
           diceValue,
+          clonedButton,
         );
         diceButton.parentElement.appendChild(tsLink);
       }
@@ -187,17 +200,18 @@ export const mods = [
         return false;
       }
 
+      const baseFlareDice = getRollFromNode(diceButton);
       for (let i = 1; i < 1 + level; i++) {
-        const diceValue = getDiceValue(diceButton).replace(2, 2 * i);
+        const diceValue = baseFlareDice.scale(i);
 
         const clonedButton = diceButton.cloneNode(true);
         const damageText = clonedButton.querySelector(".ddbc-damage__value");
-        damageText.innerText = diceValue;
+        damageText.innerText = diceValue.toString();
 
         const tsLink = talespireLink(
-          clonedButton,
           i > 1 ? `${label} (${i} blasts)` : label,
           diceValue,
+          clonedButton,
         );
         diceButton.parentElement.appendChild(tsLink);
       }
@@ -223,15 +237,25 @@ export const mods = [
         "tales-beyond-extension-versatile",
       );
 
+      const baseDice = getRollFromNode(diceButton);
+      const diceValue = new Roll({
+        dice: baseDice.dice.map(
+          (d) =>
+            new Dice(d.count, 12, {
+              modifier: d.modifier,
+              damageType: d.damageType,
+            }),
+        ),
+      });
+
       const clonedButton = diceButton.cloneNode(true);
       const damageText = clonedButton.querySelector(".ddbc-damage__value");
-      damageText.innerText = damageText.innerText.replace("8", "12");
+      damageText.innerText = diceValue.toString();
 
-      const diceValue = getDiceValue(clonedButton);
       const tsLink = talespireLink(
-        clonedButton,
         `${label} (Damaged)`,
         diceValue,
+        clonedButton,
       );
       diceButton.parentElement.appendChild(tsLink);
     },
@@ -274,11 +298,11 @@ export const mods = [
       const damageText = clonedButton.querySelector(".ddbc-damage__value");
       damageText.innerText = damageText.innerText.split("+")[0];
 
-      const diceValue = getDiceValue(clonedButton);
+      const diceValue = getRollFromNode(clonedButton);
       const tsLink = talespireLink(
-        clonedButton,
         `${label} (Off-hand)`,
         diceValue,
+        clonedButton,
       );
       diceButton.parentElement.appendChild(tsLink);
     },

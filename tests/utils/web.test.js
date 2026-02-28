@@ -1,11 +1,7 @@
 import { describe, expect, test } from "bun:test";
 
-import {
-  embedInText,
-  getDiceRegex,
-  getTextNodes,
-  isValidDice,
-} from "~/utils/web";
+import { getDiceRegex } from "~/roll";
+import { embedInText, getTextNodes, isValidDice } from "~/utils/web";
 
 describe("diceRegex", () => {
   const regexGroups = (str) =>

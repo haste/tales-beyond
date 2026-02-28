@@ -14,7 +14,9 @@ const symbioteZipPath = `web-ext-artifacts/tales-beyond-symbiote-${version}.zip`
 try {
   await fs.unlink(symbioteZipPath);
 } catch (err) {
-  if (err.code !== "ENOENT") throw err;
+  if (err.code !== "ENOENT") {
+    throw err;
+  }
 }
 
 const symbioteZip = new AdmZip();

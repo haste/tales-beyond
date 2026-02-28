@@ -1,3 +1,4 @@
+import { getDiceRegex, normalizeMinus, rollFromMatch } from "~/roll";
 import { getCharacterAbilities, getCharacterSkills } from "~/utils/dndbeyond";
 import { talespireLink } from "~/utils/talespire";
 
@@ -16,32 +17,19 @@ const validSoloModifierType = [
   "Wisdom",
 ];
 
-export const diceValueFromMatch = ({
-  dice,
-  modifier = "",
-  modifierType,
-  numDice = 1,
-  sign = "",
-  soloModifier,
-}) => {
-  if (sign === "−" || sign === "–") {
-    sign = "-";
+export const rollFromMatchWithAbilities = (groups) => {
+  if (groups.modifierType) {
+    const resolvedModifier = getCharacterAbilities()[groups.modifierType];
+    const mod = Number.parseInt(resolvedModifier, 10);
+    return rollFromMatch({
+      ...groups,
+      modifierType: undefined,
+      modifier: Math.abs(mod),
+      sign: mod < 0 ? "-" : "+",
+    });
   }
 
-  if (soloModifier) {
-    soloModifier = soloModifier.replace(/[−–]/g, "-");
-    return `${numDice}d20${soloModifier}`;
-  }
-
-  if (modifierType) {
-    modifier = getCharacterAbilities()[modifierType];
-  }
-
-  if (+modifier < 0) {
-    sign = "";
-  }
-
-  return `${numDice}d${dice}${sign}${modifier}`;
+  return rollFromMatch(groups);
 };
 
 export const isValidDice = (match, characterSkills = []) => {
@@ -57,20 +45,6 @@ export const isValidDice = (match, characterSkills = []) => {
   }
 
   return true;
-};
-
-const fullDiceRegex =
-  /(?<numDice>\d+)?d(?<dice>\d+)(?:\s*(?<sign>[-+−–])\s*(?:your (?<modifierType>\w+) modifier|(?<modifier>(?!\d+d\d+)\d+)))?/;
-const soloModifierRegex =
-  /(?:(?<soloModifierType>[A-Z]{3}|\b[A-Z][a-zA-Z]*\b)\s*)?(?<soloModifier>[-+−–](?:\d(?!\s*(?:[m\d]|ft))|(?<!\d[-−–])\d\d+(?!\s*(?:m|ft))))/;
-
-export const getDiceRegex = (matchDicelessModifier = true) => {
-  return new RegExp(
-    [fullDiceRegex, ...(matchDicelessModifier ? [soloModifierRegex] : [])]
-      .map((regex) => regex.source)
-      .join("|"),
-    "g",
-  );
 };
 
 export const getTextNodes = (root) => {
@@ -106,7 +80,7 @@ const processNextElement = (node, match) => {
     return [nextOffset, match, null];
   }
 
-  const origDice = diceValueFromMatch(match.groups);
+  const origDice = rollFromMatchWithAbilities(match.groups);
   const nextSibling = node.nextElementSibling;
 
   const parentTooltip = node.parentElement.closest(".ddbc-tooltip");
@@ -219,7 +193,7 @@ export const embedInText = (node, labelOrCallback, matchDicelessModifier) => {
     let linkContent;
     [nextOffset, match, linkContent] = processNextElement(node, match);
 
-    const dice = diceValueFromMatch(match.groups);
+    const dice = rollFromMatchWithAbilities(match.groups);
     let label = labelOrCallback;
     if (typeof label === "function") {
       label = label(match, dice);
@@ -244,7 +218,7 @@ export const embedInText = (node, labelOrCallback, matchDicelessModifier) => {
       label = `${label}: ${appendLabel}`;
     }
 
-    const link = talespireLink(null, label, dice, match[0]);
+    const link = talespireLink(label, dice, normalizeMinus(match[0]));
     link.style = "padding-left: 4px; padding-right: 4px;";
 
     if (linkContent) {

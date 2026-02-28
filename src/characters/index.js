@@ -6,7 +6,7 @@ import { injectThemeStyle } from "~/themes";
 import {
   getCharacterAbilities,
   getCharacterId,
-  getDiceValue,
+  getRollFromNode,
   processBlockAbilities,
   processBlockAttributes,
   processBlockTidbits,
@@ -27,7 +27,7 @@ const handleShortRestDice = (label, diceButton) => {
   const ourButton = diceButton.parentElement.querySelector(
     ".tales-beyond-extension-hit-dice",
   );
-  const tsLink = talespireLink(diceButton, label, getDiceValue(diceButton));
+  const tsLink = talespireLink(label, getRollFromNode(diceButton), diceButton);
   tsLink.classList.add("tales-beyond-extension-hit-dice");
 
   if (ourButton) {
@@ -102,7 +102,7 @@ const processIntegratedDice = (addedNode) => {
     const parentPreviousSibling = diceButton.parentElement?.previousSibling;
     const parentNextSibling = diceButton.parentElement?.nextSibling;
     const nameSibling = getSiblingWithClass(diceButton, "__name");
-    let diceValue = getDiceValue(diceButton);
+    let diceValue = getRollFromNode(diceButton);
 
     // Fetch from secondary when "Scores Top" is set for Ability Score/Modifier
     // Display
@@ -110,7 +110,7 @@ const processIntegratedDice = (addedNode) => {
       !!diceButton.parentElement.className.includes("__primary") &&
       !diceValue
     ) {
-      diceValue = getDiceValue(
+      diceValue = getRollFromNode(
         getSiblingWithClass(diceButton, "__secondary", 3),
       );
     }
@@ -159,7 +159,7 @@ const processIntegratedDice = (addedNode) => {
       }
     }
 
-    diceButton.replaceWith(talespireLink(diceButton, label, diceValue));
+    diceButton.replaceWith(talespireLink(label, diceValue, diceButton));
   }
 };
 
