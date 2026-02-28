@@ -3,11 +3,18 @@ on:
   push:
     tags:
       - v*
+    branches:
+      - debug/release-workflow
 jobs:
-  build:
+  check:
     runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.version }}
     steps:
       - uses: actions/checkout@v6
+      - name: Determine version
+        id: version
+        run: echo "version=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
       - uses: oven-sh/setup-bun@3d267786b128fe76c2f16a390aa2448b815359f3 # v2
         with:
           bun-version-file: ".tool-versions"
@@ -19,20 +26,10 @@ jobs:
         run: bun run check
       - name: Run tests
         run: bun test
-      - name: Run build:release
-        run: bun run build:release
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v7
-        with:
-          name: release-artifacts
-          path: |
-            build/firefox/
-            web-ext-artifacts/*
-            tales-beyond-source-*.zip
 
   release-firefox:
     runs-on: ubuntu-latest
-    needs: build
+    needs: check
     environment: firefox
     permissions:
       contents: write
@@ -43,13 +40,13 @@ jobs:
           bun-version-file: ".tool-versions"
       - name: Install dependencies
         run: bun install
-      - name: Download artifacts
-        uses: actions/download-artifact@v8
-        with:
-          name: release-artifacts
-          skip-decompress: true
+      - name: Build
+        run: bun run build:firefox
+      - name: Package source
+        run: bun run package:source
       - name: Release Firefox
         env:
+          VERSION: ${{ needs.check.outputs.version }}
           AMO_API_KEY: ${{ secrets.AMO_API_KEY }}
           AMO_SECRET: ${{ secrets.AMO_SECRET }}
         run: |
@@ -59,7 +56,7 @@ jobs:
             -s build/firefox/ \
             --channel listed \
             --amo-metadata amo.json \
-            --upload-source-code tales-beyond-source-${GITHUB_REF_NAME:1}.zip \
+            --upload-source-code tales-beyond-source-${VERSION}.zip \
             --api-key ${AMO_API_KEY} \
             --api-secret ${AMO_SECRET}
       - name: Add xpi to release
@@ -69,23 +66,29 @@ jobs:
 
   release-chrome:
     runs-on: ubuntu-latest
-    needs: build
+    needs: check
     environment: chrome
     steps:
-      - name: Download artifacts
-        uses: actions/download-artifact@v8
+      - uses: actions/checkout@v6
+      - uses: oven-sh/setup-bun@3d267786b128fe76c2f16a390aa2448b815359f3 # v2
         with:
-          name: release-artifacts
-          skip-decompress: true
+          bun-version-file: ".tool-versions"
+      - name: Install dependencies
+        run: bun install
+      - name: Build
+        run: bun run build:chrome
+      - name: Package Chrome
+        run: bun run package:chrome
       - name: Release Chrome
         env:
+          VERSION: ${{ needs.check.outputs.version }}
           CWS_EXTENSION_ID: ${{ secrets.CWS_EXTENSION_ID }}
           CWS_CLIENT_ID: ${{ secrets.CWS_CLIENT_ID }}
           CWS_CLIENT_SECRET: ${{ secrets.CWS_CLIENT_SECRET }}
           CWS_REFRESH_TOKEN: ${{ secrets.CWS_REFRESH_TOKEN }}
         run: |
-          npx chrome-webstore-upload-cli@3 upload \
-            --source web-ext-artifacts/tales_beyond-${GITHUB_REF_NAME:1}.zip \
+          bunx chrome-webstore-upload-cli@3 upload \
+            --source web-ext-artifacts/tales_beyond-${VERSION}.zip \
             --extension-id ${CWS_EXTENSION_ID} \
             --client-id ${CWS_CLIENT_ID} \
             --client-secret ${CWS_CLIENT_SECRET} \
@@ -93,7 +96,7 @@ jobs:
 
   release-symbiote:
     runs-on: ubuntu-latest
-    needs: build
+    needs: check
     environment: symbiote
     steps:
       - uses: actions/checkout@v6
@@ -102,13 +105,13 @@ jobs:
           bun-version-file: ".tool-versions"
       - name: Install dependencies
         run: bun install
-      - name: Download artifacts
-        uses: actions/download-artifact@v8
-        with:
-          name: release-artifacts
-          skip-decompress: true
+      - name: Build
+        run: bun run build:symbiote
+      - name: Package Symbiote
+        run: bun run package:symbiote
       - name: Release Symbiote
         env:
+          VERSION: ${{ needs.check.outputs.version }}
           MODIO_API_URL: ${{ secrets.MODIO_API_URL }}
           MODIO_API_TOKEN: ${{ secrets.MODIO_API_TOKEN }}
         run: |
@@ -117,23 +120,28 @@ jobs:
             -H "Authorization: Bearer ${MODIO_API_TOKEN}" \
             -H 'Content-Type: multipart/form-data' \
             -H 'Accept: application/json' \
-            -F "filedata=@web-ext-artifacts/tales-beyond-symbiote-${GITHUB_REF_NAME:1}.zip" \
-            -F "version=${GITHUB_REF_NAME:1}" \
+            -F "filedata=@web-ext-artifacts/tales-beyond-symbiote-${VERSION}.zip" \
+            -F "version=${VERSION}" \
             -F "changelog=$(bun changelog:modio)" \
             -F 'active=true' \
-            -F "filehash=$(md5sum web-ext-artifacts/tales-beyond-symbiote-${GITHUB_REF_NAME:1}.zip | cut -c -32)"
+            -F "filehash=$(md5sum web-ext-artifacts/tales-beyond-symbiote-${VERSION}.zip | cut -c -32)"
 
   release-github:
     runs-on: ubuntu-latest
-    needs: build
+    needs: check
     permissions:
       contents: write
     steps:
-      - name: Download artifacts
-        uses: actions/download-artifact@v8
+      - uses: actions/checkout@v6
+      - uses: oven-sh/setup-bun@3d267786b128fe76c2f16a390aa2448b815359f3 # v2
         with:
-          name: release-artifacts
-          skip-decompress: true
+          bun-version-file: ".tool-versions"
+      - name: Install dependencies
+        run: bun install
+      - name: Build
+        run: bun run build
+      - name: Package
+        run: bun run package
       - name: Add artifacts
         uses: softprops/action-gh-release@a06a81a03ee405af7f2048a818ed3f03bbf83c7b # v2
         with:

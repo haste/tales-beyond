@@ -73,7 +73,7 @@ const buildShared = async () => {
   await fs.copyFile("CHANGELOG.md", path.join(sharedDir, "CHANGELOG.md"));
 };
 
-const buildBrowser = async () => {
+const buildBrowser = async (filterBrowsers) => {
   const sharedBrowserDir = path.join(process.cwd(), "build/shared-browser");
 
   const { version } = await Bun.file(
@@ -104,7 +104,7 @@ const buildBrowser = async () => {
     path.join(sharedBrowserDir, "background.js"),
   );
 
-  for (const browser of browsers) {
+  for (const browser of filterBrowsers) {
     const buildDir = path.join(process.cwd(), "build", browser);
 
     // Shared files
@@ -209,12 +209,20 @@ const buildSCSS = async () => {
   }
 };
 
-export const build = async () => {
+export const build = async (targets) => {
   await buildSCSS();
   await buildShared();
-  await buildBrowser();
-  await buildSymbiote();
+
+  const browserTargets = targets.filter((t) => browsers.includes(t));
+  if (browserTargets.length > 0) {
+    await buildBrowser(browserTargets);
+  }
+  if (targets.includes("symbiote")) {
+    await buildSymbiote();
+  }
+
   console.log("Build complete");
 };
 
-await build();
+const args = process.argv.slice(2);
+await build(args.length > 0 ? args : ["firefox", "chrome", "symbiote"]);
