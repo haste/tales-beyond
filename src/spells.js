@@ -18,7 +18,7 @@ const updateSpells = (node) => {
   const previousSibling = node.previousElementSibling;
   if (previousSibling) {
     spellName = previousSibling
-      .querySelector(".spell-name .name")
+      .querySelector(".spell-name .name .link")
       .textContent.trim();
   } else {
     spellName = document.querySelector(".page-title").textContent.trim();

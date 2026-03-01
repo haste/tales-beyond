@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Bug fixes
+
+ * Fixed dice rolls on the spells page including extra text in the name for legacy spells.
+
 ### Enhancements
 
  * Modifications for Spellfire Flare and Scorching Ray now include to-hit roll buttons for multiple blasts and rays.
