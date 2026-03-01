@@ -1,5 +1,5 @@
 import { characterAppWatcher, sidebarPortalWatcher } from "~/characters";
-import { getOptions } from "~/utils/storage";
+import { getOptions } from "~/storage/settings";
 
 document.addEventListener(
   "readystatechange",

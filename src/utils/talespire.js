@@ -1,5 +1,5 @@
+import { getOptions } from "~/storage/settings";
 import { getCharacterName } from "~/utils/dndbeyond";
-import { settings } from "~/utils/storage";
 
 const modifierAction = (action, name) => {
   switch (action) {
@@ -17,7 +17,7 @@ const modifierAction = (action, name) => {
   }
 };
 
-const checkModifierKeys = (event, name) => {
+const checkModifierKeys = (event, name, settings) => {
   let action = "none";
   if (event.altKey) {
     action = settings.modifierKeyAlt;
@@ -34,7 +34,7 @@ const checkModifierKeys = (event, name) => {
   return modifierAction(action, name);
 };
 
-const formatCharacterName = () => {
+const formatCharacterName = (settings) => {
   const name = getCharacterName();
   if (typeof name !== "string") {
     return null;
@@ -59,9 +59,11 @@ const formatCharacterName = () => {
   }
 };
 
-const prefixWithCharacterName = (label) => {
+const prefixWithCharacterName = (label, settings) => {
   const name =
-    settings.prefixWithCharacterName !== "none" ? formatCharacterName() : null;
+    settings.prefixWithCharacterName !== "none"
+      ? formatCharacterName(settings)
+      : null;
 
   if (typeof label === "string" && typeof name === "string") {
     return `${name}: ${label}`;
@@ -73,9 +75,10 @@ const prefixWithCharacterName = (label) => {
 const expandD100 = (dice) =>
   dice.replace(/(\d+)d100(?!\d)/g, (_, count) => `${count}d100+${count}d10`);
 
-export const triggerTalespire = (label, rollOrRolls) => {
+export const triggerTalespire = async (label, rollOrRolls) => {
+  const settings = await getOptions();
   const rolls = [].concat(rollOrRolls).map((r) => expandD100(r.toString()));
-  label = prefixWithCharacterName(label);
+  label = prefixWithCharacterName(label, settings);
 
   const diceUri = rolls.join("/");
   let uri;
@@ -107,12 +110,13 @@ export const talespireLink = (label, roll, content) => {
   link.classList.add("tales-beyond-extension");
   link.dataset.tsLabel = label;
   link.dataset.tsDice = diceStr;
-  link.addEventListener("click", (event) => {
+  link.addEventListener("click", async (event) => {
     event.stopPropagation();
 
-    const { name, extraDice, crit } = checkModifierKeys(event, label);
+    const settings = await getOptions();
+    const { name, extraDice, crit } = checkModifierKeys(event, label, settings);
     const modified = crit ? roll.double() : roll;
-    triggerTalespire(name, extraDice ? modified.repeat(2) : modified);
+    await triggerTalespire(name, extraDice ? modified.repeat(2) : modified);
   });
 
   if (typeof content === "string") {

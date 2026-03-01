@@ -1,4 +1,5 @@
-import { reactivateCharacter, saveOption } from "~/utils/storage";
+import { reactivateCharacter } from "~/storage/characters";
+import { saveOption } from "~/storage/settings";
 
 export const BOOLEAN = Symbol("boolean");
 export const DEACTIVATE_CHARACTER = Symbol("deactivatedCharacter");

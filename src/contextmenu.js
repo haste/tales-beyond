@@ -2,7 +2,7 @@ import { arrow, computePosition, flip, offset } from "@floating-ui/dom";
 
 import svgLogo from "~/icons/icon.svg";
 import { parseRoll } from "~/roll";
-import { getOptions } from "~/utils/storage";
+import { getOptions } from "~/storage/settings";
 import { triggerTalespire } from "~/utils/talespire";
 
 const removeAllMenus = () => {
@@ -34,7 +34,7 @@ const setupListeners = (button, contextmenu) => {
     return;
   }
 
-  const action = (labelSuffix) => () => {
+  const action = (labelSuffix) => async () => {
     const name = labelSuffix
       ? label
         ? `${label} (${labelSuffix})`
@@ -42,11 +42,11 @@ const setupListeners = (button, contextmenu) => {
       : label;
 
     if (labelSuffix === "CRIT") {
-      triggerTalespire(name, roll.double());
+      await triggerTalespire(name, roll.double());
     } else if (labelSuffix) {
-      triggerTalespire(name, roll.repeat(2));
+      await triggerTalespire(name, roll.repeat(2));
     } else {
-      triggerTalespire(name, roll);
+      await triggerTalespire(name, roll);
     }
 
     removeAllMenus();

@@ -1,4 +1,4 @@
-import { getOptions, saveOption } from "~/utils/storage";
+import { getOptions, saveOption } from "~/storage/settings";
 
 const main = async () => {
   await getOptions();

@@ -2,6 +2,8 @@ import { injectOptionButton } from "~/characters/iconmenu";
 import { injectContextMenu } from "~/contextmenu";
 import svgLogo from "~/icons/icon.svg";
 import { customMod } from "~/mods";
+import { isCharacterDeactivated } from "~/storage/characters";
+import { getOptions } from "~/storage/settings";
 import { injectThemeStyle } from "~/themes";
 import {
   getCharacterAbilities,
@@ -13,7 +15,6 @@ import {
   processBlockTraitsAction,
 } from "~/utils/dndbeyond";
 import { namedObserver } from "~/utils/observer";
-import { isCharacterDeactivated } from "~/utils/storage";
 import { talespireLink } from "~/utils/talespire";
 import {
   embedInText,
@@ -99,7 +100,7 @@ const getDiceType = (diceButton) => {
   }
 };
 
-const processIntegratedDice = (addedNode) => {
+const processIntegratedDice = (addedNode, settings) => {
   // Only process ELEMENT_NODE's
   if (addedNode.nodeType !== 1) {
     return;
@@ -167,7 +168,7 @@ const processIntegratedDice = (addedNode) => {
       const diceType = getDiceType(diceButton);
       if (
         diceType &&
-        customMod({ label, diceButton, nameSibling, type: diceType })
+        customMod({ label, diceButton, nameSibling, type: diceType }, settings)
       ) {
         continue;
       }
@@ -214,6 +215,8 @@ export const characterAppWatcher = () => {
     injectThemeStyle();
     await injectContextMenu();
 
+    const settings = await getOptions();
+
     observer.disconnect();
 
     for (const mutation of mutationList) {
@@ -222,10 +225,13 @@ export const characterAppWatcher = () => {
       // containers in the character app.
       if (wasDiceDisabled) {
         wasDiceDisabled = false;
-        processIntegratedDice(document.querySelector('[name="character-app"]'));
+        processIntegratedDice(
+          document.querySelector('[name="character-app"]'),
+          settings,
+        );
       } else {
         for (const addedNode of mutation.addedNodes) {
-          processIntegratedDice(addedNode);
+          processIntegratedDice(addedNode, settings);
         }
       }
 
@@ -258,13 +264,15 @@ export const sidebarPortalWatcher = () => {
       return;
     }
 
+    const settings = await getOptions();
+
     for (const mutation of mutationList) {
       if (mutation.addedNodes.length === 0) {
         continue;
       }
 
       for (const addedNode of mutation.addedNodes) {
-        processIntegratedDice(addedNode);
+        processIntegratedDice(addedNode, settings);
       }
 
       for (const addedNode of mutation.addedNodes) {

@@ -1,12 +1,9 @@
 import { computePosition } from "@floating-ui/dom";
 
 import svgLogo from "~/icons/icon.svg";
+import { deactivateCharacter, reactivateCharacter } from "~/storage/characters";
+import { getOptions } from "~/storage/settings";
 import { getCharacterId, getCharacterName } from "~/utils/dndbeyond";
-import {
-  deactivateCharacter,
-  getOptions,
-  reactivateCharacter,
-} from "~/utils/storage";
 
 export const injectOptionButton = (isDeactivated = false) => {
   const charApp = document.querySelector('[name="character-app"]');

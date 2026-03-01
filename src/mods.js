@@ -5,7 +5,6 @@ import {
   getRollFromNode,
 } from "~/utils/dndbeyond";
 import { BOOLEAN } from "~/utils/options";
-import { settings } from "~/utils/storage";
 import { talespireLink } from "~/utils/talespire";
 import { getParentWithClass, getSiblingWithClass } from "~/utils/web";
 
@@ -359,7 +358,10 @@ export const mods = [
   },
 ];
 
-export const customMod = ({ label, diceButton, nameSibling, type }) => {
+export const customMod = (
+  { label, diceButton, nameSibling, type },
+  settings,
+) => {
   for (const mod of mods) {
     if (!mod.targets.includes(type)) {
       continue;

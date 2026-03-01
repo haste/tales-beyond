@@ -19,6 +19,7 @@
       "style": {
         "noInferrableTypes": "error",
         "noNegationElse": "error",
+        "noNonNullAssertion": "error",
         "noParameterAssign": "off",
         "noUnusedTemplateLiteral": "error",
         "noUselessElse": "error",

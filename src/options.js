@@ -1,11 +1,11 @@
 import { mods } from "~/mods";
+import { getOptions } from "~/storage/settings";
 import {
   addUIElement,
   BOOLEAN,
   DEACTIVATE_CHARACTER,
   DROPDOWN,
 } from "~/utils/options";
-import { getOptions } from "~/utils/storage";
 
 const general = [
   {
