@@ -15,7 +15,7 @@ const sourceZip = new AdmZip();
   "bunfig.toml",
   "bun.lock",
   "CHANGELOG.md",
-  "jsconfig.json",
+  "tsconfig.json",
   "jsdom.js",
   "LICENSE",
   "package.json",

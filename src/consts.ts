@@ -5,4 +5,4 @@ export const abilityNames = {
   INT: "Intelligence",
   WIS: "Wisdom",
   CHA: "Charisma",
-};
+} as const;

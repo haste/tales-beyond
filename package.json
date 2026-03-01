@@ -4,6 +4,7 @@
   "devDependencies": {
     "@biomejs/biome": "^2.3.5",
     "@floating-ui/dom": "^1.7.4",
+    "@typescript/native-preview": "^7.0.0-dev.20260228.1",
     "adm-zip": "^0.5.16",
     "bootstrap": "^5.3.8",
     "chrome-webstore-upload-cli": "^3.4.0",
@@ -25,7 +26,8 @@
     "package:symbiote": "bun run --bun scripts/package-symbiote.js",
     "package:source": "bun run --bun scripts/package-source.js",
     "watch": "bun run --bun --watch scripts/watch.js",
-    "check": "bun run check:biome && bun run check:prettier",
+    "check": "bun run check:types && bun run check:biome && bun run check:prettier",
+    "check:types": "tsgo --noEmit",
     "check:write": "bun run check:biome:write && bun run check:prettier:write",
     "check:biome": "bun biome check --error-on-warnings biome.json src/ scripts/ tests/",
     "check:biome:write": "bun check:biome --write",

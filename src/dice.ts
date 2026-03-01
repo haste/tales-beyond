@@ -1,10 +1,19 @@
-export class Dice {
-  count;
-  sides;
-  modifier;
-  damageType;
+interface DiceOptions {
+  modifier?: number;
+  damageType?: string | null;
+}
 
-  constructor(count, sides, { modifier = 0, damageType = null } = {}) {
+export class Dice {
+  readonly count: number;
+  readonly sides: number;
+  readonly modifier: number;
+  readonly damageType: string | null;
+
+  constructor(
+    count: number,
+    sides: number,
+    { modifier = 0, damageType = null }: DiceOptions = {},
+  ) {
     this.count = count;
     this.sides = sides;
     this.modifier = modifier;
@@ -12,21 +21,21 @@ export class Dice {
     Object.freeze(this);
   }
 
-  double() {
+  double(): Dice {
     return new Dice(this.count * 2, this.sides, {
       modifier: this.modifier,
       damageType: this.damageType,
     });
   }
 
-  scale(factor) {
+  scale(factor: number): Dice {
     return new Dice(this.count * factor, this.sides, {
       modifier: this.modifier * factor,
       damageType: this.damageType,
     });
   }
 
-  toString() {
+  toString(): string {
     if (!this.modifier) {
       return `${this.count}d${this.sides}`;
     }

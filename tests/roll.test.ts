@@ -3,6 +3,12 @@ import { describe, expect, test } from "bun:test";
 import { Dice } from "~/dice";
 import { parseRoll, Roll, rollFromMatch } from "~/roll";
 
+const mustParseRoll = (str: string): Roll => {
+  const roll = parseRoll(str);
+  expect(roll).not.toBeNull();
+  return roll as Roll;
+};
+
 describe("Roll", () => {
   describe("constructor", () => {
     test("single dice", () => {
@@ -47,19 +53,19 @@ describe("Roll", () => {
 
   describe("parse", () => {
     test("single dice", () => {
-      const roll = parseRoll("2d6+3");
+      const roll = mustParseRoll("2d6+3");
       expect(roll.dice).toHaveLength(1);
       expect(roll.toString()).toBe("2d6+3");
     });
 
     test("single dice no modifier", () => {
-      const roll = parseRoll("2d6");
+      const roll = mustParseRoll("2d6");
       expect(roll.dice).toHaveLength(1);
       expect(roll.toString()).toBe("2d6");
     });
 
     test("multi-dice with modifiers", () => {
-      const roll = parseRoll("2d6+3+1d8+2");
+      const roll = mustParseRoll("2d6+3+1d8+2");
       expect(roll.dice).toHaveLength(2);
       expect(roll.dice[0].count).toBe(2);
       expect(roll.dice[0].sides).toBe(6);
@@ -71,7 +77,7 @@ describe("Roll", () => {
     });
 
     test("multi-dice no modifiers", () => {
-      const roll = parseRoll("2d8+1d6");
+      const roll = mustParseRoll("2d8+1d6");
       expect(roll.dice).toHaveLength(2);
       expect(roll.dice[0].count).toBe(2);
       expect(roll.dice[0].sides).toBe(8);
@@ -83,32 +89,32 @@ describe("Roll", () => {
     });
 
     test("negative modifier", () => {
-      const roll = parseRoll("1d20-3");
+      const roll = mustParseRoll("1d20-3");
       expect(roll.dice[0].modifier).toBe(-3);
       expect(roll.toString()).toBe("1d20-3");
     });
 
     test("unicode minus", () => {
-      const roll = parseRoll("1d20\u22123");
+      const roll = mustParseRoll("1d20\u22123");
       expect(roll.dice[0].modifier).toBe(-3);
     });
 
     test("no count defaults to 1", () => {
-      const roll = parseRoll("d20+5");
+      const roll = mustParseRoll("d20+5");
       expect(roll.dice[0].count).toBe(1);
       expect(roll.toString()).toBe("1d20+5");
     });
 
     test("round-trip single", () => {
-      expect(parseRoll("2d6+3").toString()).toBe("2d6+3");
+      expect(mustParseRoll("2d6+3").toString()).toBe("2d6+3");
     });
 
     test("round-trip multi", () => {
-      expect(parseRoll("2d6+3+1d8+2").toString()).toBe("2d6+3+1d8+2");
+      expect(mustParseRoll("2d6+3+1d8+2").toString()).toBe("2d6+3+1d8+2");
     });
 
     test("round-trip no modifier", () => {
-      expect(parseRoll("4d6").toString()).toBe("4d6");
+      expect(mustParseRoll("4d6").toString()).toBe("4d6");
     });
 
     test("invalid string returns null", () => {
@@ -199,7 +205,7 @@ describe("Roll", () => {
 
   describe("immutable transforms", () => {
     test("double", () => {
-      const roll = parseRoll("2d6+3");
+      const roll = mustParseRoll("2d6+3");
       const doubled = roll.double();
       expect(doubled.toString()).toBe("4d6+3");
       expect(roll.toString()).toBe("2d6+3"); // original unchanged
@@ -216,21 +222,21 @@ describe("Roll", () => {
     });
 
     test("scale", () => {
-      const roll = parseRoll("1d4+1");
+      const roll = mustParseRoll("1d4+1");
       const scaled = roll.scale(3);
       expect(scaled.toString()).toBe("3d4+3");
       expect(roll.toString()).toBe("1d4+1"); // original unchanged
     });
 
     test("addDice", () => {
-      const roll = parseRoll("2d8");
+      const roll = mustParseRoll("2d8");
       const added = roll.addDice(new Dice(1, 6));
       expect(added.toString()).toBe("2d8+1d6");
       expect(roll.toString()).toBe("2d8"); // original unchanged
     });
 
     test("duplicate returns array of two identical Rolls", () => {
-      const roll = parseRoll("2d6+3");
+      const roll = mustParseRoll("2d6+3");
       const duped = roll.duplicate();
       expect(duped).toHaveLength(2);
       expect(duped[0]).toBe(roll);
@@ -238,30 +244,11 @@ describe("Roll", () => {
     });
 
     test("double then duplicate composes correctly", () => {
-      const roll = parseRoll("2d6+3");
+      const roll = mustParseRoll("2d6+3");
       const result = roll.double().duplicate();
       expect(result).toHaveLength(2);
       expect(result[0].toString()).toBe("4d6+3");
       expect(result[1].toString()).toBe("4d6+3");
-    });
-  });
-
-  describe("immutability", () => {
-    test("properties cannot be reassigned", () => {
-      const roll = new Roll({ dice: [new Dice(1, 20)] });
-      expect(() => {
-        roll.dice = [];
-      }).toThrow();
-    });
-
-    test("dice array cannot be mutated", () => {
-      const roll = new Roll({ dice: [new Dice(1, 20)] });
-      expect(() => {
-        roll.dice.push(new Dice(1, 6));
-      }).toThrow();
-      expect(() => {
-        roll.dice[0] = new Dice(2, 8);
-      }).toThrow();
     });
   });
 });

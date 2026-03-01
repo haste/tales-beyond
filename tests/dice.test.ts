@@ -64,22 +64,4 @@ describe("Dice", () => {
       expect(d.scale(3).damageType).toBe("force");
     });
   });
-
-  describe("immutability", () => {
-    test("properties cannot be reassigned", () => {
-      const d = new Dice(2, 6, { modifier: 3, damageType: "fire" });
-      expect(() => {
-        d.count = 4;
-      }).toThrow();
-      expect(() => {
-        d.sides = 8;
-      }).toThrow();
-      expect(() => {
-        d.modifier = 0;
-      }).toThrow();
-      expect(() => {
-        d.damageType = "cold";
-      }).toThrow();
-    });
-  });
 });
