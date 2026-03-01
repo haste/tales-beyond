@@ -66,42 +66,39 @@ describe("Roll", () => {
 
     test("multi-dice with modifiers", () => {
       const roll = mustParseRoll("2d6+3+1d8+2");
+      const [first, second] = roll.dice;
       expect(roll.dice).toHaveLength(2);
-      expect(roll.dice[0].count).toBe(2);
-      expect(roll.dice[0].sides).toBe(6);
-      expect(roll.dice[0].modifier).toBe(3);
-      expect(roll.dice[1].count).toBe(1);
-      expect(roll.dice[1].sides).toBe(8);
-      expect(roll.dice[1].modifier).toBe(2);
+      expect(first).toEqual(new Dice(2, 6, { modifier: 3 }));
+      expect(second).toEqual(new Dice(1, 8, { modifier: 2 }));
       expect(roll.toString()).toBe("2d6+3+1d8+2");
     });
 
     test("multi-dice no modifiers", () => {
       const roll = mustParseRoll("2d8+1d6");
+      const [first, second] = roll.dice;
       expect(roll.dice).toHaveLength(2);
-      expect(roll.dice[0].count).toBe(2);
-      expect(roll.dice[0].sides).toBe(8);
-      expect(roll.dice[0].modifier).toBe(0);
-      expect(roll.dice[1].count).toBe(1);
-      expect(roll.dice[1].sides).toBe(6);
-      expect(roll.dice[1].modifier).toBe(0);
+      expect(first).toEqual(new Dice(2, 8));
+      expect(second).toEqual(new Dice(1, 6));
       expect(roll.toString()).toBe("2d8+1d6");
     });
 
     test("negative modifier", () => {
       const roll = mustParseRoll("1d20-3");
-      expect(roll.dice[0].modifier).toBe(-3);
+      const [first] = roll.dice;
+      expect(first).toEqual(new Dice(1, 20, { modifier: -3 }));
       expect(roll.toString()).toBe("1d20-3");
     });
 
     test("unicode minus", () => {
-      const roll = mustParseRoll("1d20\u22123");
-      expect(roll.dice[0].modifier).toBe(-3);
+      const roll = mustParseRoll("1d20–3");
+      const [first] = roll.dice;
+      expect(first).toEqual(new Dice(1, 20, { modifier: -3 }));
     });
 
     test("no count defaults to 1", () => {
       const roll = mustParseRoll("d20+5");
-      expect(roll.dice[0].count).toBe(1);
+      const [first] = roll.dice;
+      expect(first).toEqual(new Dice(1, 20, { modifier: 5 }));
       expect(roll.toString()).toBe("1d20+5");
     });
 
@@ -152,7 +149,7 @@ describe("Roll", () => {
       const roll = rollFromMatch({
         numDice: "1",
         dice: "20",
-        sign: "\u2212",
+        sign: "–",
         modifier: "3",
       });
       expect(roll.toString()).toBe("1d20-3");
@@ -162,7 +159,7 @@ describe("Roll", () => {
       const roll = rollFromMatch({
         numDice: "1",
         dice: "20",
-        sign: "\u2013",
+        sign: "−",
         modifier: "3",
       });
       expect(roll.toString()).toBe("1d20-3");
@@ -179,12 +176,12 @@ describe("Roll", () => {
     });
 
     test("soloModifier with unicode minus", () => {
-      const roll = rollFromMatch({ soloModifier: "\u22123" });
+      const roll = rollFromMatch({ soloModifier: "–3" });
       expect(roll.toString()).toBe("1d20-3");
     });
 
     test("soloModifier with en dash", () => {
-      const roll = rollFromMatch({ soloModifier: "\u20133" });
+      const roll = rollFromMatch({ soloModifier: "−3" });
       expect(roll.toString()).toBe("1d20-3");
     });
 
