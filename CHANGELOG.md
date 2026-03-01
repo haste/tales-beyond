@@ -5,6 +5,7 @@
 ### Bug fixes
 
  * Fixed sidebar still replacing dice when Tales Beyond was deactivated for a character.
+ * Fixed insertion of Tales Beyond icon after DDB changes.
 
 ## 0.24.0 (2026-02-28)
 

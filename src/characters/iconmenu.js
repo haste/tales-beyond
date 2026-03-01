@@ -14,8 +14,10 @@ export const injectOptionButton = (isDeactivated = false) => {
     return;
   }
 
-  const gapNode = charApp.querySelector('[class*="--gap"]');
-  if (!gapNode) {
+  const lastHeaderGroupNode = charApp.querySelector(
+    '[class*="__group"]:last-of-type',
+  );
+  if (!lastHeaderGroupNode) {
     return;
   }
 
@@ -69,15 +71,15 @@ export const injectOptionButton = (isDeactivated = false) => {
 
   document.body.appendChild(menuContainer);
 
-  const baseClass = gapNode.className.substring(
+  const baseClass = lastHeaderGroupNode.className.substring(
     0,
-    gapNode.className.indexOf("__"),
+    lastHeaderGroupNode.className.indexOf("__"),
   );
 
   const headerGroup = document.createElement("div");
-  headerGroup.className = gapNode.className.substring(
+  headerGroup.className = lastHeaderGroupNode.className.substring(
     0,
-    gapNode.className.lastIndexOf(" "),
+    lastHeaderGroupNode.className.lastIndexOf(" "),
   );
   headerGroup.classList.add("tales-beyond-extension-icon");
   headerGroup.title = isDeactivated
@@ -109,7 +111,7 @@ export const injectOptionButton = (isDeactivated = false) => {
     }
   });
 
-  gapNode.after(headerGroup);
+  lastHeaderGroupNode.before(headerGroup);
 
   window.addEventListener("scroll", () => menuNode.classList.remove("open"), {
     capture: true,
