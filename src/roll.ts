@@ -95,8 +95,8 @@ export class Roll {
     return this.clone({ dice: [...this.dice, dice] });
   }
 
-  duplicate(): [Roll, Roll] {
-    return [this, this];
+  repeat(n: number): Roll[] {
+    return Array(n).fill(this);
   }
 
   toString(): string {

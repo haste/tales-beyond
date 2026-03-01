@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+### Enhancements
+
+ * Modifications for Spellfire Flare and Scorching Ray now include to-hit roll buttons for multiple blasts and rays.
+
 ## 0.24.1 (2026-03-01)
 
 ### Bug fixes

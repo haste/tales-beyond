@@ -232,20 +232,21 @@ describe("Roll", () => {
       expect(roll.toString()).toBe("2d8"); // original unchanged
     });
 
-    test("duplicate returns array of two identical Rolls", () => {
+    test("repeat returns array of n identical Rolls", () => {
       const roll = mustParseRoll("2d6+3");
-      const duped = roll.duplicate();
-      expect(duped).toHaveLength(2);
-      expect(duped[0]).toBe(roll);
-      expect(duped[1]).toBe(roll);
+      const repeated = roll.repeat(3);
+      expect(repeated).toHaveLength(3);
+      expect(repeated[0]).toBe(roll);
+      expect(repeated[1]).toBe(roll);
+      expect(repeated[2]).toBe(roll);
     });
 
-    test("double then duplicate composes correctly", () => {
+    test("double then repeat composes correctly", () => {
       const roll = mustParseRoll("2d6+3");
-      const result = roll.double().duplicate();
+      const result = roll.double().repeat(2);
       expect(result).toHaveLength(2);
-      expect(result[0].toString()).toBe("4d6+3");
-      expect(result[1].toString()).toBe("4d6+3");
+      expect(result[0]?.toString()).toBe("4d6+3");
+      expect(result[1]?.toString()).toBe("4d6+3");
     });
   });
 });

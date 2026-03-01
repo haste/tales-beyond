@@ -112,7 +112,7 @@ export const talespireLink = (label, roll, content) => {
 
     const { name, extraDice, crit } = checkModifierKeys(event, label);
     const modified = crit ? roll.double() : roll;
-    triggerTalespire(name, extraDice ? modified.duplicate() : modified);
+    triggerTalespire(name, extraDice ? modified.repeat(2) : modified);
   });
 
   if (typeof content === "string") {

@@ -4,6 +4,21 @@ button.integrated-dice__container.tales-beyond-extension {
   background: var(--tales-beyond-background, #fefefe);
   color: var(--tales-beyond-text, inherit);
   cursor: pointer;
+  position: relative;
+
+  .tales-beyond-extension-badge {
+    background-color: #1c9aef;
+    border: 1px solid hsla(0, 0%, 100%, 0.5);
+    border-radius: 2px;
+    color: #fff;
+    font-size: 8px;
+    line-height: 1;
+    padding: 1px 3px;
+    position: absolute;
+    left: -1px;
+    top: -1px;
+  }
+
   &:hover {
     border: 1px solid var(--tales-beyond-hover-border, #c53131);
     background: var(--tales-beyond-hover-background, #fdefe7);
@@ -11,17 +26,20 @@ button.integrated-dice__container.tales-beyond-extension {
       .ddbc-saving-throw-selection-box-svg {
         fill: var(--tales-beyond-hover-background, #fdefe7);
       }
+
       .ddbc-saving-throw-selection-small-box-svg {
         fill: var(--tales-beyond-hover-background, #fdefe7);
       }
     }
   }
 }
+
 .tales-beyond-extension-versatile {
   button.integrated-dice__container.tales-beyond-extension {
     margin-bottom: 3px;
   }
 }
+
 .ddbc-saving-throws-summary__ability-modifier {
   > button.integrated-dice__container.tales-beyond-extension {
     border: 0;

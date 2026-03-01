@@ -17,6 +17,7 @@ import { isCharacterDeactivated } from "~/utils/storage";
 import { talespireLink } from "~/utils/talespire";
 import {
   embedInText,
+  getParentWithClass,
   getSiblingWithClass,
   getTextNodes,
   isParentsProcessed,
@@ -89,6 +90,15 @@ const hijackSidebar = () => {
   });
 };
 
+const getDiceType = (diceButton) => {
+  if (getParentWithClass(diceButton, "__damage", 2)) {
+    return "damage";
+  }
+  if (getParentWithClass(diceButton, "__tohit", 2)) {
+    return "hit";
+  }
+};
+
 const processIntegratedDice = (addedNode) => {
   // Only process ELEMENT_NODE's
   if (addedNode.nodeType !== 1) {
@@ -154,7 +164,11 @@ const processIntegratedDice = (addedNode) => {
     ) {
       label = (nameSibling.querySelector('[class*="__label"]') || nameSibling)
         .textContent;
-      if (customMod(label, diceButton, nameSibling)) {
+      const diceType = getDiceType(diceButton);
+      if (
+        diceType &&
+        customMod({ label, diceButton, nameSibling, type: diceType })
+      ) {
         continue;
       }
     }

@@ -44,7 +44,7 @@ const setupListeners = (button, contextmenu) => {
     if (labelSuffix === "CRIT") {
       triggerTalespire(name, roll.double());
     } else if (labelSuffix) {
-      triggerTalespire(name, roll.duplicate());
+      triggerTalespire(name, roll.repeat(2));
     } else {
       triggerTalespire(name, roll);
     }
