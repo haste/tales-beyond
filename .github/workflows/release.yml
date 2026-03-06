@@ -96,7 +96,7 @@ jobs:
           CWS_CLIENT_SECRET: ${{ secrets.CWS_CLIENT_SECRET }}
           CWS_REFRESH_TOKEN: ${{ secrets.CWS_REFRESH_TOKEN }}
         run: |
-          bunx chrome-webstore-upload-cli@3 upload \
+          bunx chrome-webstore-upload-cli@3 \
             --source web-ext-artifacts/tales_beyond-${VERSION}.zip \
             --extension-id ${CWS_EXTENSION_ID} \
             --client-id ${CWS_CLIENT_ID} \
