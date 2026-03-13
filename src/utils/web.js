@@ -1,4 +1,5 @@
-import { getDiceRegex, normalizeMinus, rollFromMatch } from "~/roll";
+import { diceFromMatch, normalizeMinus } from "~/dice";
+import { getDiceRegex, Roll } from "~/roll";
 import { getCharacterAbilities, getCharacterSkills } from "~/utils/dndbeyond";
 import { talespireLink } from "~/utils/talespire";
 
@@ -21,15 +22,17 @@ export const rollFromMatchWithAbilities = (groups) => {
   if (groups.modifierType) {
     const resolvedModifier = getCharacterAbilities()[groups.modifierType];
     const mod = Number.parseInt(resolvedModifier, 10);
-    return rollFromMatch({
-      ...groups,
-      modifierType: undefined,
-      modifier: Math.abs(mod),
-      sign: mod < 0 ? "-" : "+",
+    return new Roll({
+      dice: diceFromMatch({
+        ...groups,
+        modifierType: undefined,
+        modifier: Math.abs(mod),
+        sign: mod < 0 ? "-" : "+",
+      }),
     });
   }
 
-  return rollFromMatch(groups);
+  return new Roll({ dice: diceFromMatch(groups) });
 };
 
 export const isValidDice = (match, characterSkills = []) => {

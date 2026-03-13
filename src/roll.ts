@@ -1,7 +1,9 @@
-import { Dice } from "~/dice";
-
-export const normalizeMinus = (str: string): string =>
-  str.replace(/[−–]/g, "-");
+import {
+  type Dice,
+  type DiceMatchGroups,
+  diceFromMatch,
+  normalizeMinus,
+} from "~/dice";
 
 const fullDiceRegex =
   /(?<numDice>\d+)?d(?<dice>\d+)(?:\s*(?<sign>[-+−–])\s*(?:your (?<modifierType>\w+) modifier|(?<modifier>(?!\d+d\d+)\d+)))?/;
@@ -17,55 +19,13 @@ export const getDiceRegex = (matchDicelessModifier = true): RegExp => {
   );
 };
 
-interface DiceMatchGroups {
-  dice?: string;
-  modifier?: string;
-  modifierType?: string;
-  numDice?: string;
-  sign?: string;
-  soloModifier?: string;
-  soloModifierType?: string;
-}
-
-export const rollFromMatch = ({
-  dice,
-  modifier,
-  numDice,
-  sign,
-  soloModifier,
-}: DiceMatchGroups): Roll => {
-  const count = numDice ? Number.parseInt(numDice, 10) : 1;
-
-  if (soloModifier) {
-    return new Roll({
-      dice: [
-        new Dice(count, 20, {
-          modifier: Number.parseInt(normalizeMinus(soloModifier), 10),
-        }),
-      ],
-    });
-  }
-
-  const sides = Number.parseInt(dice || "0", 10);
-
-  let mod = 0;
-  if (modifier) {
-    mod = Number.parseInt(`${normalizeMinus(sign || "")}${modifier}`, 10);
-  }
-
-  return new Roll({
-    dice: [new Dice(count, sides, { modifier: mod })],
-  });
-};
-
 export const parseRoll = (str: string): Roll | null => {
   const normalized = normalizeMinus(str);
   const diceRegex = getDiceRegex(false);
   const dice: Dice[] = [];
 
   for (const match of normalized.matchAll(diceRegex)) {
-    const roll = rollFromMatch(match.groups as DiceMatchGroups);
-    dice.push(...roll.dice);
+    dice.push(diceFromMatch(match.groups as DiceMatchGroups));
   }
 
   if (dice.length === 0) {

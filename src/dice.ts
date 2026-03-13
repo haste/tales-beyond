@@ -1,3 +1,41 @@
+export const normalizeMinus = (str: string): string =>
+  str.replace(/[−–]/g, "-");
+
+export interface DiceMatchGroups {
+  dice?: string;
+  modifier?: string;
+  modifierType?: string;
+  numDice?: string;
+  sign?: string;
+  soloModifier?: string;
+  soloModifierType?: string;
+}
+
+export const diceFromMatch = ({
+  dice,
+  modifier,
+  numDice,
+  sign,
+  soloModifier,
+}: DiceMatchGroups): Dice => {
+  const count = numDice ? Number.parseInt(numDice, 10) : 1;
+
+  if (soloModifier) {
+    return new Dice(count, 20, {
+      modifier: Number.parseInt(normalizeMinus(soloModifier), 10),
+    });
+  }
+
+  const sides = Number.parseInt(dice || "0", 10);
+
+  let mod = 0;
+  if (modifier) {
+    mod = Number.parseInt(`${normalizeMinus(sign || "")}${modifier}`, 10);
+  }
+
+  return new Dice(count, sides, { modifier: mod });
+};
+
 interface DiceOptions {
   modifier?: number;
   damageType?: string | null;

@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test";
 
-import { Dice } from "~/dice";
+import { Dice, diceFromMatch } from "~/dice";
 
 describe("Dice", () => {
   describe("constructor", () => {
@@ -62,6 +62,87 @@ describe("Dice", () => {
     test("scale preserves damageType", () => {
       const d = new Dice(1, 4, { modifier: 1, damageType: "force" });
       expect(d.scale(3).damageType).toBe("force");
+    });
+  });
+
+  describe("diceFromMatch", () => {
+    test("full dice match", () => {
+      const d = diceFromMatch({
+        numDice: "2",
+        dice: "6",
+        sign: "+",
+        modifier: "3",
+      });
+      expect(d).toEqual(new Dice(2, 6, { modifier: 3 }));
+    });
+
+    test("no numDice defaults to 1", () => {
+      const d = diceFromMatch({ dice: "20" });
+      expect(d).toEqual(new Dice(1, 20));
+    });
+
+    test("negative sign", () => {
+      const d = diceFromMatch({
+        numDice: "1",
+        dice: "20",
+        sign: "-",
+        modifier: "1",
+      });
+      expect(d).toEqual(new Dice(1, 20, { modifier: -1 }));
+    });
+
+    test("unicode minus sign", () => {
+      const d = diceFromMatch({
+        numDice: "1",
+        dice: "20",
+        sign: "–",
+        modifier: "3",
+      });
+      expect(d).toEqual(new Dice(1, 20, { modifier: -3 }));
+    });
+
+    test("en dash sign", () => {
+      const d = diceFromMatch({
+        numDice: "1",
+        dice: "20",
+        sign: "−",
+        modifier: "3",
+      });
+      expect(d).toEqual(new Dice(1, 20, { modifier: -3 }));
+    });
+
+    test("soloModifier positive", () => {
+      const d = diceFromMatch({ soloModifier: "+5" });
+      expect(d).toEqual(new Dice(1, 20, { modifier: 5 }));
+    });
+
+    test("soloModifier negative", () => {
+      const d = diceFromMatch({ soloModifier: "-2" });
+      expect(d).toEqual(new Dice(1, 20, { modifier: -2 }));
+    });
+
+    test("soloModifier with unicode minus", () => {
+      const d = diceFromMatch({ soloModifier: "–3" });
+      expect(d).toEqual(new Dice(1, 20, { modifier: -3 }));
+    });
+
+    test("soloModifier with en dash", () => {
+      const d = diceFromMatch({ soloModifier: "−3" });
+      expect(d).toEqual(new Dice(1, 20, { modifier: -3 }));
+    });
+
+    test("no modifier", () => {
+      const d = diceFromMatch({ numDice: "2", dice: "8" });
+      expect(d).toEqual(new Dice(2, 8));
+    });
+
+    test("negative modifier value (already negative)", () => {
+      const d = diceFromMatch({
+        numDice: "1",
+        dice: "20",
+        modifier: "-4",
+      });
+      expect(d).toEqual(new Dice(1, 20, { modifier: -4 }));
     });
   });
 });
