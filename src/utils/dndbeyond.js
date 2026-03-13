@@ -7,10 +7,10 @@ import {
   rollFromMatchWithAbilities,
 } from "~/utils/web";
 
-export const getRollFromNode = (node) => {
+export const getRollFromNode = (node, type) => {
   const damageValue = node.querySelector(".ddbc-damage__value");
   if (damageValue) {
-    return parseRoll(damageValue.textContent);
+    return parseRoll(damageValue.textContent, type);
   }
 
   const numberDisplay = node.querySelector('[class^="styles_numberDisplay"]');
@@ -23,7 +23,7 @@ export const getRollFromNode = (node) => {
 
     const uniqMatches = [...new Set(matches)];
     if (uniqMatches.length === 1) {
-      return parseRoll(uniqMatches[0]);
+      return parseRoll(uniqMatches[0], type);
     }
 
     return;
@@ -35,7 +35,7 @@ export const getRollFromNode = (node) => {
       '[class^="styles_sign"]',
     ).textContent;
     const number = numberDisplay.lastChild.textContent;
-    return parseRoll(`1d20${sign}${number}`);
+    return parseRoll(`1d20${sign}${number}`, type);
   }
 };
 

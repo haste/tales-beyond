@@ -118,6 +118,9 @@ export const talespireLink = (label, roll, content) => {
   link.classList.add("tales-beyond-extension");
   link.dataset.tsLabel = label;
   link.dataset.tsDice = diceStr;
+  if (roll.type) {
+    link.dataset.tsType = roll.type;
+  }
   link.addEventListener("click", async (event) => {
     event.stopPropagation();
 

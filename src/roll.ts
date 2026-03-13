@@ -19,7 +19,7 @@ export const getDiceRegex = (matchDicelessModifier = true): RegExp => {
   );
 };
 
-export const parseRoll = (str: string): Roll | null => {
+export const parseRoll = (str: string, type?: RollType): Roll | null => {
   const normalized = normalizeMinus(str);
   const diceRegex = getDiceRegex(false);
   const dice: Dice[] = [];
@@ -32,16 +32,26 @@ export const parseRoll = (str: string): Roll | null => {
     return null;
   }
 
-  return new Roll({ dice });
+  return new Roll({ dice, type });
 };
+
+export const rollTypes = ["hit", "damage"] as const;
+export type RollType = (typeof rollTypes)[number];
+
+interface RollOpts {
+  type?: RollType;
+}
 
 export class Roll {
   readonly groups: readonly (readonly Dice[])[];
+  readonly type?: RollType;
 
   constructor(
-    opts:
+    opts: (
       | { dice: Dice | readonly Dice[] }
-      | { groups: readonly (readonly Dice[])[] },
+      | { groups: readonly (readonly Dice[])[] }
+    ) &
+      RollOpts,
   ) {
     if ("groups" in opts) {
       this.groups = Object.freeze(
@@ -52,18 +62,21 @@ export class Roll {
         Object.freeze(([] as Dice[]).concat(opts.dice)),
       ]);
     }
+    this.type = opts.type;
     Object.freeze(this);
   }
 
   double(): Roll {
     return new Roll({
       groups: this.groups.map((g) => g.map((d) => d.double())),
+      type: this.type,
     });
   }
 
   scale(factor: number): Roll {
     return new Roll({
       groups: this.groups.map((g) => g.map((d) => d.scale(factor))),
+      type: this.type,
     });
   }
 
@@ -72,12 +85,13 @@ export class Roll {
     if (!group || this.groups.length !== 1) {
       throw new Error("addDice requires a single-group roll");
     }
-    return new Roll({ dice: [...group, dice] });
+    return new Roll({ dice: [...group, dice], type: this.type });
   }
 
   repeat(n: number): Roll {
     return new Roll({
       groups: Array.from({ length: n }, () => this.groups).flat(),
+      type: this.type,
     });
   }
 

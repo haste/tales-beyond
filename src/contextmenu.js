@@ -33,6 +33,7 @@ const setupListeners = (button, contextmenu) => {
   if (!roll) {
     return;
   }
+  const type = button.dataset.tsType;
 
   const action = (labelSuffix) => async () => {
     const name = labelSuffix
@@ -58,11 +59,11 @@ const setupListeners = (button, contextmenu) => {
   dis.addEventListener("click", action("DIS"));
   crit.addEventListener("click", action("CRIT"));
 
-  const isD20 = roll.groups[0]?.[0]?.sides === 20;
+  const isHit = type ? type === "hit" : roll.groups[0]?.[0]?.sides === 20;
 
-  adv.style.display = isD20 ? "block" : "none";
-  dis.style.display = isD20 ? "block" : "none";
-  crit.style.display = isD20 ? "none" : "block";
+  adv.style.display = isHit ? "block" : "none";
+  dis.style.display = isHit ? "block" : "none";
+  crit.style.display = isHit ? "none" : "block";
 
   window.addEventListener("click", detectLightDismiss, {
     capture: true,

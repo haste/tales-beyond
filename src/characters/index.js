@@ -113,7 +113,8 @@ const processIntegratedDice = (addedNode, settings) => {
     const parentPreviousSibling = diceButton.parentElement?.previousSibling;
     const parentNextSibling = diceButton.parentElement?.nextSibling;
     const nameSibling = getSiblingWithClass(diceButton, "__name");
-    let diceValue = getRollFromNode(diceButton);
+    const diceType = getDiceType(diceButton);
+    let diceValue = getRollFromNode(diceButton, diceType);
 
     // Fetch from secondary when "Scores Top" is set for Ability Score/Modifier
     // Display
@@ -123,6 +124,7 @@ const processIntegratedDice = (addedNode, settings) => {
     ) {
       diceValue = getRollFromNode(
         getSiblingWithClass(diceButton, "__secondary", 3),
+        diceType,
       );
     }
 
@@ -165,7 +167,6 @@ const processIntegratedDice = (addedNode, settings) => {
     ) {
       label = (nameSibling.querySelector('[class*="__label"]') || nameSibling)
         .textContent;
-      const diceType = getDiceType(diceButton);
       if (
         diceType &&
         customMod({ label, diceButton, nameSibling, type: diceType }, settings)

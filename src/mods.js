@@ -36,7 +36,7 @@ export const mods = [
         "ddbc-damage__value",
         5,
       );
-      const diceValue = parseRoll(damageValue.innerText).addDice(
+      const diceValue = parseRoll(damageValue.innerText, "damage").addDice(
         new Dice(level, 6),
       );
 
@@ -59,7 +59,7 @@ export const mods = [
         "tales-beyond-extension-versatile",
       );
 
-      const baseDice = getRollFromNode(diceButton);
+      const baseDice = getRollFromNode(diceButton, "damage");
       const diceValue = baseDice.double();
 
       const clonedButton = diceButton.cloneNode(true);
@@ -87,7 +87,7 @@ export const mods = [
         10,
       );
 
-      const baseDice = getRollFromNode(diceButton);
+      const baseDice = getRollFromNode(diceButton, "damage");
       for (let i = 1; i < 3 + extraDarts + 1; i++) {
         const diceValue = baseDice.scale(i);
 
@@ -125,7 +125,7 @@ export const mods = [
         "tales-beyond-extension-versatile",
       );
 
-      const baseDice = getRollFromNode(diceButton);
+      const baseDice = getRollFromNode(diceButton, "damage");
       const diceValue = baseDice.scale(2);
 
       const clonedButton = diceButton.cloneNode(true);
@@ -157,7 +157,7 @@ export const mods = [
         10,
       );
 
-      const baseRayDice = getRollFromNode(diceButton);
+      const baseRayDice = getRollFromNode(diceButton, type);
       for (let i = 1; i < 3 + extraRays + 1; i++) {
         if (type === "damage") {
           const diceValue = baseRayDice.scale(i);
@@ -226,7 +226,7 @@ export const mods = [
         return false;
       }
 
-      const baseFlareDice = getRollFromNode(diceButton);
+      const baseFlareDice = getRollFromNode(diceButton, type);
       for (let i = 1; i < 1 + level; i++) {
         if (type === "damage") {
           const diceValue = baseFlareDice.scale(i);
@@ -285,7 +285,7 @@ export const mods = [
         "tales-beyond-extension-versatile",
       );
 
-      const baseDice = getRollFromNode(diceButton);
+      const baseDice = getRollFromNode(diceButton, "damage");
       const diceValue = new Roll({
         groups: baseDice.groups.map((g) =>
           g.map(
@@ -296,6 +296,7 @@ export const mods = [
               }),
           ),
         ),
+        type: "damage",
       });
 
       const clonedButton = diceButton.cloneNode(true);
@@ -349,7 +350,7 @@ export const mods = [
       const damageText = clonedButton.querySelector(".ddbc-damage__value");
       damageText.innerText = damageText.innerText.split("+")[0];
 
-      const diceValue = getRollFromNode(clonedButton);
+      const diceValue = getRollFromNode(clonedButton, "damage");
       const tsLink = talespireLink(
         `${label} (Off-hand)`,
         diceValue,
