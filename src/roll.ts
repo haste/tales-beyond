@@ -36,34 +36,54 @@ export const parseRoll = (str: string): Roll | null => {
 };
 
 export class Roll {
-  readonly dice: readonly Dice[];
+  readonly groups: readonly (readonly Dice[])[];
 
-  constructor({ dice }: { dice: Dice | readonly Dice[] }) {
-    this.dice = Object.freeze(([] as Dice[]).concat(dice));
+  constructor(
+    opts:
+      | { dice: Dice | readonly Dice[] }
+      | { groups: readonly (readonly Dice[])[] },
+  ) {
+    if ("groups" in opts) {
+      this.groups = Object.freeze(
+        opts.groups.map((g) => Object.freeze([...g])),
+      );
+    } else {
+      this.groups = Object.freeze([
+        Object.freeze(([] as Dice[]).concat(opts.dice)),
+      ]);
+    }
     Object.freeze(this);
   }
 
   double(): Roll {
-    return this.clone({ dice: this.dice.map((d) => d.double()) });
+    return new Roll({
+      groups: this.groups.map((g) => g.map((d) => d.double())),
+    });
   }
 
   scale(factor: number): Roll {
-    return this.clone({ dice: this.dice.map((d) => d.scale(factor)) });
+    return new Roll({
+      groups: this.groups.map((g) => g.map((d) => d.scale(factor))),
+    });
   }
 
   addDice(dice: Dice): Roll {
-    return this.clone({ dice: [...this.dice, dice] });
+    const group = this.groups[0];
+    if (!group || this.groups.length !== 1) {
+      throw new Error("addDice requires a single-group roll");
+    }
+    return new Roll({ dice: [...group, dice] });
   }
 
-  repeat(n: number): Roll[] {
-    return Array(n).fill(this);
+  repeat(n: number): Roll {
+    return new Roll({
+      groups: Array.from({ length: n }, () => this.groups).flat(),
+    });
   }
 
   toString(): string {
-    return this.dice.map((d) => d.toString()).join("+");
-  }
-
-  private clone(overrides: { dice: readonly Dice[] }): Roll {
-    return new Roll({ ...overrides });
+    return this.groups
+      .map((g) => g.map((d) => d.toString()).join("+"))
+      .join("/");
   }
 }

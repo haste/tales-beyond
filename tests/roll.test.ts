@@ -13,12 +13,14 @@ describe("Roll", () => {
   describe("constructor", () => {
     test("single dice", () => {
       const roll = new Roll({ dice: [new Dice(1, 20, { modifier: 5 })] });
-      expect(roll.dice).toHaveLength(1);
+      expect(roll.groups).toHaveLength(1);
+      expect(roll.groups[0]).toHaveLength(1);
     });
 
     test("accepts single Dice (not array)", () => {
       const roll = new Roll({ dice: new Dice(1, 20) });
-      expect(roll.dice).toHaveLength(1);
+      expect(roll.groups).toHaveLength(1);
+      expect(roll.groups[0]).toHaveLength(1);
     });
   });
 
@@ -54,51 +56,48 @@ describe("Roll", () => {
   describe("parse", () => {
     test("single dice", () => {
       const roll = mustParseRoll("2d6+3");
-      expect(roll.dice).toHaveLength(1);
+      expect(roll.groups[0]).toHaveLength(1);
       expect(roll.toString()).toBe("2d6+3");
     });
 
     test("single dice no modifier", () => {
       const roll = mustParseRoll("2d6");
-      expect(roll.dice).toHaveLength(1);
+      expect(roll.groups[0]).toHaveLength(1);
       expect(roll.toString()).toBe("2d6");
     });
 
     test("multi-dice with modifiers", () => {
       const roll = mustParseRoll("2d6+3+1d8+2");
-      const [first, second] = roll.dice;
-      expect(roll.dice).toHaveLength(2);
-      expect(first).toEqual(new Dice(2, 6, { modifier: 3 }));
-      expect(second).toEqual(new Dice(1, 8, { modifier: 2 }));
+      const group = roll.groups[0];
+      expect(group).toHaveLength(2);
+      expect(group?.[0]).toEqual(new Dice(2, 6, { modifier: 3 }));
+      expect(group?.[1]).toEqual(new Dice(1, 8, { modifier: 2 }));
       expect(roll.toString()).toBe("2d6+3+1d8+2");
     });
 
     test("multi-dice no modifiers", () => {
       const roll = mustParseRoll("2d8+1d6");
-      const [first, second] = roll.dice;
-      expect(roll.dice).toHaveLength(2);
-      expect(first).toEqual(new Dice(2, 8));
-      expect(second).toEqual(new Dice(1, 6));
+      const group = roll.groups[0];
+      expect(group).toHaveLength(2);
+      expect(group?.[0]).toEqual(new Dice(2, 8));
+      expect(group?.[1]).toEqual(new Dice(1, 6));
       expect(roll.toString()).toBe("2d8+1d6");
     });
 
     test("negative modifier", () => {
       const roll = mustParseRoll("1d20-3");
-      const [first] = roll.dice;
-      expect(first).toEqual(new Dice(1, 20, { modifier: -3 }));
+      expect(roll.groups[0]?.[0]).toEqual(new Dice(1, 20, { modifier: -3 }));
       expect(roll.toString()).toBe("1d20-3");
     });
 
     test("unicode minus", () => {
       const roll = mustParseRoll("1d20–3");
-      const [first] = roll.dice;
-      expect(first).toEqual(new Dice(1, 20, { modifier: -3 }));
+      expect(roll.groups[0]?.[0]).toEqual(new Dice(1, 20, { modifier: -3 }));
     });
 
     test("no count defaults to 1", () => {
       const roll = mustParseRoll("d20+5");
-      const [first] = roll.dice;
-      expect(first).toEqual(new Dice(1, 20, { modifier: 5 }));
+      expect(roll.groups[0]?.[0]).toEqual(new Dice(1, 20, { modifier: 5 }));
       expect(roll.toString()).toBe("1d20+5");
     });
 
@@ -151,21 +150,18 @@ describe("Roll", () => {
       expect(roll.toString()).toBe("2d8"); // original unchanged
     });
 
-    test("repeat returns array of n identical Rolls", () => {
+    test("repeat returns Roll with n groups", () => {
       const roll = mustParseRoll("2d6+3");
       const repeated = roll.repeat(3);
-      expect(repeated).toHaveLength(3);
-      expect(repeated[0]).toBe(roll);
-      expect(repeated[1]).toBe(roll);
-      expect(repeated[2]).toBe(roll);
+      expect(repeated.groups).toHaveLength(3);
+      expect(repeated.toString()).toBe("2d6+3/2d6+3/2d6+3");
     });
 
     test("double then repeat composes correctly", () => {
       const roll = mustParseRoll("2d6+3");
       const result = roll.double().repeat(2);
-      expect(result).toHaveLength(2);
-      expect(result[0]?.toString()).toBe("4d6+3");
-      expect(result[1]?.toString()).toBe("4d6+3");
+      expect(result.groups).toHaveLength(2);
+      expect(result.toString()).toBe("4d6+3/4d6+3");
     });
   });
 });

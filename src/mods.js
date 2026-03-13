@@ -287,12 +287,14 @@ export const mods = [
 
       const baseDice = getRollFromNode(diceButton);
       const diceValue = new Roll({
-        dice: baseDice.dice.map(
-          (d) =>
-            new Dice(d.count, 12, {
-              modifier: d.modifier,
-              damageType: d.damageType,
-            }),
+        groups: baseDice.groups.map((g) =>
+          g.map(
+            (d) =>
+              new Dice(d.count, 12, {
+                modifier: d.modifier,
+                damageType: d.damageType,
+              }),
+          ),
         ),
       });
 

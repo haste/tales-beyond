@@ -1,3 +1,5 @@
+import { Dice } from "~/dice";
+import { Roll } from "~/roll";
 import { getOptions } from "~/storage/settings";
 import { getCharacterName } from "~/utils/dndbeyond";
 
@@ -72,15 +74,21 @@ const prefixWithCharacterName = (label, settings) => {
   return name || label;
 };
 
-const expandD100 = (dice) =>
-  dice.replace(/(\d+)d100(?!\d)/g, (_, count) => `${count}d100+${count}d10`);
+const expandD100 = (roll) =>
+  new Roll({
+    groups: roll.groups.map((group) =>
+      group.flatMap((d) =>
+        d.sides === 100 ? [d, new Dice(d.count, 10)] : [d],
+      ),
+    ),
+  });
 
-export const triggerTalespire = async (label, rollOrRolls) => {
+export const triggerTalespire = async (label, roll) => {
   const settings = await getOptions();
-  const rolls = [].concat(rollOrRolls).map((r) => expandD100(r.toString()));
+  const expanded = expandD100(roll);
+  const diceUri = expanded.toString();
   label = prefixWithCharacterName(label, settings);
 
-  const diceUri = rolls.join("/");
   let uri;
   if (typeof label === "string") {
     uri = `talespire://dice/${encodeURIComponent(label)}:${diceUri}`;
@@ -92,9 +100,9 @@ export const triggerTalespire = async (label, rollOrRolls) => {
     // biome-ignore lint/suspicious/noConsole: debugging output
     console.log("TaleSpire Link", { name: label, dice: diceUri, uri });
   } else if (typeof TS !== "undefined" && TS.dice) {
-    const rollDescriptors = rolls.map((roll, i) => ({
+    const rollDescriptors = expanded.groups.map((group, i) => ({
       name: i === 0 ? (label ?? "") : "",
-      roll,
+      roll: group.map((d) => d.toString()).join("+"),
     }));
     TS.dice.putDiceInTray(rollDescriptors);
   } else {

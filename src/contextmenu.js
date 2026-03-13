@@ -58,7 +58,7 @@ const setupListeners = (button, contextmenu) => {
   dis.addEventListener("click", action("DIS"));
   crit.addEventListener("click", action("CRIT"));
 
-  const isD20 = roll.dice[0]?.sides === 20;
+  const isD20 = roll.groups[0]?.[0]?.sides === 20;
 
   adv.style.display = isD20 ? "block" : "none";
   dis.style.display = isD20 ? "block" : "none";

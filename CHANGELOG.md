@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased
+
+### Bug fixes
+
+ * Fixed advantage/disadvantage grouping on repeated hit dice rolls like Scorching Ray.
+ * Fixed advantage/disadvantage not working when using modifier keys on hit dice rolls.
+
 ## 0.25.0 (2026-03-02)
 
 ### Bug fixes
