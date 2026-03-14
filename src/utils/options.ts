@@ -110,10 +110,14 @@ const addCheckbox = (
   label.setAttribute("for", entry.id);
 
   const input = base.querySelector("input") as HTMLInputElement;
-  input.addEventListener("change", () => saveOption(entry.id, input.checked));
+  input.addEventListener("change", () => {
+    input.ariaChecked = String(input.checked);
+    saveOption(entry.id, input.checked);
+  });
   input.setAttribute("id", entry.id);
   if (settings[entry.id]) {
     input.checked = true;
+    input.ariaChecked = "true";
   }
 
   const description = base.querySelector(".description") as Element;

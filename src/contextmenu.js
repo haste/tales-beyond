@@ -136,8 +136,8 @@ const contextMenu = (event) => {
     if (middlewareData.arrow) {
       const { x, y } = middlewareData.arrow;
       Object.assign(arrowNode.style, {
-        left: x != null ? `${x}px` : "",
-        top: y != null ? `${y}px` : "",
+        left: x == null ? "" : `${x}px`,
+        top: y == null ? "" : `${y}px`,
         right: "",
         bottom: "",
         [staticSide]: `${-arrowLen / 2}px`,

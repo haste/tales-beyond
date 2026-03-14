@@ -63,14 +63,14 @@ const restoreOptions = async () => {
 
   // Remove the modifier keys section as it isn't something we can support in
   // TaleSpire currently.
-  if (typeof TS !== "undefined") {
-    document.querySelector("#modifiers").remove();
-    document.querySelector("footer").dataset.talespire = "";
-  } else {
+  if (typeof TS === "undefined") {
     const keyList = document.querySelector("#key-list");
     for (const key of keys) {
       addUIElement(settings, keyList, key);
     }
+  } else {
+    document.querySelector("#modifiers").remove();
+    document.querySelector("footer").dataset.talespire = "";
   }
 
   const modList = document.querySelector("#mod-list");

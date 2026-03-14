@@ -68,9 +68,9 @@ const prefixWithCharacterName = (
   settings: Settings,
 ) => {
   const name =
-    settings.prefixWithCharacterName !== "none"
-      ? formatCharacterName(settings)
-      : null;
+    settings.prefixWithCharacterName === "none"
+      ? null
+      : formatCharacterName(settings);
 
   if (typeof label === "string" && typeof name === "string") {
     return `${name}: ${label}`;
