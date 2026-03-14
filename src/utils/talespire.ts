@@ -119,7 +119,7 @@ export const triggerTalespire = async (
 export const talespireLink = (
   label: string | undefined,
   roll: Roll,
-  content: HTMLElement | string | undefined,
+  content: HTMLElement | string | null | undefined,
 ) => {
   label = label?.trim();
   const diceStr = roll.toString();
