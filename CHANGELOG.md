@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+### Bug fixes
+
+ * Fixed context menu advantage/disadvantage on repeated hit dice rolls like Scorching Ray.
+
 ## 0.25.1 (2026-03-14)
 
 ### Bug fixes

@@ -19,7 +19,7 @@ export const getDiceRegex = (matchDicelessModifier = true): RegExp => {
   );
 };
 
-export const parseRoll = (str: string, type?: RollType): Roll | null => {
+const parseGroup = (str: string): Dice[] => {
   const normalized = normalizeMinus(str);
   const diceRegex = getDiceRegex(false);
   const dice: Dice[] = [];
@@ -28,11 +28,20 @@ export const parseRoll = (str: string, type?: RollType): Roll | null => {
     dice.push(diceFromMatch(match.groups as DiceMatchGroups));
   }
 
-  if (dice.length === 0) {
+  return dice;
+};
+
+export const parseRoll = (str: string, type?: RollType): Roll | null => {
+  const groups = str
+    .split("/")
+    .map(parseGroup)
+    .filter((g) => g.length > 0);
+
+  if (groups.length === 0) {
     return null;
   }
 
-  return new Roll({ dice, type });
+  return new Roll({ groups, type });
 };
 
 export const rollTypes = ["hit", "damage"] as const;
