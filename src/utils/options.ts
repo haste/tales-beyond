@@ -51,7 +51,9 @@ const addDropdown = (
   const base = dropdownTemplate.content.cloneNode(true) as DocumentFragment;
 
   const select = base.querySelector("select") as HTMLSelectElement;
-  select.addEventListener("change", () => saveOption(entry.id, select.value));
+  select.addEventListener("change", () =>
+    saveOption(entry.id, select.value as Settings[typeof entry.id]),
+  );
   select.setAttribute("id", entry.id);
 
   const label = base.querySelector("label") as HTMLLabelElement;

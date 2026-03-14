@@ -1,9 +1,13 @@
 import { Dice } from "~/dice";
 import { Roll } from "~/roll";
+import type { SettingModifierAction, Settings } from "~/storage/settings";
 import { getOptions } from "~/storage/settings";
 import { getCharacterName } from "~/utils/dndbeyond";
 
-const modifierAction = (action, name) => {
+const modifierAction = (
+  action: SettingModifierAction,
+  name: string | undefined,
+) => {
   switch (action) {
     case "adv":
       return { name: `${name} (ADV)`, extraDice: true, crit: false };
@@ -19,8 +23,12 @@ const modifierAction = (action, name) => {
   }
 };
 
-const checkModifierKeys = (event, name, settings) => {
-  let action = "none";
+const checkModifierKeys = (
+  event: MouseEvent,
+  name: string | undefined,
+  settings: Settings,
+) => {
+  let action: SettingModifierAction = "none";
   if (event.altKey) {
     action = settings.modifierKeyAlt;
   } else if (event.ctrlKey) {
@@ -29,14 +37,10 @@ const checkModifierKeys = (event, name, settings) => {
     action = settings.modifierKeyShift;
   }
 
-  if (action === "none") {
-    return { name, extraDice: false, crit: false };
-  }
-
   return modifierAction(action, name);
 };
 
-const formatCharacterName = (settings) => {
+const formatCharacterName = (settings: Settings) => {
   const name = getCharacterName();
   if (typeof name !== "string") {
     return null;
@@ -44,9 +48,7 @@ const formatCharacterName = (settings) => {
 
   switch (settings.prefixWithCharacterName) {
     case "initials":
-      return name
-        .replace(/[^\p{L}\p{N}\s]/gu, "")
-        .match(/(^\S|\s\S)?/g)
+      return (name.replace(/[^\p{L}\p{N}\s]/gu, "").match(/(^\S|\s\S)?/g) ?? [])
         .map((v) => v.trim())
         .join("")
         .toLocaleUpperCase();
@@ -61,7 +63,10 @@ const formatCharacterName = (settings) => {
   }
 };
 
-const prefixWithCharacterName = (label, settings) => {
+const prefixWithCharacterName = (
+  label: string | undefined,
+  settings: Settings,
+) => {
   const name =
     settings.prefixWithCharacterName !== "none"
       ? formatCharacterName(settings)
@@ -74,7 +79,7 @@ const prefixWithCharacterName = (label, settings) => {
   return name || label;
 };
 
-const expandD100 = (roll) =>
+const expandD100 = (roll: Roll) =>
   new Roll({
     groups: roll.groups.map((group) =>
       group.flatMap((d) =>
@@ -83,18 +88,19 @@ const expandD100 = (roll) =>
     ),
   });
 
-export const triggerTalespire = async (label, roll) => {
+export const triggerTalespire = async (
+  label: string | undefined,
+  roll: Roll,
+) => {
   const settings = await getOptions();
   const expanded = expandD100(roll);
   const diceUri = expanded.toString();
   label = prefixWithCharacterName(label, settings);
 
-  let uri;
-  if (typeof label === "string") {
-    uri = `talespire://dice/${encodeURIComponent(label)}:${diceUri}`;
-  } else {
-    uri = `talespire://dice/${diceUri}`;
-  }
+  const uri =
+    typeof label === "string"
+      ? `talespire://dice/${encodeURIComponent(label)}:${diceUri}`
+      : `talespire://dice/${diceUri}`;
 
   if (TB_DRY_RUN_TALESPIRE_LINKS === "true") {
     // biome-ignore lint/suspicious/noConsole: debugging output
@@ -110,7 +116,11 @@ export const triggerTalespire = async (label, roll) => {
   }
 };
 
-export const talespireLink = (label, roll, content) => {
+export const talespireLink = (
+  label: string | undefined,
+  roll: Roll,
+  content: HTMLElement | string | undefined,
+) => {
   label = label?.trim();
   const diceStr = roll.toString();
   const link = document.createElement("button");
@@ -121,7 +131,7 @@ export const talespireLink = (label, roll, content) => {
   if (roll.type) {
     link.dataset.tsType = roll.type;
   }
-  link.addEventListener("click", async (event) => {
+  link.addEventListener("click", async (event: MouseEvent) => {
     event.stopPropagation();
 
     const settings = await getOptions();

@@ -6,13 +6,21 @@ export interface DeactivatedCharacter {
   name: string;
 }
 
+export type SettingModifierAction = "adv" | "adv-dis" | "dis" | "crit" | "none";
+export type SettingCharacterNamePrefix =
+  | "first"
+  | "full"
+  | "initials"
+  | "last"
+  | "none";
+
 export interface Settings {
   version: number;
   contextMenuEnabled: boolean;
   deactivatedCharacters: DeactivatedCharacter[];
-  modifierKeyAlt: string;
-  modifierKeyCtrl: string;
-  modifierKeyShift: string;
+  modifierKeyAlt: SettingModifierAction;
+  modifierKeyCtrl: SettingModifierAction;
+  modifierKeyShift: SettingModifierAction;
   modChaosBolt: boolean;
   modInfiltratorArmorLightningLauncher: boolean;
   modMagicMissile: boolean;
@@ -21,7 +29,7 @@ export interface Settings {
   modSpellfireFlare: boolean;
   modTollTheDead: boolean;
   modTwoWeaponLightOffhand: boolean;
-  prefixWithCharacterName: string;
+  prefixWithCharacterName: SettingCharacterNamePrefix;
   symbioteURL?: string;
 }
 

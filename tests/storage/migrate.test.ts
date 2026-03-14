@@ -1,5 +1,6 @@
 import { describe, expect, test } from "bun:test";
 import { migrateUserOptions } from "~/storage/migrate";
+import type { Settings } from "~/storage/settings";
 
 describe("migrateUserOptions", () => {
   describe("individual steps", () => {
@@ -10,7 +11,10 @@ describe("migrateUserOptions", () => {
     });
 
     test("v2 → v3: adds deactivatedCharacters", () => {
-      const input = { version: 2, prefixWithCharacterName: "full" };
+      const input = {
+        version: 2,
+        prefixWithCharacterName: "full",
+      } satisfies Partial<Settings>;
       const result = migrateUserOptions(input);
       expect(result.version).toBe(5);
       expect(result.deactivatedCharacters).toEqual([]);
@@ -21,7 +25,7 @@ describe("migrateUserOptions", () => {
         version: 3,
         prefixWithCharacterName: "initials",
         deactivatedCharacters: [],
-      };
+      } satisfies Partial<Settings>;
       const result = migrateUserOptions(input);
       expect(result.version).toBe(5);
       expect(result.modSpellfireFlare).toBe(true);
@@ -44,7 +48,7 @@ describe("migrateUserOptions", () => {
         prefixWithCharacterName: "full",
         deactivatedCharacters: [],
         modSpellfireFlare: true,
-      };
+      } satisfies Partial<Settings>;
       const result = migrateUserOptions(input);
       expect(result.version).toBe(5);
       expect(result.prefixWithCharacterName).toBe("full");
