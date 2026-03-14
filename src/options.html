@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html data-bs-theme="dark">
+<html lang="en" data-bs-theme="dark">
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -11,7 +11,7 @@
     <body>
         <main>
             <h1>
-                <img src="icons/icon_48.png">
+                <img src="icons/icon_48.png" alt="Tales Beyond">
                 Tales Beyond
             </h1>
             <section id="general">
@@ -51,14 +51,14 @@
                     </header>
                 </div>
                 <div class="form-switch">
-                    <input class="form-check-input" type="checkbox" role="switch">
+                    <input class="form-check-input" type="checkbox" role="switch" aria-checked="false">
                 </div>
             </label>
         </template>
         <template id="template-deactivated-character">
             <div class="input-group mb-3">
                 <label class="input-group-text flex-fill"></label>
-                <button class="btn">Activate</button>
+                <button class="btn" type="button">Activate</button>
             </div>
         </template>
         <script src="options.js" type="module"></script>
