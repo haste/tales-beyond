@@ -46,8 +46,7 @@ export const parseRoll = (str: string, type?: RollType): Roll | null => {
   return new Roll({ groups, type });
 };
 
-export const rollTypes = ["hit", "damage"] as const;
-export type RollType = (typeof rollTypes)[number];
+export type RollType = "hit" | "damage";
 
 interface RollOpts {
   type?: RollType;

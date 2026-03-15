@@ -11,7 +11,7 @@ import {
 
 const abilityLookup: Record<string, string | undefined> = abilityNames;
 
-export const getRollFromNode = (node: HTMLElement, type: RollType) => {
+export const getRollFromNode = (node: HTMLElement, type?: RollType) => {
   const damageValue = node.querySelector(".ddbc-damage__value")?.textContent;
   if (damageValue) {
     return parseRoll(damageValue, type);

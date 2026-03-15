@@ -1,5 +1,6 @@
 import { Dice } from "~/dice";
-import { parseRoll, Roll } from "~/roll";
+import { parseRoll, Roll, type RollType } from "~/roll";
+import type { Settings, SettingsKeyOfType } from "~/storage/settings";
 import {
   getCharacterActionsInCombat,
   getRollFromNode,
@@ -8,38 +9,73 @@ import { BOOLEAN } from "~/utils/options";
 import { talespireLink } from "~/utils/talespire";
 import { getParentWithClass, getSiblingWithClass } from "~/utils/web";
 
-const always = () => true;
-const labelIsHeader = ({ mod, label }) => mod.header === label;
+type ModMatch = "always" | "exact" | "includes";
 
-export const mods = [
+type ModContext = {
+  label: string;
+  diceButton: HTMLElement;
+  nameSibling: HTMLElement | undefined;
+  type: RollType | undefined;
+};
+
+type ModBase = {
+  targets: RollType[];
+  header: string;
+  description: string;
+  match?: ModMatch;
+  fn: (args: ModContext) => boolean;
+};
+
+type ModBoolean = ModBase & {
+  type: typeof BOOLEAN;
+  id: SettingsKeyOfType<boolean>;
+};
+
+type Mod = ModBoolean;
+
+const matchesLabel = (mod: Mod, label: string): boolean => {
+  switch (mod.match) {
+    case "always":
+      return true;
+    case "includes":
+      return label.includes(mod.header);
+    default:
+      return mod.header === label;
+  }
+};
+
+export const mods: Mod[] = [
   {
     id: "modChaosBolt",
     type: BOOLEAN,
     targets: ["damage"],
     header: "Chaos Bolt",
     description: "Changes the dice to include the missing d6.",
-    check: labelIsHeader,
     fn: ({ label, diceButton }) => {
-      const level = getParentWithClass(diceButton, "ddbc-combat-attack", 4)
-        ? 1
-        : Number.parseInt(
-            getSiblingWithClass(
-              diceButton,
-              "ct-content-group__header-content",
-              9,
-            )?.textContent.slice(0, -8),
-            10,
-          );
+      const levelText = getParentWithClass(diceButton, "ddbc-combat-attack", 4)
+        ? undefined
+        : getSiblingWithClass(
+            diceButton,
+            "ct-content-group__header-content",
+            9,
+          )?.textContent.slice(0, -8);
+      const level = Number.parseInt(levelText ?? "1", 10);
 
       const damageValue = getSiblingWithClass(
         diceButton,
         "ddbc-damage__value",
         5,
       );
-      const diceValue = parseRoll(damageValue.innerText, "damage").addDice(
-        new Dice(level, 6),
-      );
+      if (!damageValue) {
+        return false;
+      }
 
+      const roll = parseRoll(damageValue.innerText, "damage");
+      if (!roll) {
+        return false;
+      }
+
+      const diceValue = roll.addDice(new Dice(level, 6));
       diceButton.replaceWith(talespireLink(label, diceValue));
 
       return true;
@@ -52,22 +88,29 @@ export const mods = [
     header: "Infiltrator Armor: Lightning Launcher",
     description:
       "Add an extra dice button for the once per turn 1d6 extra damage.",
-    check: ({ mod, label }) => label.includes(mod.header),
+    match: "includes",
     fn: ({ label, diceButton }) => {
-      diceButton.classList.add("tales-beyond-extension");
-      diceButton.parentElement.parentElement.classList.add(
-        "tales-beyond-extension-versatile",
-      );
-
+      const parent = diceButton.parentElement;
+      const grandparent = parent?.parentElement;
       const baseDice = getRollFromNode(diceButton, "damage");
-      const diceValue = baseDice.double();
+      const clonedButton = diceButton.cloneNode(true) as HTMLElement;
+      const damageText = clonedButton.querySelector<HTMLElement>(
+        ".ddbc-damage__value",
+      );
+      if (!(grandparent && baseDice && damageText)) {
+        return false;
+      }
 
-      const clonedButton = diceButton.cloneNode(true);
-      const damageText = clonedButton.querySelector(".ddbc-damage__value");
+      const diceValue = baseDice.double();
       damageText.innerText = diceValue.toString();
 
+      diceButton.classList.add("tales-beyond-extension");
+      grandparent.classList.add("tales-beyond-extension-versatile");
+
       const tsLink = talespireLink(label, diceValue, clonedButton);
-      diceButton.parentElement.appendChild(tsLink);
+      parent.appendChild(tsLink);
+
+      return false;
     },
   },
   {
@@ -76,8 +119,14 @@ export const mods = [
     targets: ["damage"],
     header: "Magic Missile",
     description: "Adds extra dice buttons for multiple darts.",
-    check: labelIsHeader,
     fn: ({ label, diceButton }) => {
+      const parent = diceButton.parentElement;
+      const grandparent = parent?.parentElement;
+      const baseDice = getRollFromNode(diceButton, "damage");
+      if (!(parent && grandparent && baseDice)) {
+        return false;
+      }
+
       const extraDarts = Number.parseInt(
         getSiblingWithClass(
           diceButton,
@@ -87,12 +136,16 @@ export const mods = [
         10,
       );
 
-      const baseDice = getRollFromNode(diceButton, "damage");
       for (let i = 1; i < 3 + extraDarts + 1; i++) {
         const diceValue = baseDice.scale(i);
 
-        const clonedButton = diceButton.cloneNode(true);
-        const damageText = clonedButton.querySelector(".ddbc-damage__value");
+        const clonedButton = diceButton.cloneNode(true) as HTMLElement;
+        const damageText = clonedButton.querySelector<HTMLElement>(
+          ".ddbc-damage__value",
+        );
+        if (!damageText) {
+          continue;
+        }
         damageText.innerText = diceValue.toString();
 
         const tsLink = talespireLink(
@@ -100,14 +153,12 @@ export const mods = [
           diceValue,
           clonedButton,
         );
-        diceButton.parentElement.appendChild(tsLink);
+        parent.appendChild(tsLink);
       }
 
-      diceButton.style = "display: none;";
+      diceButton.style.display = "none";
       diceButton.classList.add("tales-beyond-extension");
-      diceButton.parentElement.parentElement.classList.add(
-        "tales-beyond-extension-versatile",
-      );
+      grandparent.classList.add("tales-beyond-extension-versatile");
 
       return true;
     },
@@ -118,26 +169,32 @@ export const mods = [
     targets: ["damage"],
     header: "Melf's Minute Meteors",
     description: "Adds an extra dice button for throwing two meteors.",
-    check: labelIsHeader,
     fn: ({ label, diceButton }) => {
-      diceButton.classList.add("tales-beyond-extension");
-      diceButton.parentElement.parentElement.classList.add(
-        "tales-beyond-extension-versatile",
-      );
-
+      const parent = diceButton.parentElement;
+      const grandparent = parent?.parentElement;
       const baseDice = getRollFromNode(diceButton, "damage");
-      const diceValue = baseDice.scale(2);
+      const clonedButton = diceButton.cloneNode(true) as HTMLElement;
+      const damageText = clonedButton.querySelector<HTMLElement>(
+        ".ddbc-damage__value",
+      );
+      if (!(grandparent && baseDice && damageText)) {
+        return false;
+      }
 
-      const clonedButton = diceButton.cloneNode(true);
-      const damageText = clonedButton.querySelector(".ddbc-damage__value");
+      const diceValue = baseDice.scale(2);
       damageText.innerText = diceValue.toString();
+
+      diceButton.classList.add("tales-beyond-extension");
+      grandparent.classList.add("tales-beyond-extension-versatile");
 
       const tsLink = talespireLink(
         `${label} (2 meteors)`,
         diceValue,
         clonedButton,
       );
-      diceButton.parentElement.appendChild(tsLink);
+      parent.appendChild(tsLink);
+
+      return false;
     },
   },
   {
@@ -146,8 +203,14 @@ export const mods = [
     targets: ["damage", "hit"],
     header: "Scorching Ray",
     description: "Adds extra dice buttons for multiple rays.",
-    check: labelIsHeader,
     fn: ({ label, diceButton, type }) => {
+      const parent = diceButton.parentElement;
+      const grandparent = parent?.parentElement;
+      const baseRayDice = getRollFromNode(diceButton, type);
+      if (!(grandparent && baseRayDice)) {
+        return false;
+      }
+
       const extraRays = Number.parseInt(
         getSiblingWithClass(
           diceButton,
@@ -157,13 +220,17 @@ export const mods = [
         10,
       );
 
-      const baseRayDice = getRollFromNode(diceButton, type);
       for (let i = 1; i < 3 + extraRays + 1; i++) {
         if (type === "damage") {
           const diceValue = baseRayDice.scale(i);
 
-          const clonedButton = diceButton.cloneNode(true);
-          const damageText = clonedButton.querySelector(".ddbc-damage__value");
+          const clonedButton = diceButton.cloneNode(true) as HTMLElement;
+          const damageText = clonedButton.querySelector<HTMLElement>(
+            ".ddbc-damage__value",
+          );
+          if (!damageText) {
+            continue;
+          }
           damageText.innerText = diceValue.toString();
 
           const tsLink = talespireLink(
@@ -171,12 +238,12 @@ export const mods = [
             diceValue,
             clonedButton,
           );
-          diceButton.parentElement.appendChild(tsLink);
+          parent.appendChild(tsLink);
         }
 
         if (type === "hit") {
           const diceValue = baseRayDice.repeat(i);
-          const clonedButton = diceButton.cloneNode(true);
+          const clonedButton = diceButton.cloneNode(true) as HTMLElement;
 
           if (i > 1) {
             const badge = document.createElement("span");
@@ -190,15 +257,13 @@ export const mods = [
             diceValue,
             clonedButton,
           );
-          diceButton.parentElement.appendChild(tsLink);
+          parent.appendChild(tsLink);
         }
       }
 
-      diceButton.style = "display: none;";
+      diceButton.style.display = "none";
       diceButton.classList.add("tales-beyond-extension");
-      diceButton.parentElement.parentElement.classList.add(
-        "tales-beyond-extension-versatile",
-      );
+      grandparent.classList.add("tales-beyond-extension-versatile");
 
       return true;
     },
@@ -209,30 +274,42 @@ export const mods = [
     targets: ["damage", "hit"],
     header: "Spellfire Flare",
     description: "Adds extra dice buttons for multiple blasts.",
-    check: labelIsHeader,
     fn: ({ label, diceButton, type }) => {
-      const level = getParentWithClass(diceButton, "ddbc-combat-attack", 4)
-        ? 1
-        : Number.parseInt(
-            getSiblingWithClass(
-              diceButton,
-              "ct-content-group__header-content",
-              9,
-            )?.textContent.slice(0, -8),
-            10,
-          );
+      const parent = diceButton.parentElement;
+      const grandparent = parent?.parentElement;
+      if (!grandparent) {
+        return false;
+      }
+
+      const levelText = getParentWithClass(diceButton, "ddbc-combat-attack", 4)
+        ? undefined
+        : getSiblingWithClass(
+            diceButton,
+            "ct-content-group__header-content",
+            9,
+          )?.textContent.slice(0, -8);
+      const level = Number.parseInt(levelText ?? "1", 10);
 
       if (level <= 1) {
         return false;
       }
 
       const baseFlareDice = getRollFromNode(diceButton, type);
+      if (!baseFlareDice) {
+        return false;
+      }
+
       for (let i = 1; i < 1 + level; i++) {
         if (type === "damage") {
           const diceValue = baseFlareDice.scale(i);
 
-          const clonedButton = diceButton.cloneNode(true);
-          const damageText = clonedButton.querySelector(".ddbc-damage__value");
+          const clonedButton = diceButton.cloneNode(true) as HTMLElement;
+          const damageText = clonedButton.querySelector<HTMLElement>(
+            ".ddbc-damage__value",
+          );
+          if (!damageText) {
+            continue;
+          }
           damageText.innerText = diceValue.toString();
 
           const tsLink = talespireLink(
@@ -240,12 +317,12 @@ export const mods = [
             diceValue,
             clonedButton,
           );
-          diceButton.parentElement.appendChild(tsLink);
+          parent.appendChild(tsLink);
         }
 
         if (type === "hit") {
           const diceValue = baseFlareDice.repeat(i);
-          const clonedButton = diceButton.cloneNode(true);
+          const clonedButton = diceButton.cloneNode(true) as HTMLElement;
 
           if (i > 1) {
             const badge = document.createElement("span");
@@ -259,15 +336,13 @@ export const mods = [
             diceValue,
             clonedButton,
           );
-          diceButton.parentElement.appendChild(tsLink);
+          parent.appendChild(tsLink);
         }
       }
 
-      diceButton.style = "display: none;";
+      diceButton.style.display = "none";
       diceButton.classList.add("tales-beyond-extension");
-      diceButton.parentElement.parentElement.classList.add(
-        "tales-beyond-extension-versatile",
-      );
+      grandparent.classList.add("tales-beyond-extension-versatile");
 
       return true;
     },
@@ -278,14 +353,18 @@ export const mods = [
     targets: ["damage"],
     header: "Toll the Dead",
     description: "Adds an extra dice button for damaged targets.",
-    check: labelIsHeader,
     fn: ({ label, diceButton }) => {
-      diceButton.classList.add("tales-beyond-extension");
-      diceButton.parentElement.parentElement.classList.add(
-        "tales-beyond-extension-versatile",
-      );
-
+      const parent = diceButton.parentElement;
+      const grandparent = parent?.parentElement;
       const baseDice = getRollFromNode(diceButton, "damage");
+      const clonedButton = diceButton.cloneNode(true) as HTMLElement;
+      const damageText = clonedButton.querySelector<HTMLElement>(
+        ".ddbc-damage__value",
+      );
+      if (!(grandparent && baseDice && damageText)) {
+        return false;
+      }
+
       const diceValue = new Roll({
         groups: baseDice.groups.map((g) =>
           g.map(
@@ -299,16 +378,19 @@ export const mods = [
         type: "damage",
       });
 
-      const clonedButton = diceButton.cloneNode(true);
-      const damageText = clonedButton.querySelector(".ddbc-damage__value");
       damageText.innerText = diceValue.toString();
+
+      diceButton.classList.add("tales-beyond-extension");
+      grandparent.classList.add("tales-beyond-extension-versatile");
 
       const tsLink = talespireLink(
         `${label} (Damaged)`,
         diceValue,
         clonedButton,
       );
-      diceButton.parentElement.appendChild(tsLink);
+      parent.appendChild(tsLink);
+
+      return false;
     },
   },
   {
@@ -319,57 +401,70 @@ export const mods = [
     description:
       "Adds an extra dice button for making bonus attacks with light weapons " +
       "without positive modifier.",
-    check: always,
+    match: "always",
     fn: ({ label, diceButton, nameSibling }) => {
+      const parent = diceButton.parentElement;
+      const grandparent = parent?.parentElement;
       if (
         !(
-          nameSibling &&
+          grandparent &&
+          nameSibling?.parentElement &&
           getCharacterActionsInCombat().includes("Two-Weapon Fighting")
         )
       ) {
-        return;
+        return false;
       }
 
       const isLight = !!Array.prototype.find.call(
         nameSibling.parentElement.querySelectorAll(
           ".ddbc-note-components__component--plain",
         ),
-        (el) => el.textContent === "Light",
+        (el: HTMLElement) => el.textContent === "Light",
       );
 
       if (!isLight) {
-        return;
+        return false;
+      }
+
+      const clonedButton = diceButton.cloneNode(true) as HTMLElement;
+      const damageText = clonedButton.querySelector<HTMLElement>(
+        ".ddbc-damage__value",
+      );
+      const damageValue = damageText?.innerText.split("+")[0];
+      if (!damageValue) {
+        return false;
+      }
+      damageText.innerText = damageValue;
+
+      const diceValue = getRollFromNode(clonedButton, "damage");
+      if (!diceValue) {
+        return false;
       }
 
       diceButton.classList.add("tales-beyond-extension");
-      diceButton.parentElement.parentElement.classList.add(
-        "tales-beyond-extension-versatile",
-      );
+      grandparent.classList.add("tales-beyond-extension-versatile");
 
-      const clonedButton = diceButton.cloneNode(true);
-      const damageText = clonedButton.querySelector(".ddbc-damage__value");
-      damageText.innerText = damageText.innerText.split("+")[0];
-
-      const diceValue = getRollFromNode(clonedButton, "damage");
       const tsLink = talespireLink(
         `${label} (Off-hand)`,
         diceValue,
         clonedButton,
       );
-      diceButton.parentElement.appendChild(tsLink);
+      parent.appendChild(tsLink);
+
+      return false;
     },
   },
 ];
 
 export const customMod = (
-  { label, diceButton, nameSibling, type },
-  settings,
+  { label, diceButton, nameSibling, type }: ModContext,
+  settings: Settings,
 ) => {
   for (const mod of mods) {
-    if (!mod.targets.includes(type)) {
+    if (type && !mod.targets.includes(type)) {
       continue;
     }
-    if (mod.check({ mod, label, type }) && settings[mod.id]) {
+    if (matchesLabel(mod, label) && settings[mod.id]) {
       return mod.fn({ label, diceButton, nameSibling, type });
     }
   }

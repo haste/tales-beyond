@@ -14,6 +14,10 @@ export type SettingCharacterNamePrefix =
   | "last"
   | "none";
 
+export type SettingsKeyOfType<T> = {
+  [K in keyof Settings]-?: Settings[K] extends T ? K : never;
+}[keyof Settings];
+
 export interface Settings {
   version: number;
   contextMenuEnabled: boolean;

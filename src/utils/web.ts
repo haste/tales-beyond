@@ -275,12 +275,12 @@ export const getSiblingWithClass = (
   node: HTMLElement | null,
   name: string,
   attempts = 5,
-): Element | undefined => {
+): HTMLElement | undefined => {
   if (!node || attempts === 0) {
     return;
   }
 
-  const sibling = node.querySelector(`[class*="${name}"]`);
+  const sibling = node.querySelector<HTMLElement>(`[class*="${name}"]`);
   if (sibling) {
     return sibling;
   }

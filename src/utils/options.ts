@@ -1,14 +1,14 @@
 import { reactivateCharacter } from "~/storage/characters";
-import type { DeactivatedCharacter, Settings } from "~/storage/settings";
+import type {
+  DeactivatedCharacter,
+  Settings,
+  SettingsKeyOfType,
+} from "~/storage/settings";
 import { saveOption } from "~/storage/settings";
 
 export const BOOLEAN = Symbol("boolean");
 export const DEACTIVATE_CHARACTER = Symbol("deactivatedCharacter");
 export const DROPDOWN = Symbol("dropdown");
-
-type SettingsKeyOfType<T> = {
-  [K in keyof Settings]-?: Settings[K] extends T ? K : never;
-}[keyof Settings];
 
 interface OptionEntryDropdownOption {
   label: string;
