@@ -48,9 +48,9 @@ export const parseRoll = (str: string, type?: RollType): Roll | null => {
 
 export type RollType = "hit" | "damage";
 
-interface RollOpts {
+type RollOpts = {
   type?: RollType;
-}
+};
 
 export class Roll {
   readonly groups: readonly (readonly Dice[])[];

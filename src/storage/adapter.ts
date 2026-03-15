@@ -1,8 +1,8 @@
-export interface StorageAdapter {
+export type StorageAdapter = {
   load(): Promise<Record<string, unknown>>;
   save(state: object): Promise<void>;
   listen?(callback: (key: string, value: unknown) => void): void;
-}
+};
 
 let adapter: StorageAdapter | undefined;
 

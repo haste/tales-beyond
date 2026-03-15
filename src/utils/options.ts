@@ -10,30 +10,30 @@ export const BOOLEAN = Symbol("boolean");
 export const DEACTIVATE_CHARACTER = Symbol("deactivatedCharacter");
 export const DROPDOWN = Symbol("dropdown");
 
-interface OptionEntryDropdownOption {
+type OptionEntryDropdownOption = {
   label: string;
   value: string;
-}
+};
 
-export interface OptionEntryBoolean {
+export type OptionEntryBoolean = {
   type: typeof BOOLEAN;
   id: SettingsKeyOfType<boolean>;
   header: string;
   description: string;
-}
+};
 
-export interface OptionEntryDropdown {
+export type OptionEntryDropdown = {
   type: typeof DROPDOWN;
   id: SettingsKeyOfType<string>;
   header: string;
   options: OptionEntryDropdownOption[];
-}
+};
 
-export interface OptionEntryDeactivatedCharacter {
+export type OptionEntryDeactivatedCharacter = {
   type: typeof DEACTIVATE_CHARACTER;
   id: DeactivatedCharacter["id"];
   header: string;
-}
+};
 
 export type OptionEntry =
   | OptionEntryBoolean

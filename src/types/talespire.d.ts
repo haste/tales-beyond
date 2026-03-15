@@ -1,7 +1,7 @@
-interface RollDescriptor {
+type RollDescriptor = {
   name: string;
   roll: string;
-}
+};
 
 declare const TS: {
   localStorage: {

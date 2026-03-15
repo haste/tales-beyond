@@ -1,10 +1,10 @@
 import { adapter } from "~/storage/adapter";
 import { migrateUserOptions } from "~/storage/migrate";
 
-export interface DeactivatedCharacter {
+export type DeactivatedCharacter = {
   id: string;
   name: string;
-}
+};
 
 export type SettingModifierAction = "adv" | "adv-dis" | "dis" | "crit" | "none";
 export type SettingCharacterNamePrefix =
@@ -18,7 +18,7 @@ export type SettingsKeyOfType<T> = {
   [K in keyof Settings]-?: Settings[K] extends T ? K : never;
 }[keyof Settings];
 
-export interface Settings {
+export type Settings = {
   version: number;
   contextMenuEnabled: boolean;
   deactivatedCharacters: DeactivatedCharacter[];
@@ -35,7 +35,7 @@ export interface Settings {
   modTwoWeaponLightOffhand: boolean;
   prefixWithCharacterName: SettingCharacterNamePrefix;
   symbioteURL?: string;
-}
+};
 
 const VERSION = 5;
 

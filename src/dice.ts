@@ -1,13 +1,13 @@
 export const normalizeMinus = (str: string): string =>
   str.replace(/[−–]/g, "-");
 
-export interface DiceMatch {
+export type DiceMatch = {
   0: string;
   index: number;
   groups: DiceMatchGroups;
-}
+};
 
-export interface DiceMatchGroups {
+export type DiceMatchGroups = {
   dice?: string;
   modifier?: string;
   modifierType?: string;
@@ -15,7 +15,7 @@ export interface DiceMatchGroups {
   sign?: string;
   soloModifier?: string;
   soloModifierType?: string;
-}
+};
 
 export const diceFromMatch = ({
   dice,
@@ -42,10 +42,10 @@ export const diceFromMatch = ({
   return new Dice(count, sides, { modifier: mod });
 };
 
-interface DiceOptions {
+type DiceOptions = {
   modifier?: number;
   damageType?: string | null;
-}
+};
 
 export class Dice {
   readonly count: number;
