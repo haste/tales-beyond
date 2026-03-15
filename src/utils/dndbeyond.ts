@@ -1,4 +1,5 @@
 import { abilityNames } from "~/consts";
+import type { DiceMatch } from "~/dice";
 import type { Roll, RollType } from "~/roll";
 import { getDiceRegex, parseRoll } from "~/roll";
 import { talespireLink } from "~/utils/talespire";
@@ -24,7 +25,9 @@ export const getRollFromNode = (node: HTMLElement, type: RollType) => {
     }
 
     const matches = [];
-    for (const match of node.textContent.matchAll(getDiceRegex())) {
+    for (const match of node.textContent.matchAll(
+      getDiceRegex(),
+    ) as IterableIterator<DiceMatch>) {
       matches.push(rollFromMatchWithAbilities(match.groups).toString());
     }
 
@@ -122,14 +125,14 @@ export const processBlockTidbits = (
 
     if (tidbit === "Saving Throws") {
       getTextNodes(dataNode).map((textNode) =>
-        embedInText(textNode, (match: RegExpMatchArray, _dice: Roll) => {
+        embedInText(textNode, (match: DiceMatch, _dice: Roll) => {
           const ability = getAbilityName(match.groups?.soloModifierType);
           return `${label}: ${ability} (Saving)`;
         }),
       );
     } else if (tidbit === "Skills") {
       getTextNodes(dataNode).forEach((textNode) => {
-        embedInText(textNode, (match: RegExpMatchArray, _dice: Roll) => {
+        embedInText(textNode, (match: DiceMatch, _dice: Roll) => {
           const skill = textNode.previousSibling?.textContent;
           if (skill) {
             return `${label}: ${skill}`;

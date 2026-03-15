@@ -1,6 +1,12 @@
 export const normalizeMinus = (str: string): string =>
   str.replace(/[−–]/g, "-");
 
+export interface DiceMatch {
+  0: string;
+  index: number;
+  groups: DiceMatchGroups;
+}
+
 export interface DiceMatchGroups {
   dice?: string;
   modifier?: string;

@@ -1,4 +1,9 @@
-import { diceFromMatch, normalizeMinus } from "~/dice";
+import {
+  type DiceMatch,
+  type DiceMatchGroups,
+  diceFromMatch,
+  normalizeMinus,
+} from "~/dice";
 import { getDiceRegex, Roll } from "~/roll";
 import { getCharacterAbilities, getCharacterSkills } from "~/utils/dndbeyond";
 import { talespireLink } from "~/utils/talespire";
@@ -18,15 +23,18 @@ const validSoloModifierType = [
   "Wisdom",
 ];
 
-export const rollFromMatchWithAbilities = (groups) => {
-  if (groups.modifierType) {
-    const resolvedModifier = getCharacterAbilities()[groups.modifierType];
+export const rollFromMatchWithAbilities = (groups: DiceMatchGroups) => {
+  const resolvedModifier = groups.modifierType
+    ? getCharacterAbilities()[groups.modifierType]
+    : undefined;
+
+  if (resolvedModifier) {
     const mod = Number.parseInt(resolvedModifier, 10);
     return new Roll({
       dice: diceFromMatch({
         ...groups,
         modifierType: undefined,
-        modifier: Math.abs(mod),
+        modifier: `${Math.abs(mod)}`,
         sign: mod < 0 ? "-" : "+",
       }),
     });
@@ -35,7 +43,10 @@ export const rollFromMatchWithAbilities = (groups) => {
   return new Roll({ dice: diceFromMatch(groups) });
 };
 
-export const isValidDice = (match, characterSkills = []) => {
+export const isValidDice = (
+  match: DiceMatch,
+  characterSkills: string[] = [],
+) => {
   const soloModifierType = match.groups.soloModifierType;
   if (
     soloModifierType &&
@@ -50,7 +61,7 @@ export const isValidDice = (match, characterSkills = []) => {
   return true;
 };
 
-export const getTextNodes = (root) => {
+export const getTextNodes = (root?: Element | null): Text[] => {
   if (!root) {
     return [];
   }
@@ -58,16 +69,20 @@ export const getTextNodes = (root) => {
   const treeWalker = document.createTreeWalker(
     root,
     NodeFilter.SHOW_TEXT,
-    (node) =>
+    (node: Node) =>
+      node.parentElement &&
       node.parentElement.tagName !== "STYLE" &&
-      node.textContent.match(diceRegex) &&
-      !isParentsProcessed(node)
+      node.textContent?.match(diceRegex) &&
+      !isParentsProcessed(node.parentElement)
         ? NodeFilter.FILTER_ACCEPT
         : NodeFilter.FILTER_SKIP,
   );
-  const textNodes = [];
+  const textNodes: Text[] = [];
   while (treeWalker.nextNode()) {
-    textNodes.push(treeWalker.currentNode);
+    const { currentNode } = treeWalker;
+    if (currentNode instanceof Text) {
+      textNodes.push(currentNode);
+    }
   }
 
   return textNodes;
@@ -77,16 +92,20 @@ export const getTextNodes = (root) => {
 // so our text search fails since we are bound by #text nodes. If we are at
 // the end of a #text node and the next element has a .ddbc-snippet__tag
 // class, then we absorb that into our dice button.
-const processNextElement = (node, match) => {
+const processNextElement = (
+  node: Text,
+  match: DiceMatch,
+): [number, DocumentFragment | null] => {
   const nextOffset = match.index + match[0].length;
+
   if (match.groups.sign) {
-    return [nextOffset, match, null];
+    return [nextOffset, null];
   }
 
   const origDice = rollFromMatchWithAbilities(match.groups);
   const nextSibling = node.nextElementSibling;
-
-  const parentTooltip = node.parentElement.closest(".ddbc-tooltip");
+  const snippetTag = nextSibling?.querySelector(".ddbc-snippet__tag");
+  const parentTooltip = node.parentElement?.closest(".ddbc-tooltip");
   const parentTooltipSibling = parentTooltip?.nextElementSibling;
 
   if (
@@ -94,11 +113,11 @@ const processNextElement = (node, match) => {
     node.textContent
       .slice(nextOffset, nextOffset + 3)
       .match(/( [-+] | [-+]\d+)/) &&
-    nextSibling?.querySelector(".ddbc-snippet__tag")
+    nextSibling &&
+    snippetTag
   ) {
     match.groups.sign = node.textContent.slice(nextOffset + 1, nextOffset + 2);
-    match.groups.modifier =
-      nextSibling.querySelector(".ddbc-snippet__tag").textContent;
+    match.groups.modifier = snippetTag.textContent;
 
     const linkContent = new DocumentFragment();
     linkContent.appendChild(
@@ -106,16 +125,18 @@ const processNextElement = (node, match) => {
     );
     linkContent.appendChild(nextSibling);
 
-    return [nextOffset + 3, match, linkContent];
+    return [nextOffset + 3, linkContent];
   }
 
+  const modNode = nextSibling ?? parentTooltipSibling;
   if (
     node.textContent.slice(nextOffset).trim().length === 0 &&
-    (nextSibling?.textContent.match(/[-+]\d+$/) ||
+    modNode &&
+    modNode?.textContent &&
+    (nextSibling?.textContent?.match(/[-+]\d+$/) ||
       (parentTooltipSibling?.classList.contains("ddbc-tooltip") &&
-        parentTooltipSibling?.textContent.match(/[-+]\d+$/)))
+        parentTooltipSibling?.textContent?.match(/[-+]\d+$/)))
   ) {
-    const modNode = nextSibling || parentTooltipSibling;
     match.groups.sign = modNode.textContent.slice(0, 1);
     match.groups.modifier = modNode.textContent.slice(1);
 
@@ -123,26 +144,28 @@ const processNextElement = (node, match) => {
     linkContent.appendChild(document.createTextNode(`${origDice}\u00A0`));
     linkContent.appendChild(modNode);
 
-    return [node.textContent.length, match, linkContent];
+    return [node.textContent.length, linkContent];
   }
-  return [nextOffset, match, null];
+  return [nextOffset, null];
 };
 
 // This is similar to the above. For example Healing Hands (2024) uses the
 // characters profiency as dice number.
-const processPreviousElement = (node, match, characterSkills) => {
+const processPreviousElement = (
+  node: Text,
+  match: DiceMatch,
+  characterSkills: string[],
+): [Element | null, string | null] => {
   const previousSibling = node.previousElementSibling;
+  const snippetTag = previousSibling?.querySelector(".ddbc-snippet__tag");
 
   if (
     !match.groups.numDice &&
     previousSibling?.classList.contains("ddbc-tooltip") &&
-    previousSibling
-      ?.querySelector(".ddbc-snippet__tag")
-      ?.textContent.match(/^\d+$/)
+    snippetTag?.textContent?.match(/^\d+$/)
   ) {
-    match.groups.numDice =
-      previousSibling.querySelector(".ddbc-snippet__tag").textContent;
-    return [previousSibling, match, null];
+    match.groups.numDice = snippetTag.textContent;
+    return [previousSibling, null];
   }
 
   if (
@@ -151,56 +174,57 @@ const processPreviousElement = (node, match, characterSkills) => {
     characterSkills.includes(previousSibling.textContent)
   ) {
     match.groups.soloModifierType = previousSibling.textContent;
-    return [null, match, previousSibling.textContent];
+    return [null, previousSibling.textContent];
   }
-  return [null, match, null];
+  return [null, null];
 };
 
-export const embedInText = (node, labelOrCallback, matchDicelessModifier) => {
+export const embedInText = (
+  node: Text,
+  labelOrCallback:
+    | string
+    | ((match: DiceMatch, dice: Roll) => string | undefined),
+  matchDicelessModifier?: boolean,
+) => {
   let offset = 0;
-  let fragment;
-  let prependNode;
-  let appendLabel;
+  let fragment: DocumentFragment | undefined;
+  let prependNode: Element | null = null;
+  let appendLabel: string | null = null;
 
   const characterSkills = getCharacterSkills();
   const diceRegex = getDiceRegex(matchDicelessModifier);
   const textContent = node.textContent;
 
-  for (let match of textContent.matchAll(diceRegex)) {
+  for (const match of textContent.matchAll(
+    diceRegex,
+  ) as IterableIterator<DiceMatch>) {
     if (!isValidDice(match, characterSkills)) {
       continue;
     }
 
-    if (offset === 0) {
+    if (!fragment) {
       fragment = new DocumentFragment();
 
-      [prependNode, match, appendLabel] = processPreviousElement(
+      [prependNode, appendLabel] = processPreviousElement(
         node,
         match,
         characterSkills,
       );
+    }
 
-      if (match.index !== 0) {
-        fragment.appendChild(
-          document.createTextNode(textContent.slice(offset, match.index)),
-        );
-      }
-    } else {
+    if (match.index > offset) {
       fragment.appendChild(
         document.createTextNode(textContent.slice(offset, match.index)),
       );
     }
 
     // Check if we should merge the next element into this node.
-    let nextOffset;
-    let linkContent;
-    [nextOffset, match, linkContent] = processNextElement(node, match);
-
+    const [nextOffset, linkContent] = processNextElement(node, match);
     const dice = rollFromMatchWithAbilities(match.groups);
-    let label = labelOrCallback;
-    if (typeof label === "function") {
-      label = label(match, dice);
-    }
+    let label =
+      typeof labelOrCallback === "function"
+        ? labelOrCallback(match, dice)
+        : labelOrCallback;
 
     // If we have no label, then see if we can fetch one from the heading. This
     // is mainly used for features.
@@ -247,7 +271,11 @@ export const embedInText = (node, labelOrCallback, matchDicelessModifier) => {
   }
 };
 
-export const getSiblingWithClass = (node, name, attempts = 5) => {
+export const getSiblingWithClass = (
+  node: HTMLElement | null,
+  name: string,
+  attempts = 5,
+): Element | undefined => {
   if (!node || attempts === 0) {
     return;
   }
@@ -263,7 +291,11 @@ export const getSiblingWithClass = (node, name, attempts = 5) => {
   return;
 };
 
-export const getParentWithClass = (node, name, attempts = 5) => {
+export const getParentWithClass = (
+  node: HTMLElement | null,
+  name: string,
+  attempts = 5,
+): Element | undefined => {
   if (!node || attempts === 0) {
     return;
   }
@@ -278,7 +310,10 @@ export const getParentWithClass = (node, name, attempts = 5) => {
   return;
 };
 
-export const isParentsProcessed = (node, attempts = 4) => {
+export const isParentsProcessed = (
+  node: HTMLElement | null,
+  attempts = 4,
+): boolean => {
   if (!node || attempts === 0) {
     return false;
   }

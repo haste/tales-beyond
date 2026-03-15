@@ -1,6 +1,6 @@
 import {
   type Dice,
-  type DiceMatchGroups,
+  type DiceMatch,
   diceFromMatch,
   normalizeMinus,
 } from "~/dice";
@@ -24,8 +24,10 @@ const parseGroup = (str: string): Dice[] => {
   const diceRegex = getDiceRegex(false);
   const dice: Dice[] = [];
 
-  for (const match of normalized.matchAll(diceRegex)) {
-    dice.push(diceFromMatch(match.groups as DiceMatchGroups));
+  for (const match of normalized.matchAll(
+    diceRegex,
+  ) as IterableIterator<DiceMatch>) {
+    dice.push(diceFromMatch(match.groups));
   }
 
   return dice;
