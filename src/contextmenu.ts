@@ -16,26 +16,33 @@ const removeAllMenus = () => {
   window.removeEventListener("scroll", removeAllMenus);
 };
 
-const detectLightDismiss = (event) => {
+const detectLightDismiss = (event: MouseEvent) => {
   const activeMenu = Array.from(
     document.querySelectorAll(".tales-beyond-extension-contextmenu"),
   );
 
-  const clickedMenu = activeMenu.some((elem) => elem.contains(event.target));
+  const clickedMenu = activeMenu.some(
+    (elem) => event.target instanceof Element && elem.contains(event.target),
+  );
   if (!clickedMenu) {
     removeAllMenus();
   }
 };
 
-const setupListeners = (button, contextmenu) => {
+const setupListeners = (button: HTMLElement, contextmenu: HTMLDivElement) => {
   const label = button.dataset.tsLabel;
-  const roll = parseRoll(button.dataset.tsDice);
+  const dice = button.dataset.tsDice;
+  if (!dice) {
+    return;
+  }
+
+  const roll = parseRoll(dice);
   if (!roll) {
     return;
   }
   const type = button.dataset.tsType;
 
-  const action = (labelSuffix) => async () => {
+  const action = (labelSuffix?: string) => async () => {
     const name = labelSuffix
       ? label
         ? `${label} (${labelSuffix})`
@@ -53,7 +60,12 @@ const setupListeners = (button, contextmenu) => {
     removeAllMenus();
   };
 
-  const [adv, flat, dis, crit] = contextmenu.querySelectorAll(".item");
+  const [adv, flat, dis, crit] =
+    contextmenu.querySelectorAll<HTMLDivElement>(".item");
+  if (!(adv && flat && dis && crit)) {
+    return;
+  }
+
   adv.addEventListener("click", action("ADV"));
   flat.addEventListener("click", action());
   dis.addEventListener("click", action("DIS"));
@@ -76,8 +88,14 @@ const setupListeners = (button, contextmenu) => {
   });
 };
 
-const contextMenu = (event) => {
-  const diceButton = event.target.closest(".integrated-dice__container");
+const contextMenu = (event: MouseEvent) => {
+  if (!(event.target instanceof Element)) {
+    return;
+  }
+
+  const diceButton = event.target.closest<HTMLElement>(
+    ".integrated-dice__container",
+  );
   if (!diceButton) {
     return;
   }
@@ -104,10 +122,13 @@ const contextMenu = (event) => {
   <div class="item critical">Critical Hit</div>
 </div>
   `;
-  const img = contextmenu.querySelector("img");
-  img.src = svgLogo;
+  const img = contextmenu.querySelector<HTMLImageElement>("img");
+  const arrowNode = contextmenu.querySelector<HTMLDivElement>(".arrow");
+  if (!(img && arrowNode)) {
+    return;
+  }
 
-  const arrowNode = contextmenu.querySelector(".arrow");
+  img.src = svgLogo;
 
   const arrowLen = arrowNode.offsetWidth;
   const floatingOffset = Math.sqrt(2 * arrowLen ** 2) / 2;
@@ -124,7 +145,7 @@ const contextMenu = (event) => {
       top: `${y}px`,
     });
 
-    const side = placement.split("-")[0];
+    const side = placement.split("-")[0] ?? "right";
 
     const staticSide = {
       top: "bottom",
@@ -133,11 +154,11 @@ const contextMenu = (event) => {
       left: "right",
     }[side];
 
-    if (middlewareData.arrow) {
+    if (middlewareData.arrow && staticSide) {
       const { x, y } = middlewareData.arrow;
       Object.assign(arrowNode.style, {
-        left: x == null ? "" : `${x}px`,
-        top: y == null ? "" : `${y}px`,
+        left: x === null ? "" : `${x}px`,
+        top: y === null ? "" : `${y}px`,
         right: "",
         bottom: "",
         [staticSide]: `${-arrowLen / 2}px`,
