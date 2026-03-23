@@ -27,8 +27,19 @@ export const injectOptionButton = (isDeactivated = false) => {
   </div>
 `;
 
-  const menuNode = menuContainer.querySelector(".menu");
-  const toggleItem = menuNode.querySelector(".item.toggle-character");
+  const menuNode = menuContainer.querySelector<HTMLDivElement>(".menu");
+  if (!menuNode) {
+    return;
+  }
+
+  const toggleItem = menuNode.querySelector<HTMLDivElement>(
+    ".item.toggle-character",
+  );
+  const optionsItem = menuNode.querySelector<HTMLDivElement>(".item.options");
+  if (!(toggleItem && optionsItem)) {
+    return;
+  }
+
   toggleItem.textContent = isDeactivated
     ? "Reactivate for this character"
     : "Deactivate for this character";
@@ -44,27 +55,34 @@ export const injectOptionButton = (isDeactivated = false) => {
   toggleItem.addEventListener("click", async () => {
     menuNode.classList.remove("open");
 
+    const characterId = getCharacterId();
+    if (!characterId) {
+      return;
+    }
+
     if (isDeactivated) {
-      await reactivateCharacter(getCharacterId());
+      await reactivateCharacter(characterId);
     } else {
-      await deactivateCharacter(getCharacterId(), getCharacterName());
+      const characterName = getCharacterName();
+      if (!characterName) {
+        return;
+      }
+      await deactivateCharacter(characterId, characterName);
     }
 
     window.location.reload();
   });
 
-  menuNode
-    .querySelector(".item.options")
-    .addEventListener("click", async () => {
-      menuNode.classList.remove("open");
+  optionsItem.addEventListener("click", async () => {
+    menuNode.classList.remove("open");
 
-      const settings = await getOptions();
-      if (settings?.symbioteURL) {
-        window.location.href = `${settings.symbioteURL}/options.html`;
-      } else {
-        chrome.runtime.sendMessage({ action: "openOptionsPage" });
-      }
-    });
+    const settings = await getOptions();
+    if (settings?.symbioteURL) {
+      window.location.href = `${settings.symbioteURL}/options.html`;
+    } else {
+      chrome.runtime.sendMessage({ action: "openOptionsPage" });
+    }
+  });
 
   document.body.appendChild(menuContainer);
 
@@ -92,7 +110,11 @@ export const injectOptionButton = (isDeactivated = false) => {
     headerGroup.classList.add("deactivated");
   }
 
-  const button = headerGroup.querySelector("button");
+  const button = headerGroup.querySelector<HTMLButtonElement>("button");
+  if (!button) {
+    return;
+  }
+
   button.addEventListener("click", (event) => {
     event.stopPropagation();
     const isOpen = menuNode.classList.toggle("open");
