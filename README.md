@@ -9,13 +9,17 @@
 
 Replaces D&D Beyond's digital dices with links to TaleSpire.
 
-<a href="https://addons.mozilla.org/en-US/firefox/addon/tales-beyond/">
-    <img src="https://cdnjs.cloudflare.com/ajax/libs/browser-logos/74.1.0/firefox/firefox.svg" width="64" height="64" alt="Get Tales Beyond for Firefox">
-</a>
-
-<a href="https://chromewebstore.google.com/detail/tales-beyond/mobmjccpnafdnlaljkikhkkcccfeoefa">
-    <img src="https://cdnjs.cloudflare.com/ajax/libs/browser-logos/74.1.0/chrome/chrome.svg" width="64" height="64" alt="Get Tales Beyond for Chrome">
-</a>
+<p>
+    <a href="https://addons.mozilla.org/en-US/firefox/addon/tales-beyond/">
+        <img src="https://cdnjs.cloudflare.com/ajax/libs/browser-logos/74.1.0/firefox/firefox.svg" width="64" height="64" alt="Get Tales Beyond for Firefox">
+    </a>
+    <a href="https://chromewebstore.google.com/detail/tales-beyond/mobmjccpnafdnlaljkikhkkcccfeoefa">
+        <img src="https://cdnjs.cloudflare.com/ajax/libs/browser-logos/74.1.0/chrome/chrome.svg" width="64" height="64" alt="Get Tales Beyond for Chrome">
+    </a>
+    <a href="https://mod.io/g/talespire/m/tales-beyond">
+        <img src=".github/modio.svg" width="64" height="64" alt="Get Tales Beyond for Symbiote">
+    </a>
+</p>
 
 ## Features
 
