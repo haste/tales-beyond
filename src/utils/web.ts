@@ -183,6 +183,7 @@ export const embedInText = (
   node: Text,
   labelOrCallback:
     | string
+    | undefined
     | ((match: DiceMatch, dice: Roll) => string | undefined),
   matchDicelessModifier?: boolean,
 ) => {
