@@ -3,6 +3,14 @@ type RollDescriptor = {
   roll: string;
 };
 
+type SymbioteStateChangeEvent = {
+  kind:
+    | "hasInitialized"
+    | "willEnterBackground"
+    | "hasEnteredForeground"
+    | "willShutdown";
+};
+
 declare const TS: {
   localStorage: {
     global: {

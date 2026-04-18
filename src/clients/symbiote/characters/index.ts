@@ -1,13 +1,10 @@
 import { characterAppWatcher, sidebarPortalWatcher } from "~/characters";
 import { getOptions } from "~/storage/settings";
 
-document.addEventListener(
-  "readystatechange",
-  (event) => {
-    if (
-      event.target.readyState === "complete" &&
-      /^\/characters\/\d+\/?$/.test(window.location.pathname)
-    ) {
+window.addEventListener(
+  "load",
+  () => {
+    if (/^\/characters\/\d+\/?$/.test(window.location.pathname)) {
       getOptions();
 
       characterAppWatcher();
@@ -19,5 +16,7 @@ document.addEventListener(
 
 // we don't need to rely on any events here.
 if (typeof window.handleSymbioteStateChange === "undefined") {
-  window.handleSymbioteStateChange = Function.prototype;
+  window.handleSymbioteStateChange = () => {
+    // noop
+  };
 }
