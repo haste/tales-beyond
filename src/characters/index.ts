@@ -2,8 +2,9 @@ import { injectOptionButton } from "~/characters/iconmenu";
 import { injectContextMenu } from "~/contextmenu";
 import svgLogo from "~/icons/icon.svg";
 import { customMod } from "~/mods";
+import type { RollType } from "~/roll";
 import { isCharacterDeactivated } from "~/storage/characters";
-import { getOptions } from "~/storage/settings";
+import { getOptions, type Settings } from "~/storage/settings";
 import { injectThemeStyle } from "~/themes";
 import {
   getCharacterAbilities,
@@ -24,25 +25,37 @@ import {
   isParentsProcessed,
 } from "~/utils/web";
 
-const handleShortRestDice = (label, diceButton) => {
-  diceButton.style = "display: none;";
-  const ourButton = diceButton.parentElement.querySelector(
-    ".tales-beyond-extension-hit-dice",
-  );
-  const tsLink = talespireLink(label, getRollFromNode(diceButton), diceButton);
+const handleShortRestDice = (
+  label: string | undefined,
+  diceButton: HTMLElement,
+) => {
+  diceButton.style.display = "none";
+  const parent = diceButton.parentElement;
+  if (!parent) {
+    return;
+  }
+
+  const roll = getRollFromNode(diceButton);
+  if (!roll) {
+    return;
+  }
+
+  const ourButton = parent.querySelector(".tales-beyond-extension-hit-dice");
+  const tsLink = talespireLink(label, roll, diceButton);
   tsLink.classList.add("tales-beyond-extension-hit-dice");
 
   if (ourButton) {
     ourButton.replaceWith(tsLink);
   } else {
-    diceButton.parentElement.appendChild(tsLink);
+    parent.appendChild(tsLink);
   }
 };
 
 const hijackSidebar = () => {
   const sidebarPaneSelector = ".ct-sidebar__portal";
-  const callback = (_mutationList, observer) => {
-    const paneContent = document.querySelector(sidebarPaneSelector);
+  const callback: MutationCallback = (_mutationList, observer) => {
+    const paneContent =
+      document.querySelector<HTMLElement>(sidebarPaneSelector);
     const headerNode = document.querySelector(".ct-sidebar__heading");
     if (!(paneContent && headerNode)) {
       return;
@@ -50,7 +63,7 @@ const hijackSidebar = () => {
 
     observer.disconnect();
 
-    const label = headerNode.textContent.trim();
+    const label = headerNode.textContent?.trim();
     processBlockAttributes(paneContent, label);
     processBlockAbilities(paneContent, label);
     processBlockTidbits(paneContent, label);
@@ -58,6 +71,10 @@ const hijackSidebar = () => {
 
     for (const node of getTextNodes(paneContent)) {
       const parentElement = node.parentElement;
+      if (!parentElement) {
+        continue;
+      }
+
       const isShortRestContainer =
         parentElement.parentElement?.classList.contains(
           "ct-reset-pane__hitdie-manager-dice",
@@ -76,7 +93,7 @@ const hijackSidebar = () => {
       embedInText(node, label);
     }
 
-    observer.observe(document.querySelector(sidebarPaneSelector), {
+    observer.observe(paneContent, {
       childList: true,
       subtree: true,
       characterData: true,
@@ -84,34 +101,40 @@ const hijackSidebar = () => {
   };
 
   const observer = namedObserver("sidebar", callback);
-  observer.observe(document.querySelector(sidebarPaneSelector), {
+  const paneContent = document.querySelector(sidebarPaneSelector);
+  if (!paneContent) {
+    return;
+  }
+  observer.observe(paneContent, {
     childList: true,
     subtree: true,
     characterData: true,
   });
 };
 
-const getDiceType = (diceButton) => {
+const getDiceType = (diceButton: HTMLElement): RollType | undefined => {
   if (getParentWithClass(diceButton, "__damage", 2)) {
     return "damage";
   }
+
   if (getParentWithClass(diceButton, "__tohit", 2)) {
     return "hit";
   }
 };
 
-const processIntegratedDice = (addedNode, settings) => {
+const processIntegratedDice = (addedNode: Node, settings: Settings) => {
   // Only process ELEMENT_NODE's
-  if (addedNode.nodeType !== 1) {
+  if (!(addedNode instanceof Element)) {
     return;
   }
 
-  for (const diceButton of addedNode.querySelectorAll(
+  for (const diceButton of addedNode.querySelectorAll<HTMLElement>(
     ".integrated-dice__container:not(.tales-beyond-extension)",
   )) {
-    const previousSibling = diceButton.previousSibling;
-    const parentPreviousSibling = diceButton.parentElement?.previousSibling;
-    const parentNextSibling = diceButton.parentElement?.nextSibling;
+    const previousSibling = diceButton.previousElementSibling;
+    const parentPreviousSibling =
+      diceButton.parentElement?.previousElementSibling;
+    const parentNextSibling = diceButton.parentElement?.nextElementSibling;
     const nameSibling = getSiblingWithClass(diceButton, "__name");
     const diceType = getDiceType(diceButton);
     let diceValue = getRollFromNode(diceButton, diceType);
@@ -119,13 +142,13 @@ const processIntegratedDice = (addedNode, settings) => {
     // Fetch from secondary when "Scores Top" is set for Ability Score/Modifier
     // Display
     if (
-      !!diceButton.parentElement.className.includes("__primary") &&
+      diceButton.parentElement?.className.includes("__primary") &&
       !diceValue
     ) {
-      diceValue = getRollFromNode(
-        getSiblingWithClass(diceButton, "__secondary", 3),
-        diceType,
-      );
+      const secondary = getSiblingWithClass(diceButton, "__secondary", 3);
+      if (secondary) {
+        diceValue = getRollFromNode(secondary, diceType);
+      }
     }
 
     // Ignore cases like Booming Blade where the dice has no default value
@@ -135,40 +158,45 @@ const processIntegratedDice = (addedNode, settings) => {
 
     const attributeHeading = getSiblingWithClass(diceButton, "__heading", 3);
     const skillHeading = getSiblingWithClass(diceButton, "--skill", 3);
-    let label;
+    const heading = attributeHeading || skillHeading;
+    let label: string | undefined;
     if (
-      // Attributes
-      attributeHeading ||
-      // Skill list
-      skillHeading
+      // Attributes or Skill list
+      heading
     ) {
-      const heading = attributeHeading || skillHeading;
-      label = (heading.querySelector('[class*="__label"]') || heading)
-        .textContent;
+      label =
+        (heading.querySelector<HTMLElement>('[class*="__label"]') || heading)
+          .textContent ?? undefined;
     } else if (
       // Saving throws
       parentPreviousSibling?.className.includes("ability-name")
     ) {
-      const abbr = parentPreviousSibling.querySelector("abbr");
-      label = `${abbr.title} (Saving)`;
+      const abbr = parentPreviousSibling.querySelector<HTMLElement>("abbr");
+      if (abbr) {
+        label = `${abbr.title} (Saving)`;
+      }
     } else if (
       // Initiative (Mobile)
-      parentNextSibling?.className?.includes("_labelMobile")
+      parentNextSibling?.className.includes("_labelMobile")
     ) {
-      label = parentNextSibling.textContent;
+      label = parentNextSibling.textContent ?? undefined;
     } else if (
       // Initiative
       previousSibling?.tagName === "H2"
     ) {
-      label = previousSibling.textContent;
+      label = previousSibling.textContent ?? undefined;
     } else if (
       // Actions and Spells
       nameSibling
     ) {
-      label = (nameSibling.querySelector('[class*="__label"]') || nameSibling)
-        .textContent;
+      label =
+        (
+          nameSibling.querySelector<HTMLElement>('[class*="__label"]') ||
+          nameSibling
+        ).textContent ?? undefined;
       if (
         diceType &&
+        label &&
         customMod({ label, diceButton, nameSibling, type: diceType }, settings)
       ) {
         continue;
@@ -185,8 +213,8 @@ export const characterAppWatcher = () => {
     subtree: true,
   };
 
-  let wasDiceDisabled;
-  const callback = async (mutationList, observer) => {
+  let wasDiceDisabled = false;
+  const callback: MutationCallback = async (mutationList, observer) => {
     const characterId = getCharacterId();
     if (!characterId) {
       return;
@@ -226,10 +254,10 @@ export const characterAppWatcher = () => {
       // containers in the character app.
       if (wasDiceDisabled) {
         wasDiceDisabled = false;
-        processIntegratedDice(
-          document.querySelector('[name="character-app"]'),
-          settings,
-        );
+        const appNode = document.querySelector('[name="character-app"]');
+        if (appNode) {
+          processIntegratedDice(appNode, settings);
+        }
       } else {
         for (const addedNode of mutation.addedNodes) {
           processIntegratedDice(addedNode, settings);
@@ -237,29 +265,38 @@ export const characterAppWatcher = () => {
       }
 
       for (const addedNode of mutation.addedNodes) {
+        if (!(addedNode instanceof Element)) {
+          continue;
+        }
+
         for (const node of getTextNodes(addedNode)) {
           const parentNode = node.parentElement;
           if (isParentsProcessed(parentNode)) {
             continue;
           }
 
-          embedInText(node, null, false);
+          embedInText(node, undefined, false);
         }
       }
     }
 
-    observer.observe(document.querySelector('[name="character-app"]'), options);
+    const appNode = document.querySelector('[name="character-app"]');
+    if (appNode) {
+      observer.observe(appNode, options);
+    }
   };
 
   const characterObserver = namedObserver("character", callback);
-  characterObserver.observe(
-    document.querySelector('[name="character-app"]'),
-    options,
-  );
+  const appNode = document.querySelector('[name="character-app"]');
+  if (!appNode) {
+    return;
+  }
+
+  characterObserver.observe(appNode, options);
 };
 
 export const sidebarPortalWatcher = () => {
-  const callback = async (mutationList, _observer) => {
+  const callback: MutationCallback = async (mutationList, _observer) => {
     const characterId = getCharacterId();
     if (characterId && (await isCharacterDeactivated(characterId))) {
       return;
@@ -278,7 +315,7 @@ export const sidebarPortalWatcher = () => {
 
       for (const addedNode of mutation.addedNodes) {
         if (
-          addedNode.nodeType === 1 &&
+          addedNode instanceof Element &&
           addedNode.classList.contains("ct-sidebar__portal")
         ) {
           hijackSidebar();
@@ -288,7 +325,7 @@ export const sidebarPortalWatcher = () => {
   };
 
   const sidebarObserver = namedObserver("sidebar-portal", callback);
-  sidebarObserver.observe(document.querySelector("body"), { childList: true });
+  sidebarObserver.observe(document.body, { childList: true });
 };
 
 const showEnableDiceDialog = () => {
@@ -298,7 +335,7 @@ const showEnableDiceDialog = () => {
 
   const dialog = document.createElement("dialog");
   dialog.classList.add("tales-beyond-extension-dialog");
-  const closeDialog = (event) => {
+  const closeDialog = (event: Event) => {
     if (event.target === dialog) {
       dialog.close();
     }
@@ -328,12 +365,20 @@ const showEnableDiceDialog = () => {
   dialog.addEventListener("click", closeDialog);
   dialog.addEventListener("touchend", closeDialog);
 
-  const img = dialog.querySelector(".tales-beyond-extension-dialog img");
-  img.src = svgLogo;
+  const img = dialog.querySelector<HTMLImageElement>(
+    ".tales-beyond-extension-dialog img",
+  );
+  if (img) {
+    img.src = svgLogo;
+  }
 
-  const button = dialog.querySelector(".tales-beyond-extension-dialog button");
-  button.addEventListener("click", () => dialog.close());
-  button.addEventListener("touchend", () => dialog.close());
+  const button = dialog.querySelector<HTMLElement>(
+    ".tales-beyond-extension-dialog button",
+  );
+  if (button) {
+    button.addEventListener("click", () => dialog.close());
+    button.addEventListener("touchend", () => dialog.close());
+  }
 
   document.body.appendChild(dialog);
   dialog.showModal();
