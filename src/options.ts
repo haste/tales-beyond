@@ -5,9 +5,10 @@ import {
   BOOLEAN,
   DEACTIVATE_CHARACTER,
   DROPDOWN,
+  type OptionEntry,
 } from "~/utils/options";
 
-const general = [
+const general: OptionEntry[] = [
   {
     id: "contextMenuEnabled",
     type: BOOLEAN,
@@ -37,7 +38,7 @@ const modifierOptions = [
   { value: "none", label: "None" },
 ];
 
-const keys = [
+const keys: OptionEntry[] = [
   {
     id: "modifierKeyShift",
     type: DROPDOWN,
@@ -61,29 +62,45 @@ const keys = [
 const restoreOptions = async () => {
   const settings = await getOptions();
 
+  const modList = document.querySelector<HTMLElement>("#mod-list");
+  const generalList = document.querySelector<HTMLElement>("#general-list");
+  const deactivatedList =
+    document.querySelector<HTMLElement>("#deactivated-list");
+  const keyList = document.querySelector<HTMLElement>("#key-list");
+  const modifiers = document.querySelector("#modifiers");
+  const footer = document.querySelector<HTMLElement>("footer");
+  if (
+    !(
+      modList &&
+      generalList &&
+      deactivatedList &&
+      keyList &&
+      modifiers &&
+      footer
+    )
+  ) {
+    throw new Error("options page is missing required elements");
+  }
+
   // Remove the modifier keys section as it isn't something we can support in
   // TaleSpire currently.
   if (typeof TS === "undefined") {
-    const keyList = document.querySelector("#key-list");
     for (const key of keys) {
       addUIElement(settings, keyList, key);
     }
   } else {
-    document.querySelector("#modifiers").remove();
-    document.querySelector("footer").dataset.talespire = "";
+    modifiers.remove();
+    footer.dataset.talespire = "";
   }
 
-  const modList = document.querySelector("#mod-list");
   for (const mod of mods) {
     addUIElement(settings, modList, mod);
   }
 
-  const generalList = document.querySelector("#general-list");
   for (const opt of general) {
     addUIElement(settings, generalList, opt);
   }
 
-  const deactivatedList = document.querySelector("#deactivated-list");
   for (const character of settings.deactivatedCharacters) {
     addUIElement(settings, deactivatedList, {
       id: character.id,
@@ -93,8 +110,6 @@ const restoreOptions = async () => {
   }
 };
 
-document.addEventListener("readystatechange", (event) => {
-  if (event.target.readyState === "complete") {
-    restoreOptions();
-  }
+window.addEventListener("load", () => {
+  restoreOptions();
 });
