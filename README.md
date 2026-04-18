@@ -9,17 +9,9 @@
 
 Replaces D&D Beyond's digital dices with links to TaleSpire.
 
-<p>
-    <a href="https://addons.mozilla.org/en-US/firefox/addon/tales-beyond/">
-        <img src="https://cdnjs.cloudflare.com/ajax/libs/browser-logos/74.1.0/firefox/firefox.svg" width="64" height="64" alt="Get Tales Beyond for Firefox">
-    </a>
-    <a href="https://chromewebstore.google.com/detail/tales-beyond/mobmjccpnafdnlaljkikhkkcccfeoefa">
-        <img src="https://cdnjs.cloudflare.com/ajax/libs/browser-logos/74.1.0/chrome/chrome.svg" width="64" height="64" alt="Get Tales Beyond for Chrome">
-    </a>
-    <a href="https://mod.io/g/talespire/m/tales-beyond">
-        <img src=".github/modio.svg" width="64" height="64" alt="Get Tales Beyond for Symbiote">
-    </a>
-</p>
+[![Firefox](.github/firefox.png "Firefox")](https://addons.mozilla.org/en-US/firefox/addon/tales-beyond/)
+[![Chrome](.github/chrome.png "Chrome")](https://chromewebstore.google.com/detail/tales-beyond/mobmjccpnafdnlaljkikhkkcccfeoefa)
+[![Symbiote](.github/modio.png "Symbiote")](https://mod.io/g/talespire/m/tales-beyond)
 
 ## Features
 
