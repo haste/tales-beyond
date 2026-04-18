@@ -92,17 +92,17 @@ const buildBrowser = async (filterBrowsers) => {
     }
   }
 
-  for (const js of ["options.js"]) {
+  for (const js of ["options.ts"]) {
     await bunBuild({
       entrypoints: [path.join(srcDir, js)],
       outdir: sharedBrowserDir,
     });
   }
 
-  await fs.copyFile(
-    path.join(browserSrcDir, "background.js"),
-    path.join(sharedBrowserDir, "background.js"),
-  );
+  await bunBuild({
+    entrypoints: [path.join(browserSrcDir, "background.ts")],
+    outdir: sharedBrowserDir,
+  });
 
   for (const browser of filterBrowsers) {
     const buildDir = path.join(process.cwd(), "build", browser);
@@ -148,7 +148,7 @@ const buildSymbiote = async () => {
     }
   }
 
-  for (const js of ["index.js"]) {
+  for (const js of ["index.ts"]) {
     await bunBuild({
       entrypoints: [path.join(symbioteSrcDir, js)],
       outdir: buildDir,
@@ -156,7 +156,7 @@ const buildSymbiote = async () => {
     });
   }
 
-  for (const js of ["options.js"]) {
+  for (const js of ["options.ts"]) {
     await bunBuild({
       entrypoints: [path.join(srcDir, js)],
       outdir: buildDir,
