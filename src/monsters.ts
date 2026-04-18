@@ -9,14 +9,16 @@ import {
 import { namedObserver } from "~/utils/observer";
 import { embedInText, getTextNodes } from "~/utils/web";
 
-const updateMonsters = (node) => {
+const updateMonsters = (node: HTMLElement | null) => {
   if (!node) {
     return;
   }
 
   const monsterName = node
-    .querySelector(".mon-stat-block__name, .mon-stat-block-2024__name")
-    ?.textContent.trim();
+    .querySelector<HTMLElement>(
+      ".mon-stat-block__name, .mon-stat-block-2024__name",
+    )
+    ?.textContent?.trim();
 
   if (!monsterName) {
     return;
@@ -39,31 +41,33 @@ const updateMonsters = (node) => {
 
 export const monsterWatcher = () => {
   // Single monster detail page
-  updateMonsters(document.querySelector(".detail-content"));
+  updateMonsters(document.querySelector<HTMLElement>(".detail-content"));
+
+  const root = document.querySelector<HTMLElement>("section.primary-content");
+  if (!root) {
+    return;
+  }
 
   // Search list
-  const callback = async (mutationList, observer) => {
+  const callback: MutationCallback = async (mutationList, observer) => {
     observer.disconnect();
 
     await injectContextMenu();
 
     for (const mutation of mutationList) {
       for (const node of mutation.addedNodes) {
-        if (node.nodeType === 1 && node.classList.contains("more-info")) {
+        if (
+          node instanceof HTMLElement &&
+          node.classList.contains("more-info")
+        ) {
           updateMonsters(node);
         }
       }
     }
 
-    observer.observe(document.querySelector("section.primary-content"), {
-      childList: true,
-      subtree: true,
-    });
+    observer.observe(root, { childList: true, subtree: true });
   };
 
   const observer = namedObserver("monsters", callback);
-  observer.observe(document.querySelector("section.primary-content"), {
-    childList: true,
-    subtree: true,
-  });
+  observer.observe(root, { childList: true, subtree: true });
 };
