@@ -11,7 +11,7 @@
     "bootstrap": "^5.3.8",
     "chrome-webstore-upload-cli": "^3.5.0",
     "global-jsdom": "^29.0.0",
-    "marked": "^17.0.5",
+    "marked": "^18.0.2",
     "prettier": "3.8.1",
     "sass": "^1.98.0",
     "web-ext": "10.1.0"
