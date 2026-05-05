@@ -80,6 +80,16 @@ export const mods: Mod[] = [
     },
   },
   {
+    id: "modElvenAccuracy",
+    type: BOOLEAN,
+    targets: [],
+    header: "Elven Accuracy",
+    description:
+      "Adds a Triple Advantage (3d20) option to the right-click menu when " +
+      "the character has the Elven Accuracy feat.",
+    fn: () => false,
+  },
+  {
     id: "modInfiltratorArmorLightningLauncher",
     type: BOOLEAN,
     targets: ["damage"],

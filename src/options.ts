@@ -34,6 +34,7 @@ const modifierOptions = [
   { value: "adv", label: "Advantage" },
   { value: "adv-dis", label: "Advantage / Disadvantage" },
   { value: "dis", label: "Disadvantage" },
+  { value: "ea", label: "Elven Accuracy" },
   { value: "crit", label: "Critical Hit" },
   { value: "none", label: "None" },
 ];

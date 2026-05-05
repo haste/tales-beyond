@@ -56,6 +56,10 @@
       text-decoration: green wavy underline;
     }
 
+    &.elven-accuracy:not(:hover) {
+      text-decoration: teal wavy underline;
+    }
+
     &.disadvantage:not(:hover) {
       text-decoration: red wavy underline;
     }

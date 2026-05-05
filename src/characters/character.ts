@@ -30,7 +30,7 @@ const DEFAULT_SKILLS = [
 ];
 
 // Feats consumed by mods
-export const trackedFeats = new Set<string>([]);
+export const trackedFeats = new Set<string>(["Elven Accuracy"]);
 
 const readId = (): string | undefined => {
   const match = window.location.pathname.match(

@@ -8,7 +8,13 @@ export type CharacterRecord = {
   skills: string[];
 };
 
-export type SettingModifierAction = "adv" | "adv-dis" | "dis" | "crit" | "none";
+export type SettingModifierAction =
+  | "adv"
+  | "adv-dis"
+  | "dis"
+  | "ea"
+  | "crit"
+  | "none";
 export type SettingCharacterNamePrefix =
   | "first"
   | "full"
@@ -28,6 +34,7 @@ export type Settings = {
   modifierKeyCtrl: SettingModifierAction;
   modifierKeyShift: SettingModifierAction;
   modChaosBolt: boolean;
+  modElvenAccuracy: boolean;
   modInfiltratorArmorLightningLauncher: boolean;
   modMagicMissile: boolean;
   modMelfsMinuteMeteors: boolean;
@@ -49,6 +56,7 @@ const defaultOptions: Settings = {
   modifierKeyCtrl: "adv-dis",
   modifierKeyShift: "adv-dis",
   modChaosBolt: true,
+  modElvenAccuracy: true,
   modInfiltratorArmorLightningLauncher: true,
   modMagicMissile: true,
   modMelfsMinuteMeteors: true,

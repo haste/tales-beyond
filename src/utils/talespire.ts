@@ -10,16 +10,18 @@ const modifierAction = (
 ) => {
   switch (action) {
     case "adv":
-      return { name: `${name} (ADV)`, extraDice: true, crit: false };
+      return { name: `${name} (ADV)`, repeat: 2, crit: false };
     case "dis":
-      return { name: `${name} (DIS)`, extraDice: true, crit: false };
+      return { name: `${name} (DIS)`, repeat: 2, crit: false };
     case "adv-dis":
-      return { name: `${name} (ADV/DIS)`, extraDice: true, crit: false };
+      return { name: `${name} (ADV/DIS)`, repeat: 2, crit: false };
+    case "ea":
+      return { name: `${name} (EA)`, repeat: 3, crit: false };
     case "crit":
-      return { name: `${name} (CRIT)`, extraDice: false, crit: true };
+      return { name: `${name} (CRIT)`, repeat: 1, crit: true };
 
     default:
-      return { name, extraDice: false, crit: false };
+      return { name, repeat: 1, crit: false };
   }
 };
 
@@ -135,9 +137,12 @@ export const talespireLink = (
     event.stopPropagation();
 
     const settings = await getOptions();
-    const { name, extraDice, crit } = checkModifierKeys(event, label, settings);
+    const { name, repeat, crit } = checkModifierKeys(event, label, settings);
     const modified = crit ? roll.double() : roll;
-    await triggerTalespire(name, extraDice ? modified.repeat(2) : modified);
+    await triggerTalespire(
+      name,
+      repeat > 1 ? modified.repeat(repeat) : modified,
+    );
   });
 
   if (typeof content === "string") {

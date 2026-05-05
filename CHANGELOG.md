@@ -1,5 +1,13 @@
 # Changelog
 
+## Unreleased
+
+### Enhancements
+
+ * Support for Elven Accuracy:
+   - Adds a new option in the right-click menu when the character has the feat.
+   - Adds Elven Accuracy as a modifier-key option in settings.
+
 ## 0.25.2 (2026-03-14)
 
 ### Bug fixes

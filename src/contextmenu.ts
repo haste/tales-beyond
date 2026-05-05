@@ -1,5 +1,6 @@
 import { arrow, computePosition, flip, offset } from "@floating-ui/dom";
 
+import { character } from "~/characters/character";
 import svgLogo from "~/icons/icon.svg";
 import { parseRoll } from "~/roll";
 import { getOptions } from "~/storage/settings";
@@ -29,7 +30,10 @@ const detectLightDismiss = (event: MouseEvent) => {
   }
 };
 
-const setupListeners = (button: HTMLElement, contextmenu: HTMLDivElement) => {
+const setupListeners = async (
+  button: HTMLElement,
+  contextmenu: HTMLDivElement,
+) => {
   const label = button.dataset.tsLabel;
   const dice = button.dataset.tsDice;
   if (!dice) {
@@ -42,31 +46,37 @@ const setupListeners = (button: HTMLElement, contextmenu: HTMLDivElement) => {
   }
   const type = button.dataset.tsType;
 
-  const action = (labelSuffix?: string) => async () => {
-    const name = labelSuffix
-      ? label
-        ? `${label} (${labelSuffix})`
-        : labelSuffix
-      : label;
+  const action =
+    (labelSuffix?: string, repeat = 2) =>
+    async () => {
+      const name = labelSuffix
+        ? label
+          ? `${label} (${labelSuffix})`
+          : labelSuffix
+        : label;
 
-    if (labelSuffix === "CRIT") {
-      await triggerTalespire(name, roll.double());
-    } else if (labelSuffix) {
-      await triggerTalespire(name, roll.repeat(2));
-    } else {
-      await triggerTalespire(name, roll);
-    }
+      if (labelSuffix === "CRIT") {
+        await triggerTalespire(name, roll.double());
+      } else if (labelSuffix) {
+        await triggerTalespire(name, roll.repeat(repeat));
+      } else {
+        await triggerTalespire(name, roll);
+      }
 
-    removeAllMenus();
-  };
+      removeAllMenus();
+    };
 
-  const [adv, flat, dis, crit] =
-    contextmenu.querySelectorAll<HTMLDivElement>(".item");
-  if (!(adv && flat && dis && crit)) {
+  const adv = contextmenu.querySelector<HTMLDivElement>(".item.advantage");
+  const ea = contextmenu.querySelector<HTMLDivElement>(".item.elven-accuracy");
+  const flat = contextmenu.querySelector<HTMLDivElement>(".item.flat");
+  const dis = contextmenu.querySelector<HTMLDivElement>(".item.disadvantage");
+  const crit = contextmenu.querySelector<HTMLDivElement>(".item.critical");
+  if (!(adv && ea && flat && dis && crit)) {
     return;
   }
 
   adv.addEventListener("click", action("ADV"));
+  ea.addEventListener("click", action("EA", 3));
   flat.addEventListener("click", action());
   dis.addEventListener("click", action("DIS"));
   crit.addEventListener("click", action("CRIT"));
@@ -74,6 +84,7 @@ const setupListeners = (button: HTMLElement, contextmenu: HTMLDivElement) => {
   const isHit = type ? type === "hit" : roll.groups[0]?.[0]?.sides === 20;
 
   adv.style.display = isHit ? "block" : "none";
+  ea.style.display = "none";
   dis.style.display = isHit ? "block" : "none";
   crit.style.display = isHit ? "none" : "block";
 
@@ -86,6 +97,13 @@ const setupListeners = (button: HTMLElement, contextmenu: HTMLDivElement) => {
     capture: true,
     passive: true,
   });
+
+  if (isHit && character.hasFeat("Elven Accuracy")) {
+    const settings = await getOptions();
+    if (settings.modElvenAccuracy) {
+      ea.style.display = "block";
+    }
+  }
 };
 
 const contextMenu = (event: MouseEvent) => {
@@ -116,8 +134,9 @@ const contextMenu = (event: MouseEvent) => {
 
   <hr />
 
+  <div class="item elven-accuracy">Elven Accuracy</div>
   <div class="item advantage">Advantage</div>
-  <div class="item">Normal</div>
+  <div class="item flat">Normal</div>
   <div class="item disadvantage">Disadvantage</div>
   <div class="item critical">Critical Hit</div>
 </div>
