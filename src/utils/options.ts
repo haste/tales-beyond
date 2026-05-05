@@ -1,9 +1,5 @@
 import { reactivateCharacter } from "~/storage/characters";
-import type {
-  DeactivatedCharacter,
-  Settings,
-  SettingsKeyOfType,
-} from "~/storage/settings";
+import type { Settings, SettingsKeyOfType } from "~/storage/settings";
 import { saveOption } from "~/storage/settings";
 
 export const BOOLEAN = Symbol("boolean");
@@ -31,7 +27,7 @@ export type OptionEntryDropdown = {
 
 export type OptionEntryDeactivatedCharacter = {
   type: typeof DEACTIVATE_CHARACTER;
-  id: DeactivatedCharacter["id"];
+  id: string;
   header: string;
 };
 

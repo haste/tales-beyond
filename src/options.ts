@@ -101,10 +101,13 @@ const restoreOptions = async () => {
     addUIElement(settings, generalList, opt);
   }
 
-  for (const character of settings.deactivatedCharacters) {
+  for (const [id, record] of Object.entries(settings.characters)) {
+    if (!record.deactivated) {
+      continue;
+    }
     addUIElement(settings, deactivatedList, {
-      id: character.id,
-      header: `${character.name} (${character.id})`,
+      id,
+      header: `${record.name} (${id})`,
       type: DEACTIVATE_CHARACTER,
     });
   }

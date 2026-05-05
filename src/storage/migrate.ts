@@ -15,7 +15,6 @@ export const migrateUserOptions = (
       return migrateUserOptions({
         ...userOptions,
         version: 3,
-        deactivatedCharacters: [],
       });
 
     case 3:
@@ -32,6 +31,23 @@ export const migrateUserOptions = (
         prefixWithCharacterName:
           userOptions.prefixWithCharacterName ?? "initials",
       });
+
+    case 5: {
+      const legacy = userOptions as Partial<Settings> & {
+        deactivatedCharacters?: { id: string; name: string }[];
+      };
+      const { deactivatedCharacters, ...rest } = legacy;
+      return migrateUserOptions({
+        ...rest,
+        version: 6,
+        characters: Object.fromEntries(
+          (deactivatedCharacters ?? []).map(({ id, name }) => [
+            id,
+            { name, deactivated: true, feats: [], skills: [] },
+          ]),
+        ),
+      });
+    }
 
     default:
       return userOptions;

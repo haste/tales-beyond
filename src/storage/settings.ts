@@ -1,9 +1,11 @@
 import { adapter } from "~/storage/adapter";
 import { migrateUserOptions } from "~/storage/migrate";
 
-export type DeactivatedCharacter = {
-  id: string;
+export type CharacterRecord = {
   name: string;
+  deactivated: boolean;
+  feats: string[];
+  skills: string[];
 };
 
 export type SettingModifierAction = "adv" | "adv-dis" | "dis" | "crit" | "none";
@@ -21,7 +23,7 @@ export type SettingsKeyOfType<T> = {
 export type Settings = {
   version: number;
   contextMenuEnabled: boolean;
-  deactivatedCharacters: DeactivatedCharacter[];
+  characters: Record<string, CharacterRecord>;
   modifierKeyAlt: SettingModifierAction;
   modifierKeyCtrl: SettingModifierAction;
   modifierKeyShift: SettingModifierAction;
@@ -37,12 +39,12 @@ export type Settings = {
   symbioteURL?: string;
 };
 
-const VERSION = 5;
+const VERSION = 6;
 
 const defaultOptions: Settings = {
   version: VERSION,
   contextMenuEnabled: true,
-  deactivatedCharacters: [],
+  characters: {},
   modifierKeyAlt: "adv-dis",
   modifierKeyCtrl: "adv-dis",
   modifierKeyShift: "adv-dis",

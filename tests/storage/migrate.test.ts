@@ -6,39 +6,27 @@ describe("migrateUserOptions", () => {
   describe("individual steps", () => {
     test("v1 → v2: adds prefixWithCharacterName", () => {
       const result = migrateUserOptions({ version: 1 });
-      expect(result.version).toBe(5);
+      expect(result.version).toBe(6);
       expect(result.prefixWithCharacterName).toBe("initials");
-    });
-
-    test("v2 → v3: adds deactivatedCharacters", () => {
-      const input = {
-        version: 2,
-        prefixWithCharacterName: "full",
-      } satisfies Partial<Settings>;
-      const result = migrateUserOptions(input);
-      expect(result.version).toBe(5);
-      expect(result.deactivatedCharacters).toEqual([]);
     });
 
     test("v3 → v4: adds modSpellfireFlare", () => {
       const input = {
         version: 3,
         prefixWithCharacterName: "initials",
-        deactivatedCharacters: [],
       } satisfies Partial<Settings>;
       const result = migrateUserOptions(input);
-      expect(result.version).toBe(5);
+      expect(result.version).toBe(6);
       expect(result.modSpellfireFlare).toBe(true);
     });
 
     test("v4 → v5: defaults prefixWithCharacterName to initials if absent", () => {
       const input = {
         version: 4,
-        deactivatedCharacters: [],
         modSpellfireFlare: true,
       };
       const result = migrateUserOptions(input);
-      expect(result.version).toBe(5);
+      expect(result.version).toBe(6);
       expect(result.prefixWithCharacterName).toBe("initials");
     });
 
@@ -46,30 +34,64 @@ describe("migrateUserOptions", () => {
       const input = {
         version: 4,
         prefixWithCharacterName: "full",
-        deactivatedCharacters: [],
         modSpellfireFlare: true,
       } satisfies Partial<Settings>;
       const result = migrateUserOptions(input);
-      expect(result.version).toBe(5);
+      expect(result.version).toBe(6);
       expect(result.prefixWithCharacterName).toBe("full");
+    });
+
+    test("v5 → v6: converts deactivatedCharacters to characters record", () => {
+      const input = {
+        version: 5,
+        prefixWithCharacterName: "initials",
+        modSpellfireFlare: true,
+        deactivatedCharacters: [
+          { id: "1", name: "Alice" },
+          { id: "2", name: "Bob" },
+        ],
+      } as Partial<Settings> & {
+        deactivatedCharacters: { id: string; name: string }[];
+      };
+      const result = migrateUserOptions(input);
+      expect(result.version).toBe(6);
+      expect(result.characters).toEqual({
+        "1": { name: "Alice", deactivated: true, feats: [], skills: [] },
+        "2": { name: "Bob", deactivated: true, feats: [], skills: [] },
+      });
+      expect(
+        (result as Partial<Settings> & { deactivatedCharacters?: unknown })
+          .deactivatedCharacters,
+      ).toBeUndefined();
+    });
+
+    test("v5 → v6: empty when no deactivatedCharacters present", () => {
+      const input = {
+        version: 5,
+        prefixWithCharacterName: "initials",
+        modSpellfireFlare: true,
+      } satisfies Partial<Settings>;
+      const result = migrateUserOptions(input);
+      expect(result.version).toBe(6);
+      expect(result.characters).toEqual({});
     });
   });
 
   describe("full chain", () => {
-    test("v1 → v5: applies all migrations", () => {
+    test("v1 → v6: applies all migrations", () => {
       const result = migrateUserOptions({ version: 1 });
       expect(result).toEqual({
-        version: 5,
+        version: 6,
         prefixWithCharacterName: "initials",
-        deactivatedCharacters: [],
         modSpellfireFlare: true,
+        characters: {},
       });
     });
   });
 
   describe("edge cases", () => {
     test("current version: passes through unchanged", () => {
-      const input = { version: 5, contextMenuEnabled: false };
+      const input = { version: 6, contextMenuEnabled: false };
       const result = migrateUserOptions(input);
       expect(result).toEqual(input);
     });

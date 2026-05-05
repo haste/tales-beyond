@@ -1,10 +1,8 @@
+import { character } from "~/characters/character";
 import { Dice } from "~/dice";
 import { parseRoll, Roll, type RollType } from "~/roll";
 import type { Settings, SettingsKeyOfType } from "~/storage/settings";
-import {
-  getCharacterActionsInCombat,
-  getRollFromNode,
-} from "~/utils/dndbeyond";
+import { getRollFromNode } from "~/utils/dndbeyond";
 import { BOOLEAN } from "~/utils/options";
 import { talespireLink } from "~/utils/talespire";
 import { getParentWithClass, getSiblingWithClass } from "~/utils/web";
@@ -409,7 +407,7 @@ export const mods: Mod[] = [
         !(
           grandparent &&
           nameSibling?.parentElement &&
-          getCharacterActionsInCombat().includes("Two-Weapon Fighting")
+          character.hasAction("Two-Weapon Fighting")
         )
       ) {
         return false;

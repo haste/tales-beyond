@@ -1,9 +1,8 @@
 import { computePosition } from "@floating-ui/dom";
 
+import { character } from "~/characters/character";
 import svgLogo from "~/icons/icon.svg";
-import { deactivateCharacter, reactivateCharacter } from "~/storage/characters";
 import { getOptions } from "~/storage/settings";
-import { getCharacterId, getCharacterName } from "~/utils/dndbeyond";
 
 export const injectOptionButton = (isDeactivated = false) => {
   const charApp = document.querySelector('[name="character-app"]');
@@ -55,19 +54,11 @@ export const injectOptionButton = (isDeactivated = false) => {
   toggleItem.addEventListener("click", async () => {
     menuNode.classList.remove("open");
 
-    const characterId = getCharacterId();
-    if (!characterId) {
+    const ok = isDeactivated
+      ? await character.reactivate()
+      : await character.deactivate();
+    if (!ok) {
       return;
-    }
-
-    if (isDeactivated) {
-      await reactivateCharacter(characterId);
-    } else {
-      const characterName = getCharacterName();
-      if (!characterName) {
-        return;
-      }
-      await deactivateCharacter(characterId, characterName);
     }
 
     window.location.reload();

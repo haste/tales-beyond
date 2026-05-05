@@ -1,14 +1,12 @@
+import { character } from "~/characters/character";
 import { injectOptionButton } from "~/characters/iconmenu";
 import { injectContextMenu } from "~/contextmenu";
 import svgLogo from "~/icons/icon.svg";
 import { customMod } from "~/mods";
 import type { RollType } from "~/roll";
-import { isCharacterDeactivated } from "~/storage/characters";
 import { getOptions, type Settings } from "~/storage/settings";
 import { injectThemeStyle } from "~/themes";
 import {
-  getCharacterAbilities,
-  getCharacterId,
   getRollFromNode,
   processBlockAbilities,
   processBlockAttributes,
@@ -215,12 +213,11 @@ export const characterAppWatcher = () => {
 
   let wasDiceDisabled = false;
   const callback: MutationCallback = async (mutationList, observer) => {
-    const characterId = getCharacterId();
-    if (!characterId) {
+    if (!character.getId()) {
       return;
     }
 
-    const isDeactivated = await isCharacterDeactivated(characterId);
+    const isDeactivated = await character.isDeactivated();
     injectOptionButton(isDeactivated);
 
     if (isDeactivated) {
@@ -240,7 +237,9 @@ export const characterAppWatcher = () => {
       return;
     }
 
-    getCharacterAbilities();
+    character.getAbilities();
+    await character.refreshSkills();
+    await character.refreshFeats();
     injectThemeStyle();
     await injectContextMenu();
 
@@ -297,8 +296,7 @@ export const characterAppWatcher = () => {
 
 export const sidebarPortalWatcher = () => {
   const callback: MutationCallback = async (mutationList, _observer) => {
-    const characterId = getCharacterId();
-    if (characterId && (await isCharacterDeactivated(characterId))) {
+    if (await character.isDeactivated()) {
       return;
     }
 

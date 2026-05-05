@@ -19,7 +19,7 @@ function createMockAdapter(
 
 // Adapter starts with stored data to test merge on first load
 const mockAdapter = createMockAdapter({
-  version: 5,
+  version: 6,
   contextMenuEnabled: false,
 });
 
@@ -35,7 +35,7 @@ describe("getOptions", () => {
   test("merges stored values with defaults on first load", async () => {
     const options = await getOptions();
     expect(options.contextMenuEnabled).toBe(false);
-    expect(options.version).toBe(5);
+    expect(options.version).toBe(6);
     // Fields not in adapter come from defaults
     expect(options.modMagicMissile).toBe(true);
   });

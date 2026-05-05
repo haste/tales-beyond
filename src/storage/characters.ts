@@ -1,26 +1,54 @@
+import type { CharacterRecord } from "~/storage/settings";
 import { getOptions, saveOption } from "~/storage/settings";
 
-export const isCharacterDeactivated = async (characterId: string) => {
-  const options = await getOptions();
-  return options.deactivatedCharacters.some(({ id }) => id === characterId);
+const emptyRecord: CharacterRecord = {
+  name: "",
+  deactivated: false,
+  feats: [],
+  skills: [],
 };
 
-export const deactivateCharacter = async (
-  characterId: string,
-  characterName: string,
+export const getCharacterRecord = async (
+  id: string,
+): Promise<CharacterRecord | undefined> => {
+  const options = await getOptions();
+  return options.characters[id];
+};
+
+export const updateCharacterRecord = async (
+  id: string,
+  patch: Partial<CharacterRecord>,
 ) => {
   const options = await getOptions();
-  if (options.deactivatedCharacters.some(({ id }) => id === characterId)) {
-    return;
-  }
-  options.deactivatedCharacters.push({ id: characterId, name: characterName });
-  await saveOption("deactivatedCharacters", options.deactivatedCharacters);
+  const existing = options.characters[id] ?? emptyRecord;
+  options.characters = {
+    ...options.characters,
+    [id]: { ...existing, ...patch },
+  };
+  await saveOption("characters", options.characters);
 };
 
-export const reactivateCharacter = async (characterId: string) => {
-  const options = await getOptions();
-  const deactivatedCharacters = options.deactivatedCharacters.filter(
-    ({ id }) => id !== characterId,
-  );
-  await saveOption("deactivatedCharacters", deactivatedCharacters);
+export const isCharacterDeactivated = async (id: string) => {
+  const record = await getCharacterRecord(id);
+  return record?.deactivated ?? false;
+};
+
+export const setCharacterDeactivated = async (
+  id: string,
+  name: string,
+  deactivated: boolean,
+) => {
+  await updateCharacterRecord(id, { name, deactivated });
+};
+
+export const reactivateCharacter = async (id: string) => {
+  await updateCharacterRecord(id, { deactivated: false });
+};
+
+export const setCharacterFeats = async (id: string, feats: string[]) => {
+  await updateCharacterRecord(id, { feats });
+};
+
+export const setCharacterSkills = async (id: string, skills: string[]) => {
+  await updateCharacterRecord(id, { skills });
 };

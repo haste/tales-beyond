@@ -1,3 +1,4 @@
+import { character } from "~/characters/character";
 import {
   type DiceMatch,
   type DiceMatchGroups,
@@ -5,7 +6,6 @@ import {
   normalizeMinus,
 } from "~/dice";
 import { getDiceRegex, Roll } from "~/roll";
-import { getCharacterAbilities, getCharacterSkills } from "~/utils/dndbeyond";
 import { talespireLink } from "~/utils/talespire";
 
 const validSoloModifierType = [
@@ -25,7 +25,7 @@ const validSoloModifierType = [
 
 export const rollFromMatchWithAbilities = (groups: DiceMatchGroups) => {
   const resolvedModifier = groups.modifierType
-    ? getCharacterAbilities()[groups.modifierType]
+    ? character.getAbility(groups.modifierType)
     : undefined;
 
   if (resolvedModifier) {
@@ -192,7 +192,7 @@ export const embedInText = (
   let prependNode: Element | null = null;
   let appendLabel: string | null = null;
 
-  const characterSkills = getCharacterSkills();
+  const characterSkills = character.getSkills();
   const diceRegex = getDiceRegex(matchDicelessModifier);
   const textContent = node.textContent;
 

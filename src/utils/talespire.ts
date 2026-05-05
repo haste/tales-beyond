@@ -1,8 +1,8 @@
+import { character } from "~/characters/character";
 import { Dice } from "~/dice";
 import { Roll } from "~/roll";
 import type { SettingModifierAction, Settings } from "~/storage/settings";
 import { getOptions } from "~/storage/settings";
-import { getCharacterName } from "~/utils/dndbeyond";
 
 const modifierAction = (
   action: SettingModifierAction,
@@ -41,7 +41,7 @@ const checkModifierKeys = (
 };
 
 const formatCharacterName = (settings: Settings) => {
-  const name = getCharacterName();
+  const name = character.getName();
   if (typeof name !== "string") {
     return null;
   }
