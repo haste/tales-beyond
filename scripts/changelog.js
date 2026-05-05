@@ -1,54 +1,24 @@
 import Bun from "bun";
-import { marked } from "marked";
 
 const [_exec, _script, format, input] = Bun.argv;
 
-const sharedRenderer = {
-  // Block-level
-  list({ items }) {
-    const body = [];
-    for (const item of items) {
-      body.push(this.listitem(item));
-    }
-    return body.join("");
-  },
-
-  listitem({ tokens }) {
-    let text = this.parser.parseInline(tokens.filter((t) => t.type !== "list"));
-    for (const token of tokens.filter((t) => t.type === "list")) {
-      text += `\n${this.list(token).trimEnd()}`;
-    }
-    return `- ${text.replace(/\n/g, "\n  ")}\n`;
-  },
-
-  // Inline-level
-  strong({ tokens }) {
-    const text = this.parser.parseInline(tokens);
-    return `**${text}**`;
-  },
-
-  em({ tokens }) {
-    const text = this.parser.parseInline(tokens);
-    return `_${text}_`;
-  },
-
-  text(token) {
-    return token.tokens ? this.parser.parseInline(token.tokens) : token.text;
-  },
+const sharedCallbacks = {
+  text: (content) => content,
+  strong: (content) => `**${content}**`,
+  emphasis: (content) => `_${content}_`,
+  list: (content, { depth }) =>
+    depth === 0 ? content : `\n${content.trimEnd()}`,
+  listItem: (content) => `- ${content.replace(/\n/g, "\n  ")}\n`,
 };
 
-const mozillaRenderer = {
-  ...sharedRenderer,
-  heading({ tokens }) {
-    return `**${this.parser.parseInline(tokens)}**\n\n`;
-  },
+const mozillaCallbacks = {
+  ...sharedCallbacks,
+  heading: (content) => `**${content}**\n\n`,
 };
 
-const modioRenderer = {
-  ...sharedRenderer,
-  heading({ tokens }) {
-    return `${this.parser.parseInline(tokens)}\n\n`;
-  },
+const modioCallbacks = {
+  ...sharedCallbacks,
+  heading: (content) => `${content}\n\n`,
 };
 
 const md = await Bun.file(input).text();
@@ -67,13 +37,11 @@ const latestEntry = md.slice(
 );
 
 if (format === "amo") {
-  marked.use({ renderer: mozillaRenderer });
-
   console.log(
     JSON.stringify({
       version: {
         release_notes: {
-          "en-US": marked.parse(latestEntry).trim(),
+          "en-US": Bun.markdown.render(latestEntry, mozillaCallbacks).trim(),
         },
         approval_notes:
           "Source can be built by installing bun (https://bun.sh/) and running `bun install` followed by `bun run build`",
@@ -81,6 +49,5 @@ if (format === "amo") {
     }),
   );
 } else if (format === "modio") {
-  marked.use({ renderer: modioRenderer });
-  console.log(marked.parse(latestEntry).trim());
+  console.log(Bun.markdown.render(latestEntry, modioCallbacks).trim());
 }
