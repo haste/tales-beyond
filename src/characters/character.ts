@@ -98,13 +98,8 @@ class Character {
   #actionsInCombat: string[] = [];
   #skills: string[] = [...DEFAULT_SKILLS];
   #feats: string[] = [];
-  #ready: Promise<void>;
 
-  constructor() {
-    this.#ready = this.#hydrate();
-  }
-
-  async #hydrate() {
+  async hydrate() {
     const id = this.getId();
     if (!id) {
       return;
@@ -124,10 +119,6 @@ class Character {
     if (record.feats.length) {
       this.#feats = record.feats;
     }
-  }
-
-  ready() {
-    return this.#ready;
   }
 
   getId() {
