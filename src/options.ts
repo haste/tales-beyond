@@ -114,6 +114,17 @@ const restoreOptions = async () => {
   }
 };
 
-window.addEventListener("load", () => {
+window.addEventListener("load", async () => {
+  const isBrowserExtension = typeof chrome !== "undefined" && chrome.storage;
+  if (!isBrowserExtension && typeof TS === "undefined") {
+    await new Promise<void>((resolve) => {
+      window.handleSymbioteStateChange = (event) => {
+        if (event.kind === "hasInitialized") {
+          resolve();
+        }
+      };
+    });
+  }
+
   restoreOptions();
 });
