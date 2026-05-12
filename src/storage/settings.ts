@@ -1,4 +1,4 @@
-import { adapter } from "~/storage/adapter";
+import { getAdapter } from "~/storage/adapter";
 import { migrateUserOptions } from "~/storage/migrate";
 
 export type CharacterRecord = {
@@ -71,6 +71,7 @@ let settings: Settings | undefined;
 let loading: Promise<Settings> | undefined;
 
 const load = async (): Promise<Settings> => {
+  const adapter = getAdapter();
   const stored = (await adapter?.load()) ?? { ...defaultOptions };
   const migrated = migrateUserOptions(stored as Partial<Settings>);
   settings = { ...defaultOptions, ...migrated };
@@ -101,11 +102,11 @@ export const saveOption = async <K extends keyof Settings>(
 ) => {
   const s = await getOptions();
   s[key] = value;
-  await adapter?.save({ [key]: value });
+  await getAdapter()?.save({ [key]: value });
 };
 
 export const saveOptions = async (value: Partial<Settings>) => {
   const s = await getOptions();
   Object.assign(s, value);
-  await adapter?.save(value);
+  await getAdapter()?.save(value);
 };

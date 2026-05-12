@@ -24,7 +24,7 @@ const mockAdapter = createMockAdapter({
 });
 
 mock.module("~/storage/adapter", () => ({
-  adapter: mockAdapter,
+  getAdapter: () => mockAdapter,
 }));
 
 const { getOptions, saveOption, saveOptions } = await import(
