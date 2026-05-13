@@ -95,13 +95,15 @@ jobs:
           CWS_CLIENT_ID: ${{ secrets.CWS_CLIENT_ID }}
           CWS_CLIENT_SECRET: ${{ secrets.CWS_CLIENT_SECRET }}
           CWS_REFRESH_TOKEN: ${{ secrets.CWS_REFRESH_TOKEN }}
+          CWS_PUBLISHER_ID: ${{ secrets.CWS_PUBLISHER_ID }}
         run: |
           bunx chrome-webstore-upload-cli@3 \
             --source web-ext-artifacts/tales_beyond-${VERSION}.zip \
             --extension-id ${CWS_EXTENSION_ID} \
             --client-id ${CWS_CLIENT_ID} \
             --client-secret ${CWS_CLIENT_SECRET} \
-            --refresh-token ${CWS_REFRESH_TOKEN}
+            --refresh-token ${CWS_REFRESH_TOKEN} \
+            --publisher-id ${CWS_PUBLISHER_ID}
 
   release-symbiote:
     runs-on: ubuntu-latest
