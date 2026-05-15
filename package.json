@@ -1,6 +1,6 @@
 {
   "name": "Tales Beyond",
-  "version": "0.25.2",
+  "version": "0.26.0",
   "devDependencies": {
     "@biomejs/biome": "^2.4.15",
     "@floating-ui/dom": "^1.7.6",
