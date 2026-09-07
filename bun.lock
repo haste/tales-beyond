@@ -12,7 +12,7 @@
         "@typescript/native-preview": "^7.0.0-dev.20260512.1",
         "adm-zip": "^0.5.17",
         "bootstrap": "^5.3.8",
-        "chrome-webstore-upload-cli": "^4.0.0",
+        "chrome-webstore-upload-cli": "^4.0.1",
         "global-jsdom": "^29.0.0",
         "prettier": "3.8.3",
         "sass": "^1.100.0",
@@ -249,7 +249,7 @@
 
     "chrome-webstore-upload": ["chrome-webstore-upload@6.0.0", "", { "dependencies": { "junk": "^4.0.1", "yazl": "^3.3.1" } }, "sha512-wUPi8iwR2KPPPytHY8rstA5tbcLp2r8fMYnqMUIgci1q1A6QFYiyeiyG/aqAj35PzNuCTpZseD1VZ9y1b/Fkmw=="],
 
-    "chrome-webstore-upload-cli": ["chrome-webstore-upload-cli@4.0.0", "", { "dependencies": { "chrome-webstore-upload": "^6.0.0", "meow": "^12.1.1" }, "bin": { "chrome-webstore-upload": "source/cli.js" } }, "sha512-6MjMTLeGswORVNMS/Wa40s0HHWJdQG7MX1hVRzpg5RaqyjoFWp/tdqgHANTcwSPftT9HVOZOibKvd+k2XOvQCg=="],
+    "chrome-webstore-upload-cli": ["chrome-webstore-upload-cli@4.0.1", "", { "dependencies": { "chrome-webstore-upload": "^6.0.0", "meow": "^12.1.1" }, "bin": { "chrome-webstore-upload": "source/cli.js" } }, "sha512-UGmvbEGTqNCD+W9HDEoYnZwrbp++v5WcIyVVZWxK7AxFMfxtZF/yiNtxWCcAetNg4z0m/CNhf+Qt3b0aitDEWw=="],
 
     "cli-boxes": ["cli-boxes@3.0.0", "", {}, "sha512-/lzGpEWL/8PfI0BmBOPRwp0c/wFNX1RdUML3jK/RcSBA9T8mZDdQpqYBKtCFTOfQbwPqWEOpjqW+Fnayc0969g=="],
 
