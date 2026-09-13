@@ -1,4 +1,6 @@
 import { injectContextMenu } from "~/contextmenu";
+import { getOptions } from "~/storage/settings";
+import { injectThemeStyle } from "~/themes";
 import {
   processBlockAbilities,
   processBlockAttributes,
@@ -61,7 +63,10 @@ const updateSpells = (node: HTMLElement | null) => {
   }
 };
 
-export const spellWatcher = () => {
+export const spellWatcher = async () => {
+  const settings = await getOptions();
+  injectThemeStyle(settings);
+
   // Single spell detail page
   updateSpells(document.querySelector(".detail-content"));
 
@@ -74,6 +79,8 @@ export const spellWatcher = () => {
   const callback: MutationCallback = async (mutationList, observer) => {
     observer.disconnect();
 
+    const settings = await getOptions();
+    injectThemeStyle(settings);
     await injectContextMenu();
 
     for (const mutation of mutationList) {

@@ -35,9 +35,17 @@ describe("getOptions", () => {
   test("merges stored values with defaults on first load", async () => {
     const options = await getOptions();
     expect(options.contextMenuEnabled).toBe(false);
-    expect(options.version).toBe(6);
+    expect(options.version).toBe(7);
     // Fields not in adapter come from defaults
     expect(options.modMagicMissile).toBe(true);
+    expect(options.customTheme).toEqual({
+      enabled: false,
+      primaryColor: "#c53131",
+      lightHoverColor: "#fdefe7",
+      darkHoverColor: "#4a1313",
+    });
+    expect(mockAdapter.data.version).toBe(7);
+    expect(mockAdapter.data.customTheme).toEqual(options.customTheme);
   });
 
   test("returns cached settings on subsequent calls", async () => {

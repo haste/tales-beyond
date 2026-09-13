@@ -240,10 +240,9 @@ export const characterAppWatcher = () => {
     character.getAbilities();
     await character.refreshSkills();
     await character.refreshFeats();
-    injectThemeStyle();
-    await injectContextMenu();
-
     const settings = await getOptions();
+    injectThemeStyle(settings);
+    await injectContextMenu();
 
     observer.disconnect();
 

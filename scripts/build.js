@@ -176,6 +176,9 @@ const buildSymbiote = async () => {
 
   // Manifest
   const manifest = { version, ...manifestBase };
+  if (!Bun.env.CI) {
+    manifest.name += " (dev)";
+  }
   await Bun.write(
     path.join(buildDir, "manifest.json"),
     JSON.stringify(manifest, null, 2),

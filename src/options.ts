@@ -1,5 +1,6 @@
 import { mods } from "~/mods";
 import { getOptions } from "~/storage/settings";
+import { addCustomThemeUI } from "~/utils/customTheme";
 import {
   addUIElement,
   BOOLEAN,
@@ -65,6 +66,7 @@ const restoreOptions = async () => {
 
   const modList = document.querySelector<HTMLElement>("#mod-list");
   const generalList = document.querySelector<HTMLElement>("#general-list");
+  const themeList = document.querySelector<HTMLElement>("#theme-list");
   const deactivatedList =
     document.querySelector<HTMLElement>("#deactivated-list");
   const keyList = document.querySelector<HTMLElement>("#key-list");
@@ -74,6 +76,7 @@ const restoreOptions = async () => {
     !(
       modList &&
       generalList &&
+      themeList &&
       deactivatedList &&
       keyList &&
       modifiers &&
@@ -101,6 +104,8 @@ const restoreOptions = async () => {
   for (const opt of general) {
     addUIElement(settings, generalList, opt);
   }
+
+  addCustomThemeUI(settings, themeList);
 
   for (const [id, record] of Object.entries(settings.characters)) {
     if (!record.deactivated) {

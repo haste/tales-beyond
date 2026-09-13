@@ -1,3 +1,5 @@
+@use "@simonwep/pickr/src/scss/themes/monolith";
+
 * {
   box-sizing: border-box;
 
@@ -103,6 +105,127 @@ button {
   .form-switch {
     grid-area: checkbox;
   }
+}
+
+.custom-theme-body {
+  display: none;
+  gap: 1.25rem;
+  grid-template-columns: 1fr;
+  margin-bottom: 1rem;
+}
+
+.custom-theme[data-enabled="true"] .custom-theme-body {
+  display: grid;
+}
+
+.custom-theme-pickers {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.custom-theme-picker {
+  align-items: center;
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: 1fr auto;
+
+  label {
+    font-size: 1rem;
+  }
+}
+
+.custom-theme-picker-inputs {
+  align-items: center;
+  display: flex;
+  gap: 0.5rem;
+
+  .pickr .pcr-button {
+    border: 1px solid var(--bs-border-color);
+    height: 2.25rem;
+    padding: 0.15rem;
+    width: 2.75rem;
+
+    &:focus-visible {
+      outline: 2px solid #ab79d6;
+      outline-offset: 2px;
+    }
+  }
+
+  .custom-theme-hex {
+    font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+    font-size: 0.95rem;
+    text-transform: lowercase;
+    width: 7rem;
+  }
+}
+
+.custom-theme-color-picker.pcr-app {
+  background: #303036;
+  border: 1px solid var(--bs-border-color);
+  border-radius: 0.5rem;
+  font-family: inherit;
+  transition: none;
+
+  .pcr-palette:focus-visible,
+  .pcr-slider:focus-visible {
+    outline: 2px solid #ab79d6;
+    outline-offset: 3px;
+  }
+}
+
+.custom-theme-previews {
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: 1fr 1fr;
+}
+
+.custom-theme-preview {
+  align-items: center;
+  border-radius: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1rem;
+}
+
+.custom-theme-preview--light {
+  background: #fefefe;
+  color: #1a1a1a;
+}
+
+.custom-theme-preview--dark {
+  background: #1d1d22;
+  color: #e6e6ec;
+}
+
+.custom-theme-preview-label {
+  font-size: 0.85rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.custom-theme-preview-button {
+  background: transparent;
+  border: 1px solid var(--preview-border, #c53131);
+  border-radius: 4px;
+  color: inherit;
+  cursor: default;
+  font-weight: 500;
+  padding: 0.25rem 0.75rem;
+
+  &:hover {
+    background: transparent;
+    border: 1px solid var(--preview-border, #c53131);
+    color: inherit;
+  }
+}
+
+.custom-theme-preview--light .custom-theme-preview-button.is-hover {
+  background: var(--preview-light-hover, #fdefe7);
+}
+
+.custom-theme-preview--dark .custom-theme-preview-button.is-hover {
+  background: var(--preview-dark-hover, #4a1313);
 }
 
 footer {

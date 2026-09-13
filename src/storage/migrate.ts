@@ -49,6 +49,12 @@ export const migrateUserOptions = (
       });
     }
 
+    case 6:
+      return migrateUserOptions({
+        ...userOptions,
+        version: 7,
+      });
+
     default:
       return userOptions;
   }
