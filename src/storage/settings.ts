@@ -22,6 +22,13 @@ export type SettingCharacterNamePrefix =
   | "last"
   | "none";
 
+export type SettingCustomTheme = {
+  enabled: boolean;
+  primaryColor: string;
+  lightHoverColor: string;
+  darkHoverColor: string;
+};
+
 export type SettingsKeyOfType<T> = {
   [K in keyof Settings]-?: Settings[K] extends T ? K : never;
 }[keyof Settings];
@@ -30,6 +37,7 @@ export type Settings = {
   version: number;
   contextMenuEnabled: boolean;
   characters: Record<string, CharacterRecord>;
+  customTheme: SettingCustomTheme;
   modifierKeyAlt: SettingModifierAction;
   modifierKeyCtrl: SettingModifierAction;
   modifierKeyShift: SettingModifierAction;
@@ -46,12 +54,18 @@ export type Settings = {
   symbioteURL?: string;
 };
 
-const VERSION = 6;
+const VERSION = 7;
 
 const defaultOptions: Settings = {
   version: VERSION,
   contextMenuEnabled: true,
   characters: {},
+  customTheme: {
+    enabled: false,
+    primaryColor: "#c53131",
+    lightHoverColor: "#fdefe7",
+    darkHoverColor: "#4a1313",
+  },
   modifierKeyAlt: "adv-dis",
   modifierKeyCtrl: "adv-dis",
   modifierKeyShift: "adv-dis",

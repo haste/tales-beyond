@@ -1,10 +1,12 @@
-type Theme = {
+import type { SettingCustomTheme, Settings } from "~/storage/settings";
+
+export type Theme = {
   color: string;
   lightHoverBackground: string;
   darkHoverBackground: string;
 };
 
-const defaultTheme: Theme = {
+export const defaultTheme: Theme = {
   color: "#c53131",
   lightHoverBackground: "#fdefe7",
   darkHoverBackground: "#4a1313",
@@ -94,7 +96,13 @@ const themes: Record<string, Theme> = {
   },
 };
 
-const themeToCSS = (theme: Theme) => `
+export const customThemeToTheme = (custom: SettingCustomTheme): Theme => ({
+  color: custom.primaryColor,
+  lightHoverBackground: custom.lightHoverColor,
+  darkHoverBackground: custom.darkHoverColor,
+});
+
+export const themeToCSS = (theme: Theme) => `
 :root {
     --tales-beyond-border: ${theme.color};
     --tales-beyond-background: inherit;
@@ -133,8 +141,19 @@ const getOrInjectStyleSheet = (name: string) => {
   return style;
 };
 
-export const injectThemeStyle = () => {
+export const injectThemeStyle = (settings: Settings) => {
   const themeElement = getOrInjectStyleSheet("theme");
+
+  if (settings.customTheme.enabled) {
+    const custom = settings.customTheme;
+    const cacheKey = `custom:${custom.primaryColor}:${custom.lightHoverColor}:${custom.darkHoverColor}`;
+    if (themeElement.dataset.mainColor === cacheKey) {
+      return;
+    }
+    themeElement.dataset.mainColor = cacheKey;
+    themeElement.textContent = themeToCSS(customThemeToTheme(custom));
+    return;
+  }
 
   // The trim() is here because the Chromium version TaleSpire uses returns the
   // CSS variable with spaces preserved

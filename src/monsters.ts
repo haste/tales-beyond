@@ -1,4 +1,6 @@
 import { injectContextMenu } from "~/contextmenu";
+import { getOptions } from "~/storage/settings";
+import { injectThemeStyle } from "~/themes";
 import {
   processBlockAbilities,
   processBlockAttributes,
@@ -39,7 +41,10 @@ const updateMonsters = (node: HTMLElement | null) => {
   }
 };
 
-export const monsterWatcher = () => {
+export const monsterWatcher = async () => {
+  const settings = await getOptions();
+  injectThemeStyle(settings);
+
   // Single monster detail page
   updateMonsters(document.querySelector<HTMLElement>(".detail-content"));
 
@@ -52,6 +57,8 @@ export const monsterWatcher = () => {
   const callback: MutationCallback = async (mutationList, observer) => {
     observer.disconnect();
 
+    const settings = await getOptions();
+    injectThemeStyle(settings);
     await injectContextMenu();
 
     for (const mutation of mutationList) {

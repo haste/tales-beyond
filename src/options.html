@@ -18,6 +18,10 @@
                 <h4>General</h4>
                 <div id="general-list"></div>
             </section>
+            <section id="theme">
+                <h4>Theme</h4>
+                <div id="theme-list"></div>
+            </section>
             <section id="modifiers">
                 <h4>Modifier key behavior</h4>
                 <div id="key-list"></div>
@@ -59,6 +63,56 @@
             <div class="input-group mb-3">
                 <label class="input-group-text flex-fill"></label>
                 <button class="btn" type="button">Activate</button>
+            </div>
+        </template>
+        <template id="template-custom-theme">
+            <div class="custom-theme">
+                <label class="form-control option form-check-label custom-theme-toggle mb-3">
+                    <div class="description">
+                        <header>Use custom theme</header>
+                        Override the colors picked up from D&amp;D Beyond with your own.
+                    </div>
+                    <div class="form-switch">
+                        <input class="form-check-input custom-theme-enabled" type="checkbox" role="switch" aria-checked="false">
+                    </div>
+                </label>
+                <div class="custom-theme-body">
+                    <div class="custom-theme-pickers">
+                        <label class="custom-theme-picker" data-field="primaryColor">
+                            <span>Border / accent</span>
+                            <div class="custom-theme-picker-inputs">
+                                <input type="color" class="custom-theme-color form-control form-control-color">
+                                <input type="text" class="custom-theme-hex form-control" spellcheck="false" autocomplete="off" maxlength="7" pattern="#[0-9a-fA-F]{6}">
+                            </div>
+                        </label>
+                        <label class="custom-theme-picker" data-field="lightHoverColor">
+                            <span>Hover (light pages)</span>
+                            <div class="custom-theme-picker-inputs">
+                                <input type="color" class="custom-theme-color form-control form-control-color">
+                                <input type="text" class="custom-theme-hex form-control" spellcheck="false" autocomplete="off" maxlength="7" pattern="#[0-9a-fA-F]{6}">
+                            </div>
+                        </label>
+                        <label class="custom-theme-picker" data-field="darkHoverColor">
+                            <span>Hover (dark pages)</span>
+                            <div class="custom-theme-picker-inputs">
+                                <input type="color" class="custom-theme-color form-control form-control-color">
+                                <input type="text" class="custom-theme-hex form-control" spellcheck="false" autocomplete="off" maxlength="7" pattern="#[0-9a-fA-F]{6}">
+                            </div>
+                        </label>
+                    </div>
+                    <div class="custom-theme-previews">
+                        <div class="custom-theme-preview custom-theme-preview--light">
+                            <div class="custom-theme-preview-label">Light page</div>
+                            <button type="button" class="custom-theme-preview-button">1d20</button>
+                            <button type="button" class="custom-theme-preview-button is-hover">1d20</button>
+                        </div>
+                        <div class="custom-theme-preview custom-theme-preview--dark">
+                            <div class="custom-theme-preview-label">Dark page</div>
+                            <button type="button" class="custom-theme-preview-button">1d20</button>
+                            <button type="button" class="custom-theme-preview-button is-hover">1d20</button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </template>
         <script src="options.js" type="module"></script>

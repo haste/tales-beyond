@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+### Enhancements
+
+ * Support custom themes
+
 ## 0.26.0 (2026-05-15)
 
 ### Enhancements
