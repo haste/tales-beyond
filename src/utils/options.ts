@@ -80,8 +80,8 @@ const addDeactivatedCharacter = (
   ) as HTMLTemplateElement;
   const base = template.content.cloneNode(true) as DocumentFragment;
 
-  const label = base.querySelector("label") as HTMLLabelElement;
-  label.textContent = entry.header;
+  const name = base.querySelector(".input-group-text") as HTMLSpanElement;
+  name.textContent = entry.header;
 
   const button = base.querySelector("button") as HTMLButtonElement;
   button.addEventListener("click", async () => {
