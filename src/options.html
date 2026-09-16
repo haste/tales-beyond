@@ -44,11 +44,13 @@
         </footer>
         <template id="template-dropdown">
             <div class="input-group mb-3 option-dropdown">
+                <!-- biome-ignore lint/a11y/noLabelWithoutControl: Set by addDropdown. -->
                 <label class="input-group-text"></label>
                 <select class="form-select"></select>
             </div>
         </template>
         <template id="template-checkbox">
+            <!-- biome-ignore lint/a11y/noLabelWithoutControl: Set by addCheckbox. -->
             <label class="form-control option form-check-label mb-3">
                 <div class="description">
                     <header>
@@ -61,7 +63,7 @@
         </template>
         <template id="template-deactivated-character">
             <div class="input-group mb-3">
-                <label class="input-group-text flex-fill"></label>
+                <span class="input-group-text flex-fill"></span>
                 <button class="btn" type="button">Activate</button>
             </div>
         </template>

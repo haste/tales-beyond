@@ -16,7 +16,7 @@
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
-   xmlns:svg="http://www.w3.org/2000/svg"><sodipodi:namedview
+   xmlns:svg="http://www.w3.org/2000/svg"><title>Tales Beyond</title><sodipodi:namedview
      id="namedview1"
      pagecolor="#505050"
      bordercolor="#eeeeee"
@@ -139,7 +139,7 @@
        transform="matrix(1.8968401,0,0,0.68445382,-24.902089,1.2363052)"
        inkscape:transform-center-x="7.5492069e-06"
        inkscape:label="top" /><path
-       style="font-size:50.8px;line-height:1.25;font-family:'UbuntuMono Nerd Font Mono';-inkscape-font-specification:'UbuntuMono Nerd Font Mono';fill:#514086;stroke-width:0.264583"
+       style="fill:#514086;stroke-width:0.264583"
        d="m 122.9853,157.90584 q 2.5908,-1.016 5.0292,-2.54 2.43841,-1.5748 4.52121,-3.9624 h 2.9464 v 27.8892 h 5.9436 v 3.556 H 124.5093 v -3.556 h 6.80721 v -22.0472 q -0.5588,0.508 -1.37161,1.0668 -0.762,0.508 -1.7272,1.016 -0.9144,0.508 -1.9304,0.9652 -1.016,0.4572 -1.9812,0.762 z"
        id="text26"
        inkscape:label="text"
