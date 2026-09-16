@@ -13,7 +13,7 @@
         "adm-zip": "^0.6.0",
         "bootstrap": "^5.3.8",
         "chrome-webstore-upload-cli": "^4.0.1",
-        "global-jsdom": "^29.0.0",
+        "global-jsdom": "^30.0.0",
         "prettier": "3.9.6",
         "sass": "^1.104.0",
         "typescript": "^7.0.2",
@@ -426,7 +426,7 @@
 
     "global-directory": ["global-directory@4.0.1", "", { "dependencies": { "ini": "4.1.1" } }, "sha512-wHTUcDUoZ1H5/0iVqEudYW4/kAlN5cZ3j/bXn0Dpbizl9iaUVeWSHqiOjsgk6OW2bkLclbBjzewBz6weQ1zA2Q=="],
 
-    "global-jsdom": ["global-jsdom@29.0.0", "", { "peerDependencies": { "jsdom": ">=29 <30" } }, "sha512-S9Wl+EHDfkO8DYleqMYzf14hKfwIysEN/FvoVRdPif3uUGUlmiHs/gj1PVKXhmJ20DwUVACtdxxhNYYvvn9K7A=="],
+    "global-jsdom": ["global-jsdom@30.0.0", "", { "peerDependencies": { "jsdom": ">=30 <31" } }, "sha512-X7oTdIs442ApUNvzHlDtoFfTyVVCFsO3wwKYNTziacCgxH+l+z9ZVeakLpK8SGOJKdCKR7xMPoZ848ZdEHc+RA=="],
 
     "globals": ["globals@14.0.0", "", {}, "sha512-oahGvuMGQlPw/ivIYBjVSrWAfWLBeku5tpPE2fOPLi+WHffIWbuh2tCjhyQhTBPMf5E9jDEH4FOmTYgYwbKwtQ=="],
 
