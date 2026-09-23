@@ -11,7 +11,7 @@
     "bootstrap": "^5.3.8",
     "chrome-webstore-upload-cli": "^4.0.1",
     "global-jsdom": "^30.0.0",
-    "prettier": "3.9.6",
+    "prettier": "3.9.7",
     "sass": "^1.104.0",
     "typescript": "^7.0.2",
     "web-ext": "10.6.0"
